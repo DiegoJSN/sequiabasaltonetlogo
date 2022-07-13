@@ -10,7 +10,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
  climacoef ; External data, It relates the primary production in a season with the average for that season due to climate variations.
            ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (climaCoef variable)
- current-season ; Initial-season ;Variable to define the season in which the simulation begins, it should take the values: 0 = winter, 1 = spring, 2 = summer, 3 = fall.
+ current-season ; Initial-season (slider) ;Variable to define the season in which the simulation begins, it should take the values: 0 = winter, 1 = spring, 2 = summer, 3 = fall.
  season-coef ;It affects the live weight gain in relation with the grass quality according to the season, winter = 1; spring = 1.15, summer = 1.05, fall = 1.
              ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain (seasonCoef variable)
 
@@ -43,7 +43,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
 ;Grass related global variables
 
- ;initial-grass-height ; slider
+ ;initial-grass-height (slider); The initial grass height is chosen by users.
  kmax  ;Paramater: maximum carrying capacity (maximum grass height), it varies according to the season, winter= 7.4 cm, spring= 22.2 cm, summer= 15.6 cm, fall= 11.1 cm.
        ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (K variable)
  DM-cm-ha ;Parameter used to calculate the grass-height consumed from the dry matter consumed = 180 Kg of DM/ cm*Ha.
@@ -54,7 +54,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
 ;Livestock related global variables
 
- ;initial-num-cows ;The initial number of animals is chosen by users.
+ ;initial-num-cows (slider) ;The initial number of animals is chosen by users.
  maxLWG ;Parameter (mi) that defines the maximum live weight gain per animal according to the season. Spring= 60 Kg/animal; Winter, Summer and Fall= 40 Kg/animal.
         ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain (mi variable)
  ni ;Parameter used to define the live weight gain per animal (it's a constant: 0.24 1/cm).
@@ -75,13 +75,14 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
                   ; ¿¿¿¿¿¿¿¿DUDA????????: ¿Duración de la etapa "born calf" del ciclo de vida de livestock?
  weight-gain-lactation; 0.61 Kg / day
                       ; The born calves do not depend on grasslands. We assume that born calves increase their live weight by 0.61 Kg/day. After 6 months, they should reach 150 Kg (the initial weight for weaned calves).
- ;perception ; parameter used to define the degree of perception of the animals regarding to the surrounding pastures.
+
+  ;perception (slider); parameter used to define the degree of perception of the animals regarding to the surrounding pastures. Chosen by users
   ]
 
 breed [cows cow] ;We consider cows as the unique type of livestock (***future-step: to include sheep or goats as other types of livestock, and producers as decision makers).
 
-patches-own [
-  ;initial-grass-height ; homogeneously distributed along the paddock.
+patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-own keywords, can only be used at the beginning of a program, before any function definitions. It defines the variables that all patches can use. All patches will then have the given variables and be able to use them.
+  ;initial-grass-height (slider); The initial grass height is chosen by users; Grass is homogeneously distributed along the paddock.
   grass-height ;State of the grass height, determines the carrying capacity of the system.
                ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height
   r ;Parameter: growth rate for the grass = 0.002 1/day
@@ -89,7 +90,7 @@ patches-own [
   GH-consumed ; grass-height consumed from the total consumption of dry matter.
    ]
 
-cows-own [
+cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and patches-own keywords, can only be used at the beginning of a program, before any function definitions. It defines the variables belonging to each turtle. If you specify a breed instead of "turtles", only turtles of that breed have the listed variables. (More than one turtle breed may list the same variable.)
   age ;Variable that define the age of each animal (in days).
   born-calf?
   weaned-calf?
@@ -105,13 +106,13 @@ cows-own [
   min-weight ;parameter to define the critical weight which below the animal can die by forage crisis. Cow= 180 Kg, weaned-calf= 60 Kg, Steer= 100 Kg, Heifer= 100 Kg.
   live-weight ;variable that defines the state of the animals in terms of live weight.
   live-weight-gain ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain
-  DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note:1 cm of grass/ha = 180 Kg of dry matter (Units: KgDM/animal*day).
+  DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note: 1 cm of grass/ha = 180 Kg of dry matter (Units: KgDM/animal*day).
        ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc
   metabolic-body-size ;LW ^ (3/4)
                       ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc (LW^(3/4) = MBS variable)
   mortality-rate
   natural-mortality-rate ;annual natural mortality = 2% (in a day = 0.000054).
-  except-mort-rate ;exceptional mortality rates increases to 15% (= 0.00041) in cows, 30% (= 0.000815) in pregnant cows, and 23% (0.000625) in the rest of categories.
+  except-mort-rate ;exceptional mortality rates increases to 15% (in a day = 0.00041) in cows, 30% (= 0.000815) in pregnant cows, and 23% (0.000625) in the rest of categories when animal Live Weight (LW) falls below a critical survival value (i.e., Minimun weight, min-weight in the code).
   pregnancy-rate ;is calculated as a logistic function of LW, but it also varies with the category of the animals.
                  ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: pregnancy-rate
   coefA ;constant used to calculate the pregnancy rate. Cow= 20000, cow-with-calf= 12000, heifer= 4000.
@@ -119,18 +120,18 @@ cows-own [
   coefB ;constant used to calculate the pregnancy rate. Cow= 0.0285, cow-with-calf= 0.0265, heifer= 0.029.
         ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: pregnancy-rate (coefB variable)
   pregnancy-time ; variable to determine gestation-period.
-  lactating-time ; variable to determine lacating-period.
+  lactating-time ; variable to determine lactating-period.
   ]
 
 to setup
   ca
-  setup-globals ; Procedure para darle los valores iniciales a las globals variables
+  setup-globals ; Procedure para darle valores (info) a las globals variables
   setup-grassland
   if (model-version = "wild model") or (model-version = "management model") [setup-livestock]
   reset-ticks
 end
 
-to setup-globals
+to setup-globals ; Procedure para darle valores (info) a las globals variables
   set days-per-tick 1
   set number-of-season 0
   set simulation-time 0
@@ -145,30 +146,31 @@ to setup-globals
   set xi 132
   set grass-energy 1.8
   set DM-cm-ha 180
-  set season-coef [1 1.15 1.05 1]
-  set kmax [7.4 22.2 15.6 11.1]
-  set maxLWG [40 60 40 40]
+  set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
+  set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
+  set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
   set current-season initial-season ; initial-season is the slider in Interface (0 = winter, 1 = spring, 2 = summer, 3 = fall)
-  set climacoef [1.53 1.31 1.23	1.48 1.29	0.87 0.96	1.26 1.17	0.71 0.86	1.44 1.34	0.86 1.06 1.19 0.72	0.80 0.93	0.98 0.87	1.17 1.02	0.83 0.09	1.32 0.87	1.08 1.42	0.75 1.00	0.65 0.50	1.19 1.07	0.62 0.77 1.05 1.18 1.05]
-  set exploitation-costs [5.76 5.76	5.76 5.76	6.25 6.25	6.25 6.25	6.80 6.80	6.80 6.80 5.50 5.50	5.50 5.50	6.63 6.63	6.63 6.63	8.53 8.53	8.53 8.53	11.03	11.03	11.03	11.03	12.50	12.50	12.50	12.50	15.88	15.88	15.88	15.88	16.15	16.15	16.15	16.15]
-  set grazing-prices [4	10 16	8	9	19 20	12 12	22 22	9	8	19 19	13 21	20 21	17 18	13 19	20 34	10 22	16 7 21	20 24	26 12	19 24	20 15	36 36]
-  set supplement-prices [0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.08	0.08 0.1 0.1 0.11	0.13 0.1 0.09	0.09 0.1 0.1 0.1 0.1 0.12 0.13 0.13 0.14 0.15 0.15 0.16	0.19 0.21	0.23 0.15	0.15 0.15	0.15 0.15]
-  set born-calves-prices [0.74 0.8 0.84	0.88 0.87	0.71 0.69	0.7	0.66 0.63	0.66 0.76	0.74 0.8 0.86	0.83 0.86	0.98 0.99	0.99 1.02	1.02 0.94	0.98 0.91	1.06 1.13	1.17 1.26	1.3	1.36 1.33	1.31 1.74	1.2	0.94 1.03	1.03 1.03 1.03]
-  set weaned-calves-prices [0.83 0.81	0.88 0.9 0.89	0.76 0.81	0.72 0.73	0.69 0.71	0.73 0.77	0.84 0.87	0.93 0.88	0.95 1 1.05	1.05 1.05	1.01 0.98	0.95 1.17 1.09 1.2 1.3 1.27	1.38 1.35	1.36 1.67	1.21 0.92	1.04 1.04	1.04 1.04]
-  set steers-prices [0.68	0.72 0.76	0.8	0.79 0.65	0.63 0.64	0.6	0.57 0.6 0.69	0.67 0.73	0.78 0.75	0.79 0.89	0.9	0.9	0.93 0.93	0.86 0.89	0.82 0.97 1.02 1.06	1.15 1.18	1.23 1.21	1.19 1.59	1.09 0.85	0.94 0.94	0.94 0.94]
-  set heifers-prices [0.63 0.63	0.68 0.71	0.69 0.6 0.6 0.56	0.53 0.45	0.49 0.48	0.53 0.58	0.64 0.67	0.59 0.7 0.73	0.72 0.75	0.75 0.66	0.69 0.65	0.81 0.83	0.82 0.94	0.92 1.05	0.97 0.98	1.17 0.87	0.62 0.72	0.72 0.72	0.72]
-  set cows-prices [0.45	0.48 0.49	0.57 0.49	0.51 0.51	0.44 0.45	0.4	0.37 0.43	0.48 0.49	0.47 0.59	0.51 0.57	0.62 0.6 0.55	0.55 0.56	0.63 0.46	0.7	0.65 0.74	0.78 0.74	0.89 0.79	0.94 1.17	0.67 0.52	0.5	0.5	0.5	0.5]
-  set pregnant-cows-prices [0.45 0.48	0.49 0.57	0.49 0.51	0.51 0.44	0.45 0.4 0.37 0.43 0.48 0.49 0.47 0.59 0.51	0.57 0.62	0.6	0.55 0.55	0.56 0.63	0.46 0.7 0.65	0.74 0.78	0.74 0.89	0.79 0.94	1.17 0.67	0.52 0.5 0.5	0.5	0.5]
-  set lactating-cows-prices [0.51	0.52 0.54	0.55 0.53	0.45 0.47	0.42 0.42	0.39 0.42	0.42 0.45	0.55 0.61	0.63 0.57	0.64 0.7 0.68	0.67 0.67	0.78 0.65	0.58 0.85	0.77 0.77	0.81 0.83	0.91 0.89	0.92 1.1 0.81	0.52 0.64	0.64 0.64	0.64]
-  set sheep-prices [0.47 0.52	0.47 0.48	0.51 0.49	0.54 0.46	0.49 0.49	0.56 0.51	0.59 0.76	0.92 0.81	0.82 0.96	1.05 0.84	0.81 0.77	0.68 0.59	0.45 0.46	0.56 0.57	0.48 0.64	0.8	0.92 0.94	0.88 0.98	0.98 0.98	0.98 0.98	0.98]
-  set wool-prices [5.6 5.81	5.65 5.76	6.18 5.81	5.86 7.08	9.52 9.31	11.83	13.01	13.79	8.65 12.37 12.43 12.69 12.53 11.59 10.64 10.43 10.01 9.85	8.52 8.26	9	9	9.15 11.1 12.78	14.27 15.4 17.36 17.75 16.07 8.17	8.17 8.17	8.17 8.17]
+  set climacoef [1.53 1.31 1.23	1.48 1.29	0.87 0.96	1.26 1.17	0.71 0.86	1.44 1.34	0.86 1.06 1.19 0.72	0.80 0.93	0.98 0.87	1.17 1.02	0.83 0.09	1.32 0.87	1.08 1.42	0.75 1.00	0.65 0.50	1.19 1.07	0.62 0.77 1.05 1.18 1.05] ; variable con 40 valores. Esto es así porque el tiempo que vamos a simular son 10 años, y como cada año tiene 4 estaciones, y como el ClimaCoef varía cada año pues tenemos que 10 años * 4 estaciones = 40 estaciones en total = 40 valores distintos para climaCoef (recordemos que estos 40 valores son datos históricos)
+  set exploitation-costs [5.76 5.76	5.76 5.76	6.25 6.25	6.25 6.25	6.80 6.80	6.80 6.80 5.50 5.50	5.50 5.50	6.63 6.63	6.63 6.63	8.53 8.53	8.53 8.53	11.03	11.03	11.03	11.03	12.50	12.50	12.50	12.50	15.88	15.88	15.88	15.88	16.15	16.15	16.15	16.15] ; 40 valores: misma lógica que antes
+  set grazing-prices [4	10 16	8	9	19 20	12 12	22 22	9	8	19 19	13 21	20 21	17 18	13 19	20 34	10 22	16 7 21	20 24	26 12	19 24	20 15	36 36] ; 40 valores: misma lógica que antes
+  set supplement-prices [0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.08	0.08 0.1 0.1 0.11	0.13 0.1 0.09	0.09 0.1 0.1 0.1 0.1 0.12 0.13 0.13 0.14 0.15 0.15 0.16	0.19 0.21	0.23 0.15	0.15 0.15	0.15 0.15] ; 40 valores: misma lógica que antes
+  set born-calves-prices [0.74 0.8 0.84	0.88 0.87	0.71 0.69	0.7	0.66 0.63	0.66 0.76	0.74 0.8 0.86	0.83 0.86	0.98 0.99	0.99 1.02	1.02 0.94	0.98 0.91	1.06 1.13	1.17 1.26	1.3	1.36 1.33	1.31 1.74	1.2	0.94 1.03	1.03 1.03 1.03] ; 40 valores: misma lógica que antes
+  set weaned-calves-prices [0.83 0.81	0.88 0.9 0.89	0.76 0.81	0.72 0.73	0.69 0.71	0.73 0.77	0.84 0.87	0.93 0.88	0.95 1 1.05	1.05 1.05	1.01 0.98	0.95 1.17 1.09 1.2 1.3 1.27	1.38 1.35	1.36 1.67	1.21 0.92	1.04 1.04	1.04 1.04] ; 40 valores: misma lógica que antes
+  set steers-prices [0.68	0.72 0.76	0.8	0.79 0.65	0.63 0.64	0.6	0.57 0.6 0.69	0.67 0.73	0.78 0.75	0.79 0.89	0.9	0.9	0.93 0.93	0.86 0.89	0.82 0.97 1.02 1.06	1.15 1.18	1.23 1.21	1.19 1.59	1.09 0.85	0.94 0.94	0.94 0.94] ; 40 valores: misma lógica que antes
+  set heifers-prices [0.63 0.63	0.68 0.71	0.69 0.6 0.6 0.56	0.53 0.45	0.49 0.48	0.53 0.58	0.64 0.67	0.59 0.7 0.73	0.72 0.75	0.75 0.66	0.69 0.65	0.81 0.83	0.82 0.94	0.92 1.05	0.97 0.98	1.17 0.87	0.62 0.72	0.72 0.72	0.72] ; 40 valores: misma lógica que antes
+  set cows-prices [0.45	0.48 0.49	0.57 0.49	0.51 0.51	0.44 0.45	0.4	0.37 0.43	0.48 0.49	0.47 0.59	0.51 0.57	0.62 0.6 0.55	0.55 0.56	0.63 0.46	0.7	0.65 0.74	0.78 0.74	0.89 0.79	0.94 1.17	0.67 0.52	0.5	0.5	0.5	0.5] ; 40 valores: misma lógica que antes
+  set pregnant-cows-prices [0.45 0.48	0.49 0.57	0.49 0.51	0.51 0.44	0.45 0.4 0.37 0.43 0.48 0.49 0.47 0.59 0.51	0.57 0.62	0.6	0.55 0.55	0.56 0.63	0.46 0.7 0.65	0.74 0.78	0.74 0.89	0.79 0.94	1.17 0.67	0.52 0.5 0.5	0.5	0.5] ; 40 valores: misma lógica que antes
+  set lactating-cows-prices [0.51	0.52 0.54	0.55 0.53	0.45 0.47	0.42 0.42	0.39 0.42	0.42 0.45	0.55 0.61	0.63 0.57	0.64 0.7 0.68	0.67 0.67	0.78 0.65	0.58 0.85	0.77 0.77	0.81 0.83	0.91 0.89	0.92 1.1 0.81	0.52 0.64	0.64 0.64	0.64] ; 40 valores: misma lógica que antes
+  set sheep-prices [0.47 0.52	0.47 0.48	0.51 0.49	0.54 0.46	0.49 0.49	0.56 0.51	0.59 0.76	0.92 0.81	0.82 0.96	1.05 0.84	0.81 0.77	0.68 0.59	0.45 0.46	0.56 0.57	0.48 0.64	0.8	0.92 0.94	0.88 0.98	0.98 0.98	0.98 0.98	0.98] ; 40 valores: misma lógica que antes
+  set wool-prices [5.6 5.81	5.65 5.76	6.18 5.81	5.86 7.08	9.52 9.31	11.83	13.01	13.79	8.65 12.37 12.43 12.69 12.53 11.59 10.64 10.43 10.01 9.85	8.52 8.26	9	9	9.15 11.1 12.78	14.27 15.4 17.36 17.75 16.07 8.17	8.17 8.17	8.17 8.17] ; 40 valores: misma lógica que antes
 end
 
-to setup-grassland
+to setup-grassland ; Procedure para darle valores (info) a los patches-own variables
   ask patches [
     set grass-height initial-grass-height ; initial-grass height is the slider in Interface (from a minimum of 3 cm to a maximum of 7 cm)
-    set GH-consumed 0
-    ifelse grass-height < 2 [set pcolor 37]
+    set GH-consumed 0 ; establecemos que GH-consumes = 0 en el momento de empezar la simulación (i.e., tick 0 o tiempo 0)
+    ifelse grass-height < 2 ; vamos a pedirles a los parches que tengan una grass-height inferior a 2 cm que se coloreen de verde claro. Esto es interesante porque lo relacionamos con la asunción de que las vacas no pueden comer pastos con altura inferior a 2 cm.
+    [set pcolor 37]
     [set pcolor scale-color green grass-height 23 0]
     set r 0.002]
 end
@@ -176,19 +178,21 @@ end
 to setup-livestock
   create-cows initial-num-cows [ ; initial-num-cows is the slider in Interface (from 50 to 700)
     set shape "cow"
-    set initial-weight random (280 - 180) + 180 ; alternative option: to define randomly the initial weight of the animals between a reasonable range.
-    ;set initial-weight 280
+    ;set initial-weight 280 ; esta línea de código desactivada establece que el initial-weight de todas las cows sea de 280.
+    set initial-weight random (280 - 180) + 180 ; this is an alternative option: to define randomly the initial weight of the animals between a reasonable range.
     set live-weight initial-weight ; ¿¿¿¿¿¿¿¿DUDA????????: NO ENCUENTRO EL SLIDER O ITEM ASOCIADO EN INTERFACE QUE DE VALOR A LA VARIABLE live-weight
+                                   ; POSIBLE RESPUESTA: no hay slider porque si te fijas, en la línea anterior se está generando el initial-weight de manera aleatoria. Imagino que si quiero crear un slider para establecer el peso inicial del animal, debo desactivar (o eliminar) la línea de código de arriba y crear el slider en la interfaz.
     set mortality-rate natural-mortality-rate; ¿¿¿¿¿¿¿¿DUDA????????: NO ENCUENTRO EL SLIDER O ITEM ASOCIADO EN INTERFACE QUE DE VALOR A LA VARIABLE mortality-rate
-    set DDMC 0
-    set age random (cow-age-max - cow-age-min) + cow-age-min ; alternative option: to define randomly the age of the animals between the minimum and the maximum.
-    ;set age cow-age-min
+                                             ; POSIBLE RESPUESTA: la asunción es que la natural-mortality-rate debe ser del 0.000054 (i.e., 0.005 % diario = 2% anual), así que no le veo sentido a hacer un slider, más bien fijaría este valor en 0.000054
+    set DDMC 0; establecemos que el Daily dry matter consumption (DDMC) = 0 en el momento de empezar la simulación (i.e., tick 0 o tiempo 0)
+    ;set age cow-age-min ; esta línea de código desactivada llama a un slider llamado "cow-age-min" que puede ser modificado por el observador antes de empezar la simulación (pero este slider no está creado en la interface)
+    set age random (cow-age-max - cow-age-min) + cow-age-min ; this is an alternative option: to define randomly the age of the animals between the minimum and the maximum.
     setxy random-pxcor random-pycor
-    become-cow ]
+    become-cow ] ; become-cow es un procedure que define la age class "cow" del ciclo de vida del cattle
 end
 
 to go
-  if ticks >= 92 [
+  if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
     set number-of-season number-of-season + 1 ; to count the number of seasons in the simulation period (useful for external data of weather and market prices).
     ifelse current-season = 0 [
       set current-season 1
@@ -208,7 +212,6 @@ to go
   set simulation-time simulation-time + days-per-tick
 
   if simulation-time >= 3680 [stop]
-
   if (model-version = "wild model") or (model-version = "management model") [if not any? cows [stop]]
 
   ask patches [grow-grass update-grass-height]
@@ -219,37 +222,38 @@ to go
 end
 
 to grow-grass ; ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de GH (Primary production (biomass) expressed in centimeters), pero no le veo mucha similitud con la fórmula del paper...
-set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * item number-of-season climacoef ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * item number-of-season climacoef ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                    ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
-                                                                                                                                   ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 93 valores (desde 0 hasta 92)
+                                                                                                                                   ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
 end
 
 to eat-grass
 ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-ifelse born-calf? = true [
-   set live-weight-gain weight-gain-lactation][ ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
-   ifelse grass-height >= 2 [ ; If the grass-height in a patch is >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation.
-   set metabolic-body-size live-weight ^ (3 / 4)
-   set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )]
-    [set live-weight-gain live-weight * -0.005]] ; If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily ¿¿¿¿¿¿¿¿DUDA???????? por qué es -0.005? debería ser -0.05. ¿Hay un 0 de más?
+   ifelse born-calf? = true [ ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces LWG = weight-gain-lactation....
+      set live-weight-gain weight-gain-lactation][ ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      ifelse grass-height >= 2 [ ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         set metabolic-body-size live-weight ^ (3 / 4)
+         set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
 
 set live-weight live-weight + live-weight-gain
 
 ; A continuación aquí se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-    ifelse born-calf? = true [
-       set DDMC 0][
-       ifelse live-weight-gain > 0 [
+    ifelse born-calf? = true [ ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       set DDMC 0][ ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       ifelse live-weight-gain > 0 [ ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
           set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef][
-          set DDMC 0]]
+          set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
 end
 
 to update-grass-height
-set GH-consumed 0
+set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0...
   ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
                   ; como este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
     let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total daily dry matter consumption (DDMC) in each patch. With the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
-    set GH-consumed totDDMC / DM-cm-ha]
-  set grass-height grass-height - GH-consumed
+    set GH-consumed totDDMC / DM-cm-ha] ; ... pero vez actualizado el GH-consumed de ese tick...
+  set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
   if grass-height < 0 [set grass-height 0] ; to avoid negative values.
   ifelse grass-height < 2 [
      set pcolor 37][
@@ -258,8 +262,8 @@ end
 
 to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
   if grass-height < 5 [
-    ifelse random-float 1 < perception [
-       uphill grass-height][
+    ifelse random-float 1 < perception [ ; perception es un slider con valores entre 0 y 1
+       uphill grass-height][ ; Moves the turtle to the neighboring patch with the highest value for patch-variable (en este caso, se llama a la patch-variable grass-height). If no neighboring patch has a higher value than the current patch, the turtle stays put. If there are multiple patches with the same highest value, the turtle picks one randomly. Non-numeric values are ignored. uphill considers the eight neighboring patches; uphill4 only considers the four neighbors.
        move-to one-of neighbors]]
 end
 
@@ -267,36 +271,40 @@ to grow-livestock ;
 set age age + days-per-tick
 ; A continuación, primero se codifican las reglas por las que los animales mueren.
 ; Es interesante mencionar que, por ahora (en el wild model), los animales tienen dos formas de morir: por edad (age) o por mortality rate (que puede ser natural o expecional)
-  if age > cow-age-max [die]
-  ifelse live-weight < min-weight [ ; Si el peso vivo del animal se encuentra por debajo del peso mínimo...
-     set mortality-rate except-mort-rate][ ; ...si esto es TRUE, el animal tendrá una mortality rate = except-mort-rate (mortality rate excepcional, recordemos que exceptional mortality rates increases to 15% (= 0.00041) in cows, 30% (= 0.000815) in pregnant cows, and 23% (0.000625) in the rest of categories.)
+  if age > cow-age-max [die] ; Si la edad (age) del agente es mayor que la edad máxima establecida (cow-age-max), el agente muere...
+  ifelse live-weight < min-weight [ ; Pero si la edad se encuentra por debajo del cow-age-max Y si el peso vivo del animal se encuentra por debajo del peso mínimo...
+     set mortality-rate except-mort-rate][ ; ...si esto es TRUE, el animal tendrá una mortality rate = except-mort-rate (mortality rate excepcional, recordemos que exceptional mortality rates increases to 15% (= 0.00041 a day) in cows, 30% (= 0.000815) in pregnant cows, and 23% (0.000625) in the rest of categories.)
      set mortality-rate natural-mortality-rate] ;...si esto es FALSE, el animal tendrá una mortality rate = natural-mortality rate (annual natural mortality = 2% (in a day = 0.000054))
   if random-float 1 < mortality-rate [die] ; Como el mortality rate es una probabilidad, el animal morirá cuando el mortality rate sea mayor que un número generado al azar entre 0 y 0.999
 
-; Después, se codifican las reglas de como evoluciona una vaca siguiendo su ciclo de vida (la regla para las etapas "born-calf" y "cow-with-calf" se desarrollan en el procedure "reproduce")
-  if age = weaned-calf-age-min [become-weaned-calf] ; aquí se describe la regla para weaned-calf
-  if age = heifer-age-min [
-    ifelse random-float 1 < 0.5 [
-      become-heifer][ ; la regla para heifer
-      become-steer]] ; la regla para steer
-  if (heifer? = true) and (age = cow-age-min) and (live-weight >= 280) [become-cow] ; la regla para cow
+; Después, se codifican las reglas de como evoluciona una vaca siguiendo su ciclo de vida (la regla para las etapas "born-calf", "cow-with-calf" y "pregnant" se desarrollan en el procedure "reproduce")
+  if age = weaned-calf-age-min [become-weaned-calf] ; aquí se describe la regla para weaned-calf: si el age = weaned-calf-age-min, el animal pasa a la age class "weaned-calf"
+  if age = heifer-age-min [ ; si el age = heifer-age-min...
+    ifelse random-float 1 < 0.5 [ ; ...hay un 50% de probabilidades de que el animal se convierta en el age class "heifer" o "steer".
+      become-heifer][ ; la regla para heifer ; Si un número generado al azar entre 0 y 0.99 (random-float 1) es menor que 0.5, el animal se convertira en "heifer"
+      become-steer]] ; la regla para steer; Si el número es mayor que 0.5, se convertirá en "steer"
+  if (heifer? = true) and (age = cow-age-min) and (live-weight >= 280) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= 280, el animal pasa al age class de "cow"
 
-  if cow-with-calf? = true [set lactating-time lactating-time + days-per-tick]
-  if lactating-time = lactation-period [become-cow] ; la regla para cow
+  if cow-with-calf? = true [set lactating-time lactating-time + days-per-tick] ; si el agente es un "cow-with-calf" (si esto es TRUE), se establece (set) que el lactating-time = lactating-time + days-pèr-tick
+  if lactating-time = lactation-period [become-cow] ; la regla para cow: cuando el lactating-time = lactation-period, el agente se convierte en "cow"
 end
 
-to reproduce ; ; A continuación aquí se encuentra la fórmula del Pregnancy rate. LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER PERO...
+to reproduce ; ; A continuación aquí se encuentran la fórmula del Pregnancy rate y las reglas para convertirse en age class "Pregnant".  LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER PERO...
   if (heifer? = true) or (cow? = true) or (cow-with-calf? = true) [set pregnancy-rate (1 / (1 + coefA * e ^ (- coefB * live-weight))) / 368] ; ...¿¿¿¿¿¿¿¿DUDA????? LO DIVIDE ENTRE 368, POR QUÉ?
-  if random-float 1 < pregnancy-rate [set pregnant? true]
-  if pregnant? = true [
-    set pregnancy-time pregnancy-time + days-per-tick
-    set except-mort-rate 0.3] ; recordemos que la except-mort-rate para las pregnants cows es de 0.3: 30% (= 0.000815) in pregnant cows
-  if pregnancy-time = gestation-period [ hatch-cows 1 [
+                                                                                                                                             ; POSIBLE RESPUESTA: 368 parece que hace alusión a un año (aunque un año tiene 365 días), ya que se dice que la simulación dura 10 años, y en el código original de Alicia pone que 10 años = 3680 days...
+                                                                                                                                             ; ...así que en definitiva, al divir la fórmula entre los días que tiene un año, se calcula el pregnancy rate diario, es decir, la probabilidad de que una vaca del age class "heifer", "cow" o "cow-with-calf" se quede preñada en un día.
+  if random-float 1 < pregnancy-rate [set pregnant? true] ; Por lo tanto, si esta probabilidad diaria es mayor que un número generado al azar entre 0 y 0.99, el agente se convertirá en un agente del age class "pregnant" (i.e., el agente quedará preñado)
+  if pregnant? = true [ ; Si el agente pertenece al age-class "pregnant" (si esto es TRUE)...
+    set pregnancy-time pregnancy-time + days-per-tick ; ...establecemos que el tiempo de embarazo = tiempo de embarazo + days-per-tick
+    set except-mort-rate 0.3] ; y establecemos que la except-mort-rate para los animales del age class "pregnant" sea 0.3.  Recordemos que la except-mort-rate para las pregnants cows es de 0.3: 30% (= 0.000815) in pregnant cows
+  if pregnancy-time = gestation-period [ hatch-cows 1 [ ; Cuando la pregnancy-time = gestation-period, nace un nuevo agente del breed "cows".
+                                                        ; This turtle creates number new turtles. Each new turtle inherits of all its variables, including its location, from its parent. (Exceptions: each new turtle will have a new who number, and it may be of a different breed than its parent if the hatch-<breeds> form is used.). The new turtles then run commands. You can use the commands to give the new turtles different colors, headings, locations, or whatever. (The new turtles are created all at once, then run one at a time, in random order.)
+                                                        ; If the hatch-<breeds> form is used, the new turtles are created as members of the given breed. Otherwise, the new turtles are the same breed as their parent.
     setxy random-pxcor random-pycor
-    become-born-calf] ; la regla para born-calf
-    set pregnant? false
-    set pregnancy-time 0
-    become-cow-with-calf] ; la regla para cow-with-calf
+    become-born-calf] ; la regla para born-calf: se le pide al nuevo agente que ha nacido que se convierta en un age class del tipo "born-calf"
+    set pregnant? false ; se le dice al agente que formaba parte del age class "pregnant" que deje de serlo
+    set pregnancy-time 0 ; y que reinicie el tiempo de embarazo a 0.
+    become-cow-with-calf] ; la regla para cow-with-calf: este agente que acaba de dar la luz a un nuevo agente, se le pide que, además, se convierta en un agente del age class del tipo "cow-with-calf"
 end
 
 to sell-males ; DECISIONAL (I.E., MANAGEMENT) MODEL. POR HACER
