@@ -1,1 +1,1 @@
-# SequiaNasalto NetLogo
+# SequiaBasalto NetLogo
