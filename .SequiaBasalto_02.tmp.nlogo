@@ -214,7 +214,7 @@ to go
   if simulation-time >= 3680 [stop]
   if (model-version = "wild model") or (model-version = "management model") [if not any? cows [stop]]
 
-  if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados. Borrar cuando este todo en orden
 
   ask patches [grow-grass update-grass-height]
 
@@ -228,7 +228,7 @@ to grow-grass ; ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de 
                                                                                                                                    ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                    ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
 
-set grass-height ((item current-season kmax / 1 + ((item current-season kmax - grass-height / grass-height) * e ^ (- r * simulation-time)) * item number-of-season climacoef)) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014
+set grass-height ((item current-season kmax / 1 + ((item current-season kmax - grass-height / grass-height) * e ^ (- r * simulation-time)) * item number-of-season climacoef))
 
 end
 
