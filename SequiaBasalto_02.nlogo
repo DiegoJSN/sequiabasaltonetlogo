@@ -76,8 +76,10 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  weight-gain-lactation; 0.61 Kg / day
                       ; The born calves do not depend on grasslands. We assume that born calves increase their live weight by 0.61 Kg/day. After 6 months, they should reach 150 Kg (the initial weight for weaned calves).
 
-  ;perception (slider); parameter used to define the degree of perception of the animals regarding to the surrounding pastures. Chosen by users
-  ]
+;perception (slider); parameter used to define the degree of perception of the animals regarding to the surrounding pastures. Chosen by users
+]
+
+
 
 breed [cows cow] ;We consider cows as the unique type of livestock (***future-step: to include sheep or goats as other types of livestock, and producers as decision makers).
 
@@ -145,7 +147,7 @@ to setup-globals ; Procedure para darle valores (info) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
-  set DM-cm-ha 180
+  set DM-cm-ha 180 ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
@@ -172,7 +174,8 @@ to setup-grassland ; Procedure para darle valores (info) a los patches-own varia
     ifelse grass-height < 2 ; vamos a pedirles a los parches que tengan una grass-height inferior a 2 cm que se coloreen de verde claro. Esto es interesante porque lo relacionamos con la asunción de que las vacas no pueden comer pastos con altura inferior a 2 cm.
     [set pcolor 37]
     [set pcolor scale-color green grass-height 23 0]
-    set r 0.002]
+    set r 0.002
+  ]
 end
 
 to setup-livestock
@@ -228,7 +231,9 @@ to grow-grass ; ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de 
                                                                                                                                    ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                    ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
 
-set grass-height ((item current-season kmax / 1 + ((item current-season kmax - grass-height / grass-height) * e ^ (- r * simulation-time)) * item number-of-season climacoef)) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014
+set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * 1) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014. Esta fórmula si da la misma "Distribución (%)" que el "Cuadro 3" del paper de Dieguez-Cameroni et al 2012 (pero no da la misma cantidad de "MS acumulada (kg MS/ha)").
+
+;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - initial-grass-height) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * 1) ;Esta es la misma fórmula del excel
 
 end
 
@@ -478,11 +483,11 @@ end
 GRAPHICS-WINDOW
 210
 10
-678
-479
+662
+463
 -1
 -1
-20.0
+19.30435
 1
 10
 1
