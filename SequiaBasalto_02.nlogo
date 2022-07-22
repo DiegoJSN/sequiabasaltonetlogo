@@ -474,6 +474,10 @@ to-report season-report ; To show the name of the season
     report  item current-season current-season-name
 end
 
+;OTRA INFO DE INTERES
+; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
+; export-plot plotname filename ; por ejemplo: export-plot "Dinamica del pasto" "dm_winter.csv"
+
 ;REFERENCES
 ;Dieguez-Cameroni, F.J., et al. 2014. Virtual experiments using a participatory model to explore interactions between climatic variability
 ;and management decisions in extensive systems in the basaltic region of Uruguay. Agricultural Systems 130: 89–104.
@@ -483,10 +487,10 @@ end
 ;in a dairy herd. Veterinary Research 46: 68.
 @#$#@#$#@
 GRAPHICS-WINDOW
-210
-10
-662
-463
+207
+67
+659
+520
 -1
 -1
 19.30435
@@ -574,10 +578,10 @@ NIL
 HORIZONTAL
 
 PLOT
-695
-392
-1216
-737
+1270
+46
+1481
+195
 Average of grass height
 Days
 cm
@@ -805,10 +809,10 @@ OUTPUTS ORIGINALES
 1
 
 PLOT
-693
-13
-1125
-327
+665
+10
+1123
+324
 Dinamica del pasto
 Dia de la estacion
 Acumulacion de DM
@@ -833,24 +837,24 @@ TEXTBOX
 1
 
 MONITOR
-696
-342
-789
-387
+1043
+45
+1123
+90
 DM acumulada
 dm
-17
+2
 1
 11
 
 MONITOR
-697
-744
-777
-789
+1404
+65
+1473
+110
 Average GH
 grass-height-report
-17
+2
 1
 11
 
@@ -870,10 +874,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-1146
-16
-1233
-61
+209
+10
+296
+55
 Season
 season-report
 17
