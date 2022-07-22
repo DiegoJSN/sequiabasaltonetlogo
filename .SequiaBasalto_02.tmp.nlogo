@@ -257,7 +257,7 @@ set live-weight live-weight + live-weight-gain
 
 end
 
-to update-grass-height
+;to update-grass-height
 set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0...
   ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
                   ; como este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
