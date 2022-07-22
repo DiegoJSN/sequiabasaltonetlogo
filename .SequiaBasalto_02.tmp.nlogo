@@ -14,6 +14,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  season-coef ;It affects the live weight gain in relation with the grass quality according to the season, winter = 1; spring = 1.15, summer = 1.05, fall = 1.
              ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain (seasonCoef variable)
 
+ current-season-name ; this variable just converts the numbers "0, 1, 2, 3" of the seasons to text "winter, spring, summer, fall", and this variable ONLY is used in the reporter/procedure "to-report season-report"
 
 ;Time related global variables
 
@@ -136,6 +137,7 @@ end
 to setup-globals ; Procedure para darle valores (info) a las globals variables
   set days-per-tick 1
   set number-of-season 0
+  set current-season-name ["winter" "spring" "summer" "fall"] ;this variable just converts the numbers "0, 1, 2, 3" of the seasons to text "winter, spring, summer, fall",
   set simulation-time 0
   set weaned-calf-age-min 246
   set heifer-age-min 369
@@ -257,7 +259,7 @@ set live-weight live-weight + live-weight-gain
 
 end
 
-;to update-grass-height
+to update-grass-height
 set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0...
   ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
                   ; como este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
@@ -456,24 +458,21 @@ to become-cow-with-calf
   set lactating-time 0
 end
 
-to-report stocking-rate ;Variable to define the relation between the stock of livestock (in terms of animal units) and the grassland area.
+to-report stocking-rate ;Reporter to output the relation between the stock of livestock (in terms of animal units) and the grassland area.
   report sum [animal-units] of cows / count patches
 end
 
-to-report dm ;Variable to define the relation between the stock of livestock (in terms of animal units) and the grassland area.
+to-report dm ; Reporter to output the accumulation of DM
   report DM-cm-ha * mean [grass-height] of patches
 end
 
-to-report grass-height-report ;Variable to define the relation between the stock of livestock (in terms of animal units) and the grassland area.
+to-report grass-height-report ; To report the mean grass-height of the herbage
   report mean [grass-height] of patches
 end
 
-; to calculate-outputs ; en este procedure colocaré los calculos básicos que usaré para replicar las figuras de Dieguez-Cameroni (2012, 2014)
-  ;set DM-kg-ha 25
-  ;set DM-kg-ha DM-cm-ha * mean [grass-height] of patches
-
-
-; end
+to-report season-report ; To show the name of the season
+    report  item current-season current-season-name
+end
 
 ;REFERENCES
 ;Dieguez-Cameroni, F.J., et al. 2014. Virtual experiments using a participatory model to explore interactions between climatic variability
@@ -869,6 +868,17 @@ set-climaCoef
 1
 NIL
 HORIZONTAL
+
+MONITOR
+1146
+16
+1233
+61
+Season
+season-report
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
