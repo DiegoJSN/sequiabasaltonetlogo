@@ -476,8 +476,7 @@ end
 
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
-; export-plot plotname filename ; por ejemplo 1: export-plot "Dinamica del pasto" "dm_winter.csv"
-;                                     ejemplo 2: export-plot "Average of grass height" "gh_winter.csv"
+; export-plot plotname filename ; por ejemplo : export-plot "Dinamica del pasto" "dm_winter.csv"
 
 ;REFERENCES
 ;Dieguez-Cameroni, F.J., et al. 2014. Virtual experiments using a participatory model to explore interactions between climatic variability
