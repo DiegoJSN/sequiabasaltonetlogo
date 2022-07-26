@@ -20,8 +20,8 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
  days-per-tick ; variable to simulate time.
  number-of-season ; to keep track of the number of seasons in 10 years of simulation (40 seasons).
- simulation-time ; variable to keep track of the years of the simulation.
-
+ simulation-time ; variable to keep track of the days of the simulation.
+ year-cnt ; variable to keep track of the years of the simulation.
 
 ;Market prices & economic balance related global variables
 
@@ -139,6 +139,7 @@ to setup-globals ; Procedure para darle valores (info) a las globals variables
   set number-of-season 0
   set current-season-name ["winter" "spring" "summer" "fall"] ;this variable just converts the numbers "0, 1, 2, 3" of the seasons to text "winter, spring, summer, fall", and this variable ONLY is used in the reporter/procedure "to-report season-report"
   set simulation-time 0
+  set year-cnt 0 ; variable to keep track of the years of the simulation.
   set weaned-calf-age-min 246
   set heifer-age-min 369
   set cow-age-min 737
@@ -211,6 +212,7 @@ to go
           [set current-season 0]
         ]
     ]
+    set year-cnt year-cnt + 1 / 4
     reset-ticks
   ]
 
@@ -220,6 +222,9 @@ to go
   if (model-version = "wild model") or (model-version = "management model") [if not any? cows [stop]]
 
   if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 184 [stop]
+  if simulation-time = 276 [stop]
+  if simulation-time = 368 [stop]
 
   ask patches [grow-grass update-grass-height]
 
@@ -229,9 +234,11 @@ to go
 end
 
 to grow-grass ; ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de GH (Primary production (biomass) expressed in centimeters), pero no le veo mucha similitud con la fórmula del paper...
-; set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * item number-of-season climacoef ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+;set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * item number-of-season climacoef ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                    ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                    ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
+
+;set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * set-climacoef  ; formula original de Alicia pero cambiando climacoef. NOTA: da prácticamente lo mismo que la versión "fórmula del excel"
 
 set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014. Esta fórmula si da la misma "Distribución (%)" que el "Cuadro 3" del paper de Dieguez-Cameroni et al 2012 (pero no da la misma cantidad de "MS acumulada (kg MS/ha)").
 
@@ -579,18 +586,18 @@ NIL
 HORIZONTAL
 
 PLOT
-1270
-46
-1481
-195
+665
+332
+1123
+699
 Average of grass height
 Days
 cm
 0.0
-3680.0
+92.0
 0.0
 30.0
-false
+true
 false
 "" ""
 PENS
@@ -815,8 +822,8 @@ PLOT
 1123
 324
 Dinamica del pasto
-Dia de la estacion
-Acumulacion de DM
+Days
+Acumulacion de DM (kg DM / ha)
 0.0
 92.0
 0.0
@@ -840,22 +847,22 @@ TEXTBOX
 MONITOR
 1043
 45
-1123
+1141
 90
 DM acumulada
 dm
-2
+9
 1
 11
 
 MONITOR
-1404
-65
-1473
-110
+1046
+351
+1133
+396
 Average GH
 grass-height-report
-2
+9
 1
 11
 
@@ -882,6 +889,17 @@ MONITOR
 Season
 season-report
 17
+1
+11
+
+MONITOR
+304
+10
+361
+55
+Years
+year-cnt
+2
 1
 11
 
