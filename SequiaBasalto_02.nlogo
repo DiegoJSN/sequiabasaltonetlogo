@@ -240,9 +240,13 @@ to grow-grass ; ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de 
 
 ;set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * set-climacoef  ; formula original de Alicia pero cambiando climacoef. NOTA: da prácticamente lo mismo que la versión "fórmula del excel"
 
-set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014. Esta fórmula si da la misma "Distribución (%)" que el "Cuadro 3" del paper de Dieguez-Cameroni et al 2012 (pero no da la misma cantidad de "MS acumulada (kg MS/ha)").
+;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014. Esta fórmula si da la misma "Distribución (%)" que el "Cuadro 3" del paper de Dieguez-Cameroni et al 2012 (pero no da la misma cantidad de "MS acumulada (kg MS/ha)").
 
-;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - initial-grass-height) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ;Esta es la misma fórmula del excel
+set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; ACTUALIZACION IMPORTANTE: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador)
+
+;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height)) / (grass-height)) * (e ^ (- r * simulation-time)))))) ; Quitamos el "set-climacoef": climacoef afectará al dm
+
+;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ;Esta es la misma fórmula del excel
 
 end
 
@@ -473,6 +477,12 @@ to-report dm ; Reporter to output the accumulation of DM
   report DM-cm-ha * mean [grass-height] of patches
 end
 
+to-report dm-cows ; Reporter to output the accumulation of DM AVAILABLE for the cows
+  report DM-cm-ha * 0.4 * mean [grass-height] of patches ; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%
+                                                         ; (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+end
+
+
 to-report grass-height-report ; To report the mean grass-height of the herbage
   report mean [grass-height] of patches
 end
@@ -586,10 +596,10 @@ NIL
 HORIZONTAL
 
 PLOT
-665
-332
-1123
-699
+666
+339
+1174
+603
 Average of grass height
 Days
 cm
@@ -819,11 +829,11 @@ OUTPUTS ORIGINALES
 PLOT
 665
 10
-1123
-324
-Dinamica del pasto
+1175
+336
+Dinamica del pasto (DM acumulada total)
 Days
-Acumulacion de DM (kg DM / ha)
+Acumulacion de DM (kg/ ha)
 0.0
 92.0
 0.0
@@ -832,7 +842,8 @@ true
 true
 "" ""
 PENS
-"acumulacion" 1.0 0 -16777216 true "" "plot dm"
+"total" 1.0 0 -16777216 true "" "plot dm"
+"disponible" 1.0 0 -2674135 true "" "plot dm-cows"
 
 TEXTBOX
 31
@@ -845,21 +856,21 @@ TEXTBOX
 1
 
 MONITOR
-1043
-45
-1141
-90
-DM acumulada
+1108
+62
+1240
+107
+DM total
 dm
 9
 1
 11
 
 MONITOR
-1046
-351
-1133
-396
+1086
+339
+1173
+384
 Average GH
 grass-height-report
 9
@@ -875,7 +886,7 @@ set-climaCoef
 set-climaCoef
 0.5
 1.5
-1.0
+1.5
 0.5
 1
 NIL
@@ -900,6 +911,17 @@ MONITOR
 Years
 year-cnt
 2
+1
+11
+
+MONITOR
+1108
+108
+1241
+153
+DM dispo (total * 0.4)
+dm-cows
+9
 1
 11
 
