@@ -244,7 +244,7 @@ to grow-grass ; ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de 
 
 ; set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; ACTUALIZACION IMPORTANTE: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
 
-; set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; NUEVA FORMULA PROMETEDORA: básicamente he sustituido la variable "grass-height" por "initial-grass-height": con este cambio se respeta la K maxima que puede alcanzar el pasto en cada estación Y se consigue que la altura inicial del pasto al inicio de la estación afecte a la acumulación de DM como pretendiamos, además de que respetamos la fórmula original que utiliza la "grass height en el tiempo 0". Sin embargo, no me dan los resultados exactos de la Figura 3 de Dieguez-Cameroni et al. 2012: no explican bien en su artículo si los resultados que muestran en esa figura se corresponda a la DM del día 92 de cada estación (supongo que es así), y si fuera así, no coincide la DM acumulada del día 92 de la figura 2/cuadro 3 con la DM acumulada del dia 92 de la figura 3. El único modo de saber a que se deben estas diferencias es preguntando a los autores.
+set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; NUEVA FORMULA PROMETEDORA: básicamente he sustituido la variable "grass-height" por "initial-grass-height": con este cambio se respeta la K maxima que puede alcanzar el pasto en cada estación Y se consigue que la altura inicial del pasto al inicio de la estación afecte a la acumulación de DM como pretendiamos, además de que respetamos la fórmula original que utiliza la "grass height en el tiempo 0". Sin embargo, no me dan los resultados exactos de la Figura 3 de Dieguez-Cameroni et al. 2012: no explican bien en su artículo si los resultados que muestran en esa figura se corresponda a la DM del día 92 de cada estación (supongo que es así), y si fuera así, no coincide la DM acumulada del día 92 de la figura 2/cuadro 3 con la DM acumulada del dia 92 de la figura 3. El único modo de saber a que se deben estas diferencias es preguntando a los autores.
 
 ;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height)) / (grass-height)) * (e ^ (- r * simulation-time)))))) ; Quitamos el "set-climacoef": climacoef afectará al dm
 
@@ -864,7 +864,7 @@ MONITOR
 107
 DM total
 dm
-9
+7
 1
 11
 

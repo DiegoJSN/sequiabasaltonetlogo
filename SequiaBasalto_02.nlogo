@@ -864,7 +864,7 @@ MONITOR
 107
 DM total
 dm
-9
+7
 1
 11
 
@@ -875,7 +875,7 @@ MONITOR
 384
 Average GH
 grass-height-report
-9
+7
 1
 11
 
@@ -923,7 +923,7 @@ MONITOR
 153
 DM dispo (total * 0.4)
 dm-cows
-9
+7
 1
 11
 
