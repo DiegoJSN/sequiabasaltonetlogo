@@ -203,6 +203,24 @@ to setup-livestock
     set age random (cow-age-max - cow-age-min) + cow-age-min ; this is an alternative option: to define randomly the age of the animals between the minimum and the maximum.
     setxy random-pxcor random-pycor
     become-cow ] ; become-cow es un procedure que define la age class "cow" del ciclo de vida del cattle: le estamos diciendo que todas las vacas que se crean en el tiempo 0 de la simulación sean del age class tipo "cow"
+
+       ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
+
+create-cows initial-num-heifers [
+    set shape "cow"
+    set color 35
+    set initial-weight initial-weight-heifer
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+    setxy random-pxcor random-pycor
+    become-heifer ]
+
+
+;;
+
 end
 
 to go
@@ -419,7 +437,7 @@ to become-heifer
   set steer? false
   set cow? false
   set size 0.8
-  set animal-units 0.7
+  set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows
   set min-weight 100
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
@@ -516,6 +534,10 @@ to-report season-report ; To show the name of the season
     report  item current-season current-season-name
 end
 
+to-report grassland-area ; Reporter to output the accumulation of DM
+  report sum [animal-units] of cows / stocking-rate
+end
+
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
 ; export-plot plotname filename ; por ejemplo 1: export-plot "Dinamica del pasto" "dm_winter.csv"
@@ -601,8 +623,8 @@ initial-num-cows
 initial-num-cows
 0
 700
-700.0
-50
+0.0
+5
 1
 cows
 HORIZONTAL
@@ -677,10 +699,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [ age ] of cows"
 
 MONITOR
-1697
-617
-1775
-662
+759
+11
+837
+56
 Time (days)
 simulation-time
 2
@@ -706,21 +728,21 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count cows"
 
 MONITOR
-1699
-670
-1779
-715
+707
+522
+787
+567
 Stoking rate
 stocking-rate
-2
+5
 1
 11
 
 PLOT
-1272
-470
-1689
-744
+1273
+457
+1690
+731
 Age classes population sizes
 Days
 Heads
@@ -766,10 +788,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-1780
-617
-1884
-662
+1784
+618
+1888
+663
 Total DDMC
 sum [DDMC] of cows
 2
@@ -777,10 +799,10 @@ sum [DDMC] of cows
 11
 
 MONITOR
-1700
-720
-1816
-765
+582
+521
+698
+566
 Total number of cows
 count cows
 2
@@ -789,9 +811,9 @@ count cows
 
 MONITOR
 1822
-720
+317
 1886
-765
+362
 Mean LW
 mean [live-weight] of cows
 2
@@ -933,9 +955,9 @@ season-report
 MONITOR
 672
 11
-729
+754
 56
-Years
+Time (years)
 year-cnt
 2
 1
@@ -954,18 +976,44 @@ dm-cows
 
 SLIDER
 19
-262
+248
 191
-295
+281
 initial-num-heifers
 initial-num-heifers
 0
-100
-30.0
+700
+355.0
 5
 1
 NIL
 HORIZONTAL
+
+SLIDER
+18
+283
+190
+316
+initial-weight-heifer
+initial-weight-heifer
+100
+300
+300.0
+5
+1
+NIL
+HORIZONTAL
+
+MONITOR
+799
+522
+865
+567
+Area (ha)
+grassland-area
+2
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
