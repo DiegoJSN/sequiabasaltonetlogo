@@ -832,7 +832,7 @@ MONITOR
 1484
 399
 Mean LW
-mean [live-weight] of cows - initial-weight-heifer
+mean [live-weight] of cows
 2
 1
 11
@@ -999,7 +999,7 @@ SLIDER
 initial-num-heifers
 initial-num-heifers
 0
-700
+1000
 355.0
 5
 1
