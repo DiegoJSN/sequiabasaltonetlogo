@@ -827,11 +827,11 @@ count cows
 11
 
 MONITOR
-1404
-355
-1485
-400
-Average LW
+1420
+354
+1484
+399
+Mean LW
 mean [live-weight] of cows
 2
 1
@@ -1061,11 +1061,11 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows - initial-weight-heifer"
 
 MONITOR
-1382
+1429
 509
-1486
+1518
 554
-Average daily LWG
+Mean daily LWG
 mean [live-weight] of cows - initial-weight-heifer
 2
 1
