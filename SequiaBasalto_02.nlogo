@@ -756,10 +756,10 @@ stocking-rate
 11
 
 PLOT
-1669
+1535
 196
 2086
-470
+654
 Age classes population sizes
 Days
 Heads
@@ -833,7 +833,7 @@ MONITOR
 400
 Average LW
 mean [live-weight] of cows
-2
+3
 1
 11
 
@@ -1040,7 +1040,7 @@ CHOOSER
 gh-version
 gh-version
 "alicia" "grass-height" "initial-grass-height"
-1
+2
 
 PLOT
 1041
@@ -1053,7 +1053,7 @@ Kg
 0.0
 92.0
 0.0
-600.0
+50.0
 true
 false
 "" ""
@@ -1067,7 +1067,7 @@ MONITOR
 554
 Average daily LWG
 mean [live-weight] of cows - initial-weight-heifer
-2
+3
 1
 11
 
