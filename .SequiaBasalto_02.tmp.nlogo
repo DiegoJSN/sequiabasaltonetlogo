@@ -115,7 +115,7 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
   live-weight-gain ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain
   DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note: 1 cm of grass/ha = 180 Kg of dry matter (Units: KgDM/animal*day).
        ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc
-  metabolic-body-size ;LW ^ (3/4)
+  metabolic-body-size ;metabolic body size (MBS) = LW^(3/4)
                       ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc (LW^(3/4) = MBS variable)
   mortality-rate
   natural-mortality-rate ;annual natural mortality = 2% (in a day = 0.000054).
@@ -153,11 +153,11 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set xi 132
   set grass-energy 1.8
   set DM-cm-ha 180 ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter
-  set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). en este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
+  set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
   set current-season initial-season ; initial-season is the slider in Interface (0 = winter, 1 = spring, 2 = summer, 3 = fall). The initial season is chosen by the user.
-  set climacoef [1.53 1.31 1.23	1.48 1.29	0.87 0.96	1.26 1.17	0.71 0.86	1.44 1.34	0.86 1.06 1.19 0.72	0.80 0.93	0.98 0.87	1.17 1.02	0.83 0.09	1.32 0.87	1.08 1.42	0.75 1.00	0.65 0.50	1.19 1.07	0.62 0.77 1.05 1.18 1.05] ; variable con 40 valores. Esto es así porque el tiempo que vamos a simular son 10 años, y como cada año tiene 4 estaciones, y como el ClimaCoef varía cada año pues tenemos que 10 años * 4 estaciones = 40 estaciones en total = 40 valores distintos para climaCoef (recordemos que estos 40 valores son datos históricos)
+  set climacoef [1.53 1.31 1.23	1.48 1.29	0.87 0.96	1.26 1.17	0.71 0.86	1.44 1.34	0.86 1.06 1.19 0.72	0.80 0.93	0.98 0.87	1.17 1.02	0.83 0.09	1.32 0.87	1.08 1.42	0.75 1.00	0.65 0.50	1.19 1.07	0.62 0.77 1.05 1.18 1.05] ; variable con 40 valores. Esto es así porque el tiempo que vamos a simular son 10 años. Como cada año tiene 4 estaciones, y como el ClimaCoef varía cada año pues tenemos que: 10 años * 4 estaciones = 40 estaciones en total = 40 valores distintos para climaCoef (recordemos que estos 40 valores son datos históricos)
   set exploitation-costs [5.76 5.76	5.76 5.76	6.25 6.25	6.25 6.25	6.80 6.80	6.80 6.80 5.50 5.50	5.50 5.50	6.63 6.63	6.63 6.63	8.53 8.53	8.53 8.53	11.03	11.03	11.03	11.03	12.50	12.50	12.50	12.50	15.88	15.88	15.88	15.88	16.15	16.15	16.15	16.15] ; 40 valores: misma lógica que antes
   set grazing-prices [4	10 16	8	9	19 20	12 12	22 22	9	8	19 19	13 21	20 21	17 18	13 19	20 34	10 22	16 7 21	20 24	26 12	19 24	20 15	36 36] ; 40 valores: misma lógica que antes
   set supplement-prices [0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.09	0.09 0.08	0.08 0.1 0.1 0.11	0.13 0.1 0.09	0.09 0.1 0.1 0.1 0.1 0.12 0.13 0.13 0.14 0.15 0.15 0.16	0.19 0.21	0.23 0.15	0.15 0.15	0.15 0.15] ; 40 valores: misma lógica que antes
@@ -178,7 +178,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
 
 end
 
-to setup-grassland ; Procedure para darle valores (info) a los patches-own variables
+to setup-grassland ; Procedure para darle valores (info) a los "patches-own" variables
   ask patches [
     set grass-height initial-grass-height ; initial-grass height is the slider in Interface (from a minimum of 3 cm to a maximum of 7 cm)
     set GH-consumed 0 ; establecemos que GH-consumed = 0 en el momento de empezar la simulación (i.e., tick 0 o tiempo 0)
@@ -362,8 +362,8 @@ set age age + days-per-tick
   if age = weaned-calf-age-min [become-weaned-calf] ; aquí se describe la regla para weaned-calf: si el age = weaned-calf-age-min, el animal pasa a la age class "weaned-calf"
   if age = heifer-age-min [ ; si el age = heifer-age-min...
     ifelse random-float 1 < 0.5 [ ; ...hay un 50% de probabilidades de que el animal se convierta en el age class "heifer" o "steer".
-      become-heifer][ ; la regla para heifer ; Si un número generado al azar entre 0 y 0.99 (random-float 1) es menor que 0.5, el animal se convertira en "heifer"
-      become-steer]] ; la regla para steer; Si el número es mayor que 0.5, se convertirá en "steer"
+      become-heifer][ ; la regla para heifer: Si un número generado al azar entre 0 y 0.99 (random-float 1) es menor que 0.5, el animal se convertira en "heifer"
+      become-steer]] ; la regla para steer: Si el número es mayor que 0.5, se convertirá en "steer"
   if (heifer? = true) and (age = cow-age-min) and (live-weight >= 280) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= 280, el animal pasa al age class de "cow"
 
   if cow-with-calf? = true [set lactating-time lactating-time + days-per-tick] ; si el agente es un "cow-with-calf" (si esto es TRUE), se establece (set) que el lactating-time = lactating-time + days-per-tick
@@ -372,7 +372,7 @@ end
 
 to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rate y las reglas para convertirse en age class "Pregnant".  LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER PERO...
   if (heifer? = true) or (cow? = true) or (cow-with-calf? = true) [set pregnancy-rate (1 / (1 + coefA * e ^ (- coefB * live-weight))) / 368] ; ...¿¿¿¿¿¿¿¿DUDA????? LO DIVIDE ENTRE 368, POR QUÉ?
-                                                                                                                                             ; POSIBLE RESPUESTA: 368 parece que hace alusión a un año (aunque un año tiene 365 días), ya que se dice que la simulación dura 10 años, y en el código original de Alicia pone que 10 años = 3680 days...
+                                                                                                                                             ; POSIBLE RESPUESTA: 368 parece que hace alusión a un año (aunque un año real tiene 365 días, en esta simulacion 1 año son 368 días, ya que 1 año = 4 estaciones, y 1 estacion = 92 días. Por tanto, 92 días * 4 estaciones = 368 días), ya que se dice que la simulación dura 10 años, y en el código original de Alicia pone que 10 años = 3680 days...
                                                                                                                                              ; ...así que en definitiva, al divir la fórmula entre los días que tiene un año, se calcula el pregnancy rate diario, es decir, la probabilidad de que una vaca del age class "heifer", "cow" o "cow-with-calf" se quede preñada en un día.
   if random-float 1 < pregnancy-rate [set pregnant? true] ; Por lo tanto, si esta probabilidad diaria es mayor que un número generado al azar entre 0 y 0.99, el agente se convertirá en un agente del age class "pregnant" (i.e., el agente quedará preñado)
   if pregnant? = true [ ; Si el agente pertenece al age-class "pregnant" (si esto es TRUE)...
@@ -453,7 +453,7 @@ to become-heifer
   set steer? false
   set cow? false
   set size 0.8
-  set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows
+  set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
   set min-weight 100
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
@@ -827,11 +827,11 @@ count cows
 11
 
 MONITOR
-1420
-354
-1484
-399
-Mean LW
+1404
+355
+1485
+400
+Average LW
 mean [live-weight] of cows
 2
 1
@@ -1061,11 +1061,11 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows - initial-weight-heifer"
 
 MONITOR
-1429
+1382
 509
-1518
+1486
 554
-Mean daily LWG
+Average daily LWG
 mean [live-weight] of cows - initial-weight-heifer
 2
 1
