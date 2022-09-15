@@ -554,6 +554,12 @@ to-report grassland-area ; Reporter to output the accumulation of DM
   report sum [animal-units] of cows / stocking-rate
 end
 
+to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
+ let totDDMC sum [DDMC] of cows
+ report totDDMC / (DM-cm-ha * mean [grass-height] of patches)
+end
+
+
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
 ; export-plot plotname filename ; por ejemplo 1: export-plot "Dinamica del pasto" "dm_winter.csv"
@@ -598,10 +604,10 @@ days
 30.0
 
 BUTTON
-32
-71
-96
-104
+27
+72
+91
+105
 Setup
 Setup
 NIL
@@ -615,10 +621,10 @@ NIL
 1
 
 BUTTON
-109
-71
-172
 104
+72
+167
+105
 Go
 Go
 T
@@ -662,11 +668,11 @@ NIL
 HORIZONTAL
 
 PLOT
-1040
-182
-1484
-350
-Average of grass height
+1041
+10
+1335
+152
+Average of grass height (GH)                                             
 Days
 cm
 0.0
@@ -680,11 +686,11 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [grass-height] of patches"
 
 PLOT
-1040
-354
-1485
-504
-Average of live-weight
+1041
+152
+1334
+295
+Average of live-weight (LW)                                             
 Days
 Kg
 0.0
@@ -698,9 +704,9 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
 
 PLOT
-2091
+2648
 197
-2291
+2848
 347
 Mean age of cows
 Days
@@ -727,9 +733,9 @@ simulation-time
 11
 
 PLOT
-1883
+2440
 40
-2083
+2640
 190
 Total number of cows
 Days
@@ -745,10 +751,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count cows"
 
 MONITOR
-707
-522
-787
-567
+775
+521
+855
+566
 Stoking rate
 stocking-rate
 5
@@ -756,10 +762,10 @@ stocking-rate
 11
 
 PLOT
-1535
-196
-2086
-654
+1759
+10
+2310
+468
 Age classes population sizes
 Days
 Heads
@@ -779,9 +785,9 @@ PENS
 "Cow-with-calf" 1.0 0 -5825686 true "" "plot count cows with [cow-with-calf?]"
 
 MONITOR
-2182
+2739
 409
-2282
+2839
 454
 Mean DDMC
 mean [DDMC] of cows
@@ -805,9 +811,9 @@ NIL
 HORIZONTAL
 
 MONITOR
-2180
+2737
 357
-2284
+2841
 402
 Total DDMC
 sum [DDMC] of cows
@@ -827,10 +833,10 @@ count cows
 11
 
 MONITOR
-1404
-355
-1485
-400
+1253
+153
+1334
+198
 Average LW
 mean [live-weight] of cows
 3
@@ -853,10 +859,10 @@ cm
 HORIZONTAL
 
 CHOOSER
-33
-19
-189
-64
+28
+20
+184
+65
 model-version
 model-version
 "grass model" "wild model" "management model"
@@ -883,9 +889,9 @@ management-strategy
 0
 
 TEXTBOX
-1903
+2460
 10
-2127
+2684
 48
 OUTPUTS ORIGINALES
 15
@@ -893,10 +899,10 @@ OUTPUTS ORIGINALES
 1
 
 PLOT
-1040
-11
-1484
-178
+1333
+10
+1627
+152
 Dinamica del pasto
 Days
 Acumulacion de DM (kg/ ha)
@@ -922,10 +928,10 @@ TEXTBOX
 1
 
 MONITOR
-1419
-62
-1551
-107
+1582
+64
+1687
+109
 DM total
 dm
 7
@@ -933,10 +939,10 @@ dm
 11
 
 MONITOR
-1396
-182
-1483
-227
+1247
+10
+1334
+55
 Average GH
 grass-height-report
 7
@@ -981,11 +987,11 @@ year-cnt
 11
 
 MONITOR
-1419
+1582
 108
-1552
+1687
 153
-DM dispo (total * 0.4)
+DM disp (total/4)
 dm-cows
 7
 1
@@ -1022,10 +1028,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-799
-522
-865
-567
+704
+521
+770
+566
 Area (ha)
 grassland-area
 2
@@ -1033,21 +1039,21 @@ grassland-area
 11
 
 CHOOSER
-227
-20
-377
-65
+222
+21
+372
+66
 gh-version
 gh-version
 "alicia" "grass-height" "initial-grass-height"
 2
 
 PLOT
-1041
-509
-1486
-659
-Average of daily live-weigh-gain
+1334
+152
+1628
+294
+Average of daily live-weight-gain (LWG)                                             
 Days
 Kg
 0.0
@@ -1061,13 +1067,64 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows - initial-weight-heifer"
 
 MONITOR
-1382
-509
-1486
-554
+1582
+151
+1687
+196
 Average daily LWG
 mean [live-weight] of cows - initial-weight-heifer
 3
+1
+11
+
+PLOT
+1042
+299
+1336
+441
+Crop efficiency (CE)                                                   
+Days
+Crop efficiency (%)
+0.0
+92.0
+0.0
+0.0
+true
+false
+"" ""
+PENS
+"CE" 1.0 0 -16777216 true "" "plot crop-efficiency"
+
+MONITOR
+1240
+299
+1336
+344
+CE
+crop-efficiency
+7
+1
+11
+
+MONITOR
+1042
+442
+1122
+487
+totDDMC
+sum [DDMC] of cows
+7
+1
+11
+
+MONITOR
+1125
+442
+1218
+487
+DM total
+dm
+7
 1
 11
 
