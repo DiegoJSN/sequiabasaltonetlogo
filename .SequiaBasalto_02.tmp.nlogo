@@ -762,10 +762,10 @@ stocking-rate
 11
 
 PLOT
-1439
-296
-1995
-754
+1441
+304
+1992
+762
 Age classes population sizes
 Days
 Heads
@@ -786,9 +786,9 @@ PENS
 
 MONITOR
 1335
-391
+388
 1439
-436
+433
 Mean DDMC
 mean [DDMC] of cows
 7
@@ -930,7 +930,7 @@ dm
 MONITOR
 1334
 10
-1440
+1439
 55
 Average GH
 grass-height-report
@@ -1086,9 +1086,9 @@ PENS
 
 MONITOR
 1335
-299
+296
 1439
-344
+341
 CE
 crop-efficiency
 7
@@ -1097,9 +1097,9 @@ crop-efficiency
 
 MONITOR
 1335
-345
-1439
-390
+342
+1438
+387
 Total DDMC
 sum [DDMC] of cows
 7
