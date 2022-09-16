@@ -555,8 +555,12 @@ to-report grassland-area ; Reporter to output the accumulation of DM
 end
 
 to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
- let totDDMC sum [DDMC] of cows
- report totDDMC / (DM-cm-ha * mean [grass-height] of patches)
+ let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
+ report totDDMC / (DM-cm-ha * mean [grass-height] of patches) ; (DM-cm-ha * mean [grass-height] of patches) = DM offered
+
+ ;; OTRA ALTERNATIVA PARA CALCULAR EL CROP-EFFICIENCY;;
+  ;let totDDMC DM-cm-ha * sum [GH-consumed] of patches ; El "DM consumed" se puede calcular de otra manera: sumamos los cm de hierba que han perdido los patches como consecuencia de la alimentación de los animales. Como GH-consumed está en cm, lo multiplicamos por el DM-cm-ha para obtener la DM consumed (que se expresa en Kg/ha)
+  ;report totDDMC / (DM-cm-ha * mean [grass-height] of patches)
 end
 
 
@@ -1111,7 +1115,7 @@ PLOT
 570
 1067
 737
-stocking rate
+Stocking rate
 Days
 AU/ha
 0.0

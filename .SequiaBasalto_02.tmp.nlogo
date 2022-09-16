@@ -555,8 +555,12 @@ to-report grassland-area ; Reporter to output the accumulation of DM
 end
 
 to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
- let totDDMC sum [DDMC] of cows
- report totDDMC / (DM-cm-ha * mean [grass-height] of patches)
+ let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
+ report totDDMC / (DM-cm-ha * mean [grass-height] of patches) ; (DM-cm-ha * mean [grass-height] of patches) = DM offered
+
+ ;; OTRA ALTERNATIVA PARA CALCULAR EL CROP-EFFICIENCY;;
+  ;let totDDMC DM-cm-ha * sum [GH-consumed] of patches ; El "DM consumed" se puede calcular de otra manera: sumamos los cm de hierba que han perdido los patches como consecuencia de la alimentación de los animales. Como GH-consumed está en cm, lo multiplicamos por el DM-cm-ha para obtener la DM consumed (que se expresa en Kg/ha)
+  ;report totDDMC / (DM-cm-ha * mean [grass-height] of patches)
 end
 
 
@@ -762,10 +766,10 @@ stocking-rate
 11
 
 PLOT
-1441
-304
-1992
-762
+1439
+296
+1995
+754
 Age classes population sizes
 Days
 Heads
@@ -786,9 +790,9 @@ PENS
 
 MONITOR
 1335
-388
+391
 1439
-433
+436
 Mean DDMC
 mean [DDMC] of cows
 7
@@ -930,7 +934,7 @@ dm
 MONITOR
 1334
 10
-1439
+1440
 55
 Average GH
 grass-height-report
@@ -1086,9 +1090,9 @@ PENS
 
 MONITOR
 1335
-296
+299
 1439
-341
+344
 CE
 crop-efficiency
 7
@@ -1097,9 +1101,9 @@ crop-efficiency
 
 MONITOR
 1335
-342
-1438
-387
+345
+1439
+390
 Total DDMC
 sum [DDMC] of cows
 7
@@ -1111,7 +1115,7 @@ PLOT
 570
 1067
 737
-stocking rate
+Stocking rate
 Days
 AU/ha
 0.0
@@ -1123,6 +1127,17 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
+
+MONITOR
+1151
+493
+1236
+538
+GH consumed
+DM-cm-ha * sum [GH-consumed] of patches
+7
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
