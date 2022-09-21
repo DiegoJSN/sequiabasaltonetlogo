@@ -113,7 +113,7 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
   min-weight ;parameter to define the critical weight which below the animal can die by forage crisis. Cow= 180 Kg, weaned-calf= 60 Kg, Steer= 100 Kg, Heifer= 100 Kg.
   live-weight ;variable that defines the state of the animals in terms of live weight.
   live-weight-gain ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain
-  DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note: 1 cm of grass/ha = 180 Kg of dry matter (Units: KgDM/animal*day).
+  DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note: 1 cm of grass/ha = 180 Kg of dry matter (Units: Kg/animal/day).
        ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc
   metabolic-body-size ;metabolic body size (MBS) = LW^(3/4)
                       ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc (LW^(3/4) = MBS variable)
@@ -246,7 +246,7 @@ to go
 
   set simulation-time simulation-time + days-per-tick
 
-  if simulation-time >= 3680 [stop]
+  ;if simulation-time >= 3680 [stop]
   if (model-version = "wild model") or (model-version = "management model") [if not any? cows [stop]]
 
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
@@ -301,7 +301,6 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 
 
 to eat-grass
@@ -542,7 +541,7 @@ to-report dm ; Reporter to output the accumulation of DM
 end
 
 to-report dm-cows ; Reporter to output the accumulation of DM AVAILABLE for the cows
-  report DM-cm-ha * 0.4 * mean [grass-height] of patches ; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%
+  report DM-cm-ha * mean [grass-height] of patches * 0.4 ; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%
                                                          ; (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
 end
 
@@ -556,11 +555,11 @@ end
 
 to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
  let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
- report totDDMC / (DM-cm-ha * mean [grass-height] of patches) ; (DM-cm-ha * mean [grass-height] of patches) = DM offered
+ report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
 
  ;; OTRA ALTERNATIVA PARA CALCULAR EL CROP-EFFICIENCY;;
   ;let totDDMC DM-cm-ha * sum [GH-consumed] of patches ; El "DM consumed" se puede calcular de otra manera: sumamos los cm de hierba que han perdido los patches como consecuencia de la alimentación de los animales. Como GH-consumed está en cm, lo multiplicamos por el DM-cm-ha para obtener la DM consumed (que se expresa en Kg/ha)
-  ;report totDDMC / (DM-cm-ha * mean [grass-height] of patches)
+  ;report totDDMC / (DM-cm-ha * sum [grass-height] of patches)
 end
 
 
@@ -581,10 +580,10 @@ end
 ;in a dairy herd. Veterinary Research 46: 68.
 @#$#@#$#@
 GRAPHICS-WINDOW
-580
-61
-1032
-514
+387
+70
+839
+523
 -1
 -1
 19.30435
@@ -642,10 +641,10 @@ NIL
 1
 
 SLIDER
-14
-456
-185
-489
+17
+333
+154
+366
 initial-num-cows
 initial-num-cows
 0
@@ -659,7 +658,7 @@ HORIZONTAL
 SLIDER
 26
 115
-198
+124
 148
 initial-season
 initial-season
@@ -672,10 +671,10 @@ NIL
 HORIZONTAL
 
 PLOT
-1041
-10
-1335
-152
+848
+19
+1142
+161
 Average of grass-height (GH)
 Days
 cm
@@ -690,13 +689,13 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [grass-height] of patches"
 
 PLOT
-1042
-152
-1335
-295
+848
+160
+1141
+303
 Average of live-weight (LW)
 Days
-Kg
+kg
 0.0
 92.0
 0.0
@@ -708,10 +707,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
 
 PLOT
-2446
-70
-2646
-220
+2253
+79
+2453
+229
 Mean age of cows
 Days
 age (days)
@@ -726,10 +725,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [ age ] of cows"
 
 MONITOR
-759
-11
-837
-56
+566
+20
+644
+65
 Time (days)
 simulation-time
 2
@@ -737,10 +736,10 @@ simulation-time
 11
 
 PLOT
-583
-571
-824
-737
+390
+580
+631
+746
 Total number of cows
 Days
 Heads
@@ -755,10 +754,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count cows"
 
 MONITOR
-775
-521
-855
-566
+582
+530
+662
+575
 Stoking rate
 stocking-rate
 7
@@ -766,10 +765,10 @@ stocking-rate
 11
 
 PLOT
-1439
-296
-1995
-754
+1292
+307
+1848
+765
 Age classes population sizes
 Days
 Heads
@@ -789,21 +788,21 @@ PENS
 "Cow-with-calf" 1.0 0 -5825686 true "" "plot count cows with [cow-with-calf?]"
 
 MONITOR
-1335
+1140
 391
-1439
+1288
 436
-Mean DDMC
+Mean DDMC (kg/animal/day)
 mean [DDMC] of cows
 7
 1
 11
 
 SLIDER
-14
-495
-186
-528
+16
+372
+153
+405
 perception
 perception
 0
@@ -815,10 +814,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-582
-521
-698
-566
+389
+530
+505
+575
 Total number of cows
 count cows
 7
@@ -826,20 +825,20 @@ count cows
 11
 
 MONITOR
-1336
-171
-1441
-216
-Average LW
+1084
+161
+1179
+206
+Average LW (kg)
 mean [live-weight] of cows
 7
 1
 11
 
 SLIDER
-382
+241
 115
-554
+379
 148
 initial-grass-height
 initial-grass-height
@@ -854,7 +853,7 @@ HORIZONTAL
 CHOOSER
 28
 20
-184
+167
 65
 model-version
 model-version
@@ -882,23 +881,23 @@ management-strategy
 0
 
 TEXTBOX
-2460
-10
-2684
-48
+2267
+19
+2491
+57
 OUTPUTS ORIGINALES
 15
 0.0
 1
 
 PLOT
-1440
-10
-1734
-152
+1178
+19
+1472
+161
 Acummulation of dry-matter (DM)
 Days
-Kg/ ha
+kg/ ha
 0.0
 92.0
 0.0
@@ -921,31 +920,31 @@ TEXTBOX
 1
 
 MONITOR
-1335
-57
-1440
-102
-Total DM
+1473
+19
+1610
+64
+Total DM (kg/ha)
 dm
 7
 1
 11
 
 MONITOR
-1334
-10
-1440
-55
-Average GH
+1086
+19
+1179
+64
+Average GH (cm)
 grass-height-report
 7
 1
 11
 
 SLIDER
-204
+130
 115
-376
+237
 148
 set-climaCoef
 set-climaCoef
@@ -958,10 +957,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-578
-11
-665
-56
+385
+20
+472
+65
 Season
 season-report
 17
@@ -969,10 +968,10 @@ season-report
 11
 
 MONITOR
-672
-11
-754
-56
+479
+20
+561
+65
 Time (years)
 year-cnt
 2
@@ -980,11 +979,11 @@ year-cnt
 11
 
 MONITOR
-1336
-103
-1441
-148
-Total DM * 0.4
+1610
+19
+1758
+64
+Total DM * 0.4 (kg/ha)
 dm-cows
 7
 1
@@ -993,7 +992,7 @@ dm-cows
 SLIDER
 19
 248
-191
+151
 281
 initial-num-heifers
 initial-num-heifers
@@ -1008,7 +1007,7 @@ HORIZONTAL
 SLIDER
 18
 283
-190
+151
 316
 initial-weight-heifer
 initial-weight-heifer
@@ -1021,10 +1020,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-704
-521
-770
-566
+511
+530
+577
+575
 Area (ha)
 grassland-area
 7
@@ -1032,9 +1031,9 @@ grassland-area
 11
 
 CHOOSER
-222
+174
 21
-372
+315
 66
 gh-version
 gh-version
@@ -1042,13 +1041,13 @@ gh-version
 2
 
 PLOT
-1440
-152
-1734
-294
+1179
+161
+1473
+303
 Average of daily live-weight-gain (LWG)
 Days
-Kg
+kg
 0.0
 92.0
 0.0
@@ -1060,21 +1059,21 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows - initial-weight-heifer"
 
 MONITOR
-1336
-216
-1441
-261
-Average daily LWG
+1450
+161
+1576
+206
+Average daily LWG (kg)
 mean [live-weight] of cows - initial-weight-heifer
 7
 1
 11
 
 PLOT
-1042
-296
-1335
-438
+848
+301
+1141
+443
 Crop-efficiency (CE)
 Days
 %
@@ -1089,32 +1088,32 @@ PENS
 "CE" 1.0 0 -16777216 true "" "plot crop-efficiency"
 
 MONITOR
-1335
-299
-1439
-344
-CE
+1141
+302
+1288
+347
+CE (%)
 crop-efficiency
 7
 1
 11
 
 MONITOR
-1335
-345
-1439
-390
-Total DDMC
+937
+621
+1087
+666
+Total DDMC (kg/head/day)
 sum [DDMC] of cows
-7
+0
 1
 11
 
 PLOT
-826
-570
-1067
-737
+633
+580
+874
+747
 Stocking rate
 Days
 AU/ha
@@ -1127,6 +1126,83 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
+
+MONITOR
+1091
+620
+1232
+665
+sum Total DM (kg)
+DM-cm-ha * sum [grass-height] of patches
+0
+1
+11
+
+MONITOR
+1472
+64
+1611
+109
+Daily Total DM (kg/ha/day)
+dm / 92
+7
+1
+11
+
+MONITOR
+1611
+64
+1758
+109
+Daily Total DM * 0.4 (kg/ha)
+dm-cows / 92
+7
+1
+11
+
+MONITOR
+1141
+346
+1288
+391
+Total DDMC (kg/head/day)
+sum [DDMC] of cows
+7
+1
+11
+
+MONITOR
+1090
+524
+1231
+569
+Daily Total DM (kg/ha/day)
+dm / 92
+0
+1
+11
+
+MONITOR
+1090
+572
+1231
+617
+Total DM (kg/ha)
+dm
+0
+1
+11
+
+MONITOR
+937
+667
+1087
+712
+Mean DDMC (kg/animal/day)
+mean [DDMC] of cows
+0
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
