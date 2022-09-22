@@ -26,7 +26,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
  ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
  year-cnt ; variable to keep track of the years of the simulation.
-;;;
+ ;;;
 
 ;Market prices & economic balance related global variables
 
@@ -52,11 +52,15 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  ;initial-grass-height (slider); The initial grass height is chosen by users.
  kmax  ;Paramater: maximum carrying capacity (maximum grass height), it varies according to the season, winter= 7.4 cm, spring= 22.2 cm, summer= 15.6 cm, fall= 11.1 cm.
        ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (K variable)
- DM-cm-ha ;Parameter used to calculate the grass-height consumed from the dry matter consumed = 180 Kg of DM/ cm*Ha.
+ DM-cm-ha ;Parameter used to calculate the grass-height consumed from the dry matter consumed = 180 Kg of DM/cm/ha.
          ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc
  grass-energy ;Parameter: metabolizable energy per Kg of dry matter = 1.8 Mcal/Kg of DM.
          ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc (grass-energy variable)
  DM-kg-ha
+
+ ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
+ DMGR ; Dry Matter Growth Rate (units: kgDM/ha/day)
+ ;;;
 
 ;Livestock related global variables
 
@@ -152,7 +156,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
-  set DM-cm-ha 180 ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter
+  set DM-cm-ha (180 / 92) * 0.4 ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
@@ -217,9 +221,7 @@ create-cows initial-num-heifers [
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
     become-heifer ]
-
-
-;;
+       ;;;
 
 end
 
@@ -256,11 +258,15 @@ to go
   if simulation-time = 276 [stop]
   if simulation-time = 368 [stop]
 
+  if simulation-time = 3404 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 3496 [stop]
+  if simulation-time = 3588 [stop]
+  if simulation-time = 3680 [stop]
+
   ; ask patches [grow-grass update-grass-height] ; Linea de codigo para la version final (solo tendrá que haber una sola versión de la formula "grass-height"
   if (gh-version = "alicia") [ask patches [grow-grass-alicia update-grass-height]] ; el modelo usara la version de la formula original de alicia
   if (gh-version = "grass-height") [ask patches [grow-grass update-grass-height]] ; el modelo usara la version de la formula con "grass-height"
   if (gh-version = "initial-grass-height") [ask patches [grow-grass2 update-grass-height]] ; el modelo usara la version de la formula con "initial-grass-height"
-
    ;;;
 
   if (model-version = "wild model") or (model-version = "management model") [ask cows [eat-grass move grow-livestock reproduce]]
@@ -326,12 +332,15 @@ set live-weight live-weight + live-weight-gain
 
 end
 
+
+
+
 to update-grass-height
 set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
   ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
                   ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
     let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
-    set GH-consumed totDDMC / DM-cm-ha] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
+    set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
   if grass-height < 0 [set grass-height 0] ; to avoid negative values.
@@ -339,6 +348,8 @@ set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
      set pcolor 37][
      set pcolor scale-color green grass-height 23 0]
 end
+
+
 
 to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
   if grass-height < 5 [
@@ -526,48 +537,49 @@ to become-cow-with-calf
   set lactating-time 0
 end
 
-to-report stocking-rate ;Reporter to output the relation between the stock of livestock (in terms of animal units) and the grassland area.
-  report sum [animal-units] of cows / count patches
-end
+;  to-report stocking-rate ;Reporter to output the relation between the stock of livestock (in terms of animal units) and the grassland area.
+;  report sum [animal-units] of cows / count patches
+;end
 
-to-report grass-height-report ; To report the mean grass-height of the herbage
-  report mean [grass-height] of patches
-end
+;to-report grass-height-report ; To report the mean grass-height of the herbage
+;  report mean [grass-height] of patches
+;end
 
  ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
-
-to-report dm ; Reporter to output the accumulation of DM
-  report DM-cm-ha * mean [grass-height] of patches
-end
-
-to-report dm-cows ; Reporter to output the accumulation of DM AVAILABLE for the cows
-  report DM-cm-ha * mean [grass-height] of patches * 0.4 ; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%
-                                                         ; (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
-end
 
 to-report season-report ; To show the name of the season
     report  item current-season current-season-name
 end
 
-to-report grassland-area ; Reporter to output the accumulation of DM
-  report sum [animal-units] of cows / stocking-rate
-end
+; to-report dm ; Reporter to output the accumulation of DM
+;  report DM-cm-ha * mean [grass-height] of patches
+;end
 
-to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
- let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
- report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
+; to-report dm-cows ; Reporter to output the accumulation of DM AVAILABLE for the cows
+;  report DM-cm-ha * mean [grass-height] of patches * 0.4 ; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%
+                                                         ; (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+;end
+
+; to-report grassland-area ;
+;  report sum [animal-units] of cows / stocking-rate
+;end
+
+; to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
+ ; let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
+ ; report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
 
  ;; OTRA ALTERNATIVA PARA CALCULAR EL CROP-EFFICIENCY;;
   ;let totDDMC DM-cm-ha * sum [GH-consumed] of patches ; El "DM consumed" se puede calcular de otra manera: sumamos los cm de hierba que han perdido los patches como consecuencia de la alimentación de los animales. Como GH-consumed está en cm, lo multiplicamos por el DM-cm-ha para obtener la DM consumed (que se expresa en Kg/ha)
   ;report totDDMC / (DM-cm-ha * sum [grass-height] of patches)
-end
-
+; end
 
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
 ; export-plot plotname filename ; por ejemplo 1: export-plot "Dinamica del pasto" "dm_winter.csv"
 ;                                     ejemplo 2: export-plot "Average of grass height" "gh_winter.csv"
 ;                                     ejemplo 3: export-plot "Average of live-weight" "047_1_lw_winter.csv"
+
+
 
 ;;;
 
@@ -681,7 +693,7 @@ cm
 0.0
 92.0
 0.0
-30.0
+0.0
 true
 false
 "" ""
@@ -699,7 +711,7 @@ kg
 0.0
 92.0
 0.0
-600.0
+0.0
 true
 false
 "" ""
@@ -759,16 +771,16 @@ MONITOR
 662
 575
 Stoking rate
-stocking-rate
+sum [animal-units] of cows / count patches; stocking-rate: Reporter to output the relation between the stock of livestock (in terms of animal units) and the grassland area (num of patches, 1 patch = 1 ha).
 7
 1
 11
 
 PLOT
-1292
-307
-1848
-765
+1468
+316
+2024
+774
 Age classes population sizes
 Days
 Heads
@@ -893,21 +905,21 @@ OUTPUTS ORIGINALES
 PLOT
 1178
 19
-1472
+1513
 161
-Acummulation of dry-matter (DM)
+Acummulation of dry-matter per ha (DM)
 Days
-kg/ ha
+kg/ha
 0.0
 92.0
 0.0
-2500.0
+0.0
 true
 true
 "" ""
 PENS
-"Total DM" 1.0 0 -16777216 true "" "plot dm"
-"DM * 0.4" 1.0 0 -2674135 true "" "plot dm-cows"
+"Total DM" 1.0 0 -16777216 true "" "plot DM-cm-ha * mean [grass-height] of patches"
+"DM * 0.4" 1.0 0 -2674135 true "" "plot DM-cm-ha * mean [grass-height] of patches * 0.4"
 
 TEXTBOX
 30
@@ -920,12 +932,12 @@ TEXTBOX
 1
 
 MONITOR
-1473
-19
-1610
-64
+1512
+20
+1673
+65
 Total DM (kg/ha)
-dm
+DM-cm-ha * mean [grass-height] of patches; dm: Reporter to output the accumulation of DM
 7
 1
 11
@@ -936,7 +948,7 @@ MONITOR
 1179
 64
 Average GH (cm)
-grass-height-report
+mean [grass-height] of patches; grass-height-report: ; To report the mean grass-height of the herbage
 7
 1
 11
@@ -979,12 +991,12 @@ year-cnt
 11
 
 MONITOR
-1610
-19
-1758
-64
+1681
+21
+1829
+66
 Total DM * 0.4 (kg/ha)
-dm-cows
+DM-cm-ha * mean [grass-height] of patches * 0.4 ;dm-cows: Reporter to output the accumulation of DM AVAILABLE for the cows\n; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%\n; Es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición
 7
 1
 11
@@ -1025,7 +1037,7 @@ MONITOR
 577
 575
 Area (ha)
-grassland-area
+count patches ; 1 patch = 1 ha\n; Other option:\n; sum [animal-units] of cows / count patches
 7
 1
 11
@@ -1051,7 +1063,7 @@ kg
 0.0
 92.0
 0.0
-50.0
+0.0
 true
 false
 "" ""
@@ -1085,7 +1097,7 @@ true
 false
 "" ""
 PENS
-"CE" 1.0 0 -16777216 true "" "plot crop-efficiency"
+"CE" 1.0 0 -16777216 true "" "plot (sum [DDMC] of cows / (DM-cm-ha * sum [grass-height] of patches)) * 100"
 
 MONITOR
 1141
@@ -1093,19 +1105,19 @@ MONITOR
 1288
 347
 CE (%)
-crop-efficiency
+(sum [DDMC] of cows / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; crop-efficiency: Reporter to output the crop eficiency (DM consumed / DM offered)\n; (sum [DDMC] of cows) = DM consumed\n; (DM-cm-ha * sum [grass-height] of patches) = DM offered
 7
 1
 11
 
 MONITOR
-937
-621
-1087
-666
+965
+627
+1115
+672
 Total DDMC (kg/head/day)
 sum [DDMC] of cows
-0
+2
 1
 11
 
@@ -1125,37 +1137,37 @@ true
 false
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot stocking-rate"
+"default" 1.0 0 -16777216 true "" "plot sum [animal-units] of cows / count patches"
 
 MONITOR
-1091
-620
-1232
-665
+1117
+626
+1258
+671
 sum Total DM (kg)
 DM-cm-ha * sum [grass-height] of patches
-0
+2
 1
 11
 
 MONITOR
-1472
-64
-1611
-109
+1511
+65
+1650
+110
 Daily Total DM (kg/ha/day)
-dm / 92
+(DM-cm-ha * mean [grass-height] of patches) / 92\n;dm / 92
 7
 1
 11
 
 MONITOR
-1611
-64
-1758
-109
+1682
+66
+1829
+111
 Daily Total DM * 0.4 (kg/ha)
-dm-cows / 92
+(DM-cm-ha * mean [grass-height] of patches * 0.4) / 92\n; dm-cows / 92
 7
 1
 11
@@ -1172,35 +1184,140 @@ sum [DDMC] of cows
 11
 
 MONITOR
-1090
-524
-1231
-569
+1497
+376
+1638
+421
 Daily Total DM (kg/ha/day)
-dm / 92
-0
+(DM-cm-ha * mean [grass-height] of patches) / 92\n;dm / 92
+2
 1
 11
 
 MONITOR
-1090
-572
-1231
-617
+1118
+577
+1259
+622
 Total DM (kg/ha)
-dm
-0
+DM-cm-ha * mean [grass-height] of patches; dm: Reporter to output the accumulation of DM
+2
 1
 11
 
 MONITOR
-937
-667
-1087
-712
+965
+673
+1115
+718
 Mean DDMC (kg/animal/day)
 mean [DDMC] of cows
+2
+1
+11
+
+MONITOR
+1119
+673
+1262
+718
+Average daily LWG (kg)
+mean [live-weight] of cows - initial-weight-heifer
+2
+1
+11
+
+MONITOR
+1118
+528
+1259
+573
+Average GH (cm)
+mean [grass-height] of patches; grass-height-report: ; To report the mean grass-height of the herbage
+2
+1
+11
+
+BUTTON
+1000
+579
+1063
+612
+Go
+Go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+990
+527
+1068
+572
+Time (days)
+simulation-time
 0
+1
+11
+
+MONITOR
+964
+719
+1115
+764
+Total number of cows
+count cows
+0
+1
+11
+
+MONITOR
+1513
+73
+1647
+118
+Average Seasonal DM
+DM-cm-ha * mean [grass-height] of patches * 92\n;dm * 92
+7
+1
+11
+
+MONITOR
+1681
+74
+1847
+119
+Average Seasonal DM * 0.4
+DM-cm-ha * mean [grass-height] of patches * 92 * 0.4\n;dm * 92 * 0.4
+7
+1
+11
+
+MONITOR
+1647
+347
+1784
+392
+DMGR (kg/ha/day)
+DMGR
+2
+1
+11
+
+MONITOR
+1649
+397
+1784
+442
+sum Total DMGR (kg/day)
+DMGR * 529
+2
 1
 11
 
