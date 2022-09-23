@@ -667,7 +667,7 @@ initial-num-cows
 initial-num-cows
 0
 700
-1.0
+0.0
 1
 1
 cows
