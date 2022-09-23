@@ -135,7 +135,7 @@ to setup
   ca
   setup-globals ; Procedure para darle valores (info) a las globals variables
   setup-grassland
-  if (model-version = "wild model") or (model-version = "management model") [setup-livestock]
+  if (model-version = "open access") or (model-version = "management model") [setup-livestock]
   reset-ticks
 end
 
@@ -245,7 +245,7 @@ to go
   set simulation-time simulation-time + days-per-tick
 
   ;if simulation-time >= 3680 [stop]
-  if (model-version = "wild model") or (model-version = "management model") [if not any? cows [stop]]
+  if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
 
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
@@ -265,14 +265,14 @@ to go
   if (gh-version = "initial-grass-height") [ask patches [grow-grass2 update-grass-height]] ; el modelo usara la version de la formula con "initial-grass-height"
 
 
- ; ask cows [
- ;   print (word ">>> INITIAL live-weight-gain      " live-weight-gain)
- ;   print (word ">>> INITIAL DDMC                  " DDMC)
- ; ]
+  ;ask cows [
+    ;print (word ">>> INITIAL live-weight-gain      " live-weight-gain)
+    ;print (word ">>> INITIAL DDMC                  " DDMC)
+  ;]
 
    ;;;
 
-  if (model-version = "wild model") or (model-version = "management model") [ask cows [eat-grass move grow-livestock reproduce]]
+  if (model-version = "open access") or (model-version = "management model") [ask cows [eat-grass move grow-livestock reproduce]]
 
   tick
 end
@@ -325,7 +325,7 @@ to eat-grass
   ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
 set live-weight live-weight + live-weight-gain
 
-  ; print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
+   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
 
   ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
 ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
@@ -335,7 +335,7 @@ set live-weight live-weight + live-weight-gain
           set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef][
           set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
-    ; print (word ">>> UPDATED DDMC                  " DDMC)
+     ;print (word ">>> UPDATED DDMC                  " DDMC)
 
 end
 
@@ -350,7 +350,7 @@ set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
     set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
-  if grass-height < 0 [set grass-height 0] ; to avoid negative values.
+  if grass-height < 0 [set grass-height 0.000000000001] ; to avoid negative values.
   ifelse grass-height < 2 [
      set pcolor 37][
      set pcolor scale-color green grass-height 23 0]
@@ -367,7 +367,7 @@ end
 to grow-livestock
 set age age + days-per-tick
 ; Primero: se codifican las reglas por las que los animales mueren.
-; Es interesante mencionar que, por ahora (en el wild model), los animales tienen dos formas de morir: por edad (age) o por mortality rate (que puede ser natural o expecional)
+; Es interesante mencionar que, por ahora (en el open access (antes llamado "wild model"), los animales tienen dos formas de morir: por edad (age) o por mortality rate (que puede ser natural o expecional)
   if age > cow-age-max [die] ; Si la edad (age) del agente es mayor que la edad máxima establecida (cow-age-max), el agente muere
   ifelse live-weight < min-weight [ ; Pero si la edad se encuentra por debajo del cow-age-max Y SI el peso vivo del animal se encuentra por debajo del peso mínimo (min-weight)...
      set mortality-rate except-mort-rate][ ; ...si esto es TRUE, el animal tendrá una mortality rate = except-mort-rate (mortality rate excepcional, recordemos que exceptional mortality rates increases to 15% (= 0.00041 a day) in cows, 30% (= 0.000815) in pregnant cows, and 23% (0.000625) in the rest of categories.)
@@ -648,7 +648,7 @@ BUTTON
 105
 Go
 Go
-NIL
+T
 1
 T
 OBSERVER
@@ -665,9 +665,9 @@ SLIDER
 366
 initial-num-cows
 initial-num-cows
-1
+0
 700
-0.0
+1.0
 1
 1
 cows
@@ -846,7 +846,7 @@ CHOOSER
 65
 model-version
 model-version
-"grass model" "wild model" "management model"
+"grass model" "open access" "management model"
 1
 
 TEXTBOX
@@ -953,9 +953,9 @@ SLIDER
 281
 initial-num-heifers
 initial-num-heifers
-1
+0
 1000
-1.0
+30.0
 1
 1
 NIL
@@ -995,7 +995,7 @@ CHOOSER
 gh-version
 gh-version
 "alicia" "grass-height" "initial-grass-height"
-2
+1
 
 PLOT
 1271
@@ -1037,7 +1037,7 @@ Days
 0.0
 92.0
 0.0
-0.0
+60.0
 true
 false
 "" ""
