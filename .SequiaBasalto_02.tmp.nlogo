@@ -294,9 +294,8 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 to grow-grass-alicia ; VERSION ORIGINAL DE ALICIA. ¿¿¿¿¿¿¿¿DUDA????????: aquí se encuentra la fórmula de GH (Primary production (biomass) expressed in centimeters), pero no le veo mucha similitud con la fórmula del paper...
-ask patches [
-  set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * item number-of-season climacoef ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
-  ]                                                                                                                      ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
+set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * item number-of-season climacoef ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+                                                                                                                                   ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                    ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
 ;set grass-height grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * set-climacoef  ; formula original de Alicia pero cambiando climacoef.
 
@@ -312,7 +311,7 @@ end
 to grow-grass2 ; VERSION CON "initial-grass-height"
 ask patches [
 set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; NUEVA FORMULA PROMETEDORA: básicamente he sustituido la variable "grass-height" por "initial-grass-height": con este cambio se respeta la K maxima que puede alcanzar el pasto en cada estación Y se consigue que la altura inicial del pasto al inicio de la estación afecte a la acumulación de DM como pretendiamos, además de que respetamos la fórmula original que utiliza la "grass height en el tiempo 0". Sin embargo, no me dan los resultados exactos de la Figura 3 de Dieguez-Cameroni et al. 2012: no explican bien en su artículo si los resultados que muestran en esa figura se corresponda a la DM del día 92 de cada estación (supongo que es así), y si fuera así, no coincide la DM acumulada del día 92 de la figura 2/cuadro 3 con la DM acumulada del dia 92 de la figura 3. El único modo de saber a que se deben estas diferencias es preguntando a los autores.
-  ]
+
 end
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
