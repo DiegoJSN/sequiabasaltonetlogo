@@ -274,7 +274,6 @@ to go
 
   ;if (model-version = "open access") or (model-version = "management model") [ask cows [eat-grass move grow-livestock reproduce]]
 
-
   grow-grass
   update-grass-height
   eat-grass
@@ -345,7 +344,6 @@ ask cows [
    ifelse born-calf? = true [ ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
       set live-weight-gain weight-gain-lactation][ ; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
       ifelse grass-height >= 2 [ ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
-         set metabolic-body-size live-weight ^ (3 / 4)
          set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
          [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
 
@@ -359,8 +357,9 @@ set live-weight live-weight + live-weight-gain
     ifelse born-calf? = true [ ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        set DDMC 0][ ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        ifelse live-weight-gain > 0 [ ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-          set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef][
-          set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+        set metabolic-body-size live-weight ^ (3 / 4)
+        set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef][
+        set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
@@ -659,9 +658,9 @@ NIL
 1
 
 BUTTON
-104
+162
 72
-167
+225
 105
 Go
 Go
@@ -848,9 +847,9 @@ SLIDER
 148
 initial-grass-height
 initial-grass-height
-3
+1
 7
-7.0
+1.0
 1
 1
 cm
@@ -933,10 +932,10 @@ SLIDER
 148
 set-climaCoef
 set-climaCoef
-0.5
+0.1
 1.5
-1.0
-0.5
+0.1
+0.1
 1
 NIL
 HORIZONTAL
@@ -972,7 +971,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-30.0
+1.0
 1
 1
 NIL
@@ -1151,6 +1150,23 @@ mean [DDMC] of cows
 3
 1
 11
+
+BUTTON
+93
+72
+159
+105
+Go (1 day)
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
