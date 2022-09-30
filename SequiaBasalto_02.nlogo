@@ -194,8 +194,8 @@ to setup-livestock
 
 create-cows initial-num-cows [ ; initial-num-cows is the slider in Interface (from 50 to 700)
     set shape "cow"
-    ;set initial-weight random (280 - 180) + 180 ; this is an alternative option: to define randomly the initial weight of the animals between a reasonable range.
-    set live-weight initial-weight-cows ; se establece que en el tiempo 0 de la simulación (cuando se pulsa setup), la variable live-weight sea igual a initial-weight
+    set initial-weight random (280 - 180) + 180 ; this is an alternative option: to define randomly the initial weight of the animals between a reasonable range.
+    set live-weight initial-weight ; se establece que en el tiempo 0 de la simulación (cuando se pulsa setup), la variable live-weight sea igual a initial-weight
     set mortality-rate natural-mortality-rate; ¿¿¿¿¿¿¿¿DUDA????????: NO ENCUENTRO EL SLIDER O ITEM ASOCIADO EN INTERFACE QUE DE VALOR A LA VARIABLE mortality-rate
                                              ; POSIBLE RESPUESTA: la asunción es que la natural-mortality-rate debe ser del 0.000054 (i.e., 0.005 % diario = 2% anual), así que no le veo sentido a hacer un slider, más bien fijaría este valor en 0.000054
                                              ; POSIBLE RESPUESTA 2: si te fijas, la variable "natural-mortality-rate" se encuentra definida en los procedures de "to-become-XXXX (cow/heifer/steer/etc)", así que ya tiene el valor dado.
@@ -896,9 +896,9 @@ management-strategy
 0
 
 PLOT
-854
+853
 10
-1201
+1200
 154
 Dry-matter (DM) and DM consumption (DDMC)
 Days
@@ -1082,9 +1082,9 @@ crop-efficiency
 11
 
 MONITOR
-1201
+1199
 54
-1346
+1335
 99
 Total DDMC (kg/day)
 sum [DDMC] of cows
@@ -1093,9 +1093,9 @@ sum [DDMC] of cows
 11
 
 MONITOR
-1201
+1199
 11
-1346
+1335
 56
 Total DM (kg/day)
 dmgr
@@ -1104,9 +1104,9 @@ dmgr
 11
 
 PLOT
-1348
+1335
 10
-1670
+1657
 160
 Seasonal Accumulation of dry-matter (DM) per ha
 Days
@@ -1122,9 +1122,9 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92"
 
 MONITOR
-1670
+1657
 10
-1815
+1802
 55
 Accumulation of DM (kg/ha)
 DM-cm-ha * mean [grass-height] of patches * 92
@@ -1151,9 +1151,9 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
 
 MONITOR
-1201
+1199
 100
-1346
+1335
 145
 Mean DDMC (kg/cow/day)
 mean [DDMC] of cows
@@ -1186,7 +1186,7 @@ SLIDER
 initial-weight-cows
 initial-weight-cows
 100
-340
+380
 340.0
 1
 1
@@ -1194,9 +1194,9 @@ kg
 HORIZONTAL
 
 PLOT
-1348
+1335
 159
-1758
+1745
 301
 Body Condition Score (BCS)
 Days
@@ -1218,10 +1218,10 @@ PENS
 "Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - mean [min-weight] of cows) / 40"
 
 MONITOR
-1758
-160
-1879
-205
+1745
+159
+1866
+204
 Average BCS (points)
 (mean [live-weight] of cows - mean [min-weight] of cows) / 40
 1
@@ -1229,10 +1229,10 @@ Average BCS (points)
 11
 
 MONITOR
-1758
-205
-1879
-250
+1745
+204
+1866
+249
 BCS of cows (points)
 (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40
 1
@@ -1240,13 +1240,78 @@ BCS of cows (points)
 11
 
 MONITOR
-1758
-250
-1879
-295
+1745
+249
+1866
+294
 BCS of heifers (points)
 (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40
 1
+1
+11
+
+PLOT
+1335
+300
+1745
+441
+Pregnancy Rate (PR)
+Days
+%
+0.0
+92.0
+0.0
+1.0E-4
+true
+true
+"" ""
+PENS
+"Heifer" 1.0 0 -2064490 true "" "plot mean [pregnancy-rate] of cows with [heifer?] * 368 * 100"
+"Cow" 1.0 0 -6459832 true "" "plot mean [pregnancy-rate] of cows with [cow?] * 368 * 100"
+"Cow-with-calf" 1.0 0 -5825686 true "" "plot mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100"
+"Average PR" 1.0 0 -16777216 true "" "plot mean [pregnancy-rate] of cows * 368 * 100"
+
+MONITOR
+1745
+300
+1876
+345
+Average PR (%)
+mean [pregnancy-rate] of cows * 368 * 100
+2
+1
+11
+
+MONITOR
+1745
+345
+1877
+390
+PR of cows (%)
+mean [pregnancy-rate] of cows with [cow?] * 368 * 100
+2
+1
+11
+
+MONITOR
+1746
+391
+1878
+436
+PR of cows-with-calf (%)
+mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
+2
+1
+11
+
+MONITOR
+1746
+435
+1879
+480
+PR of heifers (%)
+mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
+2
 1
 11
 
