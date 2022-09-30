@@ -859,7 +859,7 @@ initial-grass-height
 initial-grass-height
 1
 7
-7.0
+1.0
 1
 1
 cm
@@ -944,7 +944,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+0.1
 0.1
 1
 NIL
@@ -981,7 +981,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-355.0
+1.0
 1
 1
 NIL
