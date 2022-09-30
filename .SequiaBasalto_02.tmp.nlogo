@@ -356,7 +356,7 @@ set live-weight live-weight + live-weight-gain
     ifelse born-calf? = true [ ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        set DDMC 0][ ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        ifelse live-weight-gain > 0 [ ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-        set metabolic-body-size live-weight ^ (3 / 4)
+
         set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef][
         set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
@@ -693,7 +693,7 @@ initial-num-cows
 initial-num-cows
 0
 700
-0.0
+10.0
 1
 1
 cows
@@ -981,7 +981,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-355.0
+0.0
 1
 1
 NIL
