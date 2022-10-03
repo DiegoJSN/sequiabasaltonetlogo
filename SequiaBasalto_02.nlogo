@@ -295,7 +295,7 @@ to go
 
   grow-grass
   update-grass-height
-  eat-grass
+  eat-grass2
   move
   grow-livestock
   reproduce
@@ -367,6 +367,10 @@ end
 
 
 
+
+
+
+
 to eat-grass
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
@@ -396,6 +400,43 @@ end
 
 
 
+to eat-grass2
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set metabolic-body-size live-weight ^ (3 / 4)
+; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
+;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
+;         [set metabolic-body-size live-weight ^ (3 / 4)]
+;         [set live-weight 0]
+
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+          [set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+  ]
+end
+
+
+
+
+
+
+
 
 
 
@@ -407,6 +448,10 @@ ask cows [
        [move-to one-of neighbors]]
   ]
 end
+
+
+
+
 
 
 
@@ -442,6 +487,10 @@ end
 
 
 
+
+
+
+
 to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rate y las reglas para convertirse en age class "Pregnant".  LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER PERO...
   ask cows [
   if (heifer? = true) or (cow? = true) or (cow-with-calf? = true) [set pregnancy-rate (1 / (1 + coefA * e ^ (- coefB * live-weight))) / 368] ; ...¿¿¿¿¿¿¿¿DUDA????? LO DIVIDE ENTRE 368, POR QUÉ?
@@ -461,6 +510,10 @@ to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rat
     become-cow-with-calf] ; la regla para cow-with-calf: este agente que acaba de dar la luz a un nuevo agente, se le pide que, además, se convierta en un agente del age class del tipo "cow-with-calf"
   ]
 end
+
+
+
+
 
 
 
@@ -907,7 +960,7 @@ initial-grass-height
 initial-grass-height
 1
 7
-1.0
+7.0
 1
 1
 cm
@@ -992,7 +1045,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.1
+1.0
 0.1
 1
 NIL
@@ -1029,7 +1082,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-1.0
+285.0
 1
 1
 NIL
