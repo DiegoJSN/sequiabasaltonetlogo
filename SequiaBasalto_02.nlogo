@@ -198,6 +198,9 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     [set pcolor scale-color green grass-height 23 0]
     set r 0.002
   ]
+
+  ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche
+
 end
 
 
@@ -209,8 +212,8 @@ to setup-livestock
 
 create-cows initial-num-cows [ ; initial-num-cows is the slider in Interface (from 50 to 700)
     set shape "cow"
-    set initial-weight random (280 - 180) + 180 ; this is an alternative option: to define randomly the initial weight of the animals between a reasonable range.
-    set live-weight initial-weight ; se establece que en el tiempo 0 de la simulación (cuando se pulsa setup), la variable live-weight sea igual a initial-weight
+    ;set initial-weight random (280 - 180) + 180 ; this is an alternative option: to define randomly the initial weight of the animals between a reasonable range.
+    set live-weight initial-weight-cows ; se establece que en el tiempo 0 de la simulación (cuando se pulsa setup), la variable live-weight sea igual a initial-weight
     set mortality-rate natural-mortality-rate; ¿¿¿¿¿¿¿¿DUDA????????: NO ENCUENTRO EL SLIDER O ITEM ASOCIADO EN INTERFACE QUE DE VALOR A LA VARIABLE mortality-rate
                                              ; POSIBLE RESPUESTA: la asunción es que la natural-mortality-rate debe ser del 0.000054 (i.e., 0.005 % diario = 2% anual), así que no le veo sentido a hacer un slider, más bien fijaría este valor en 0.000054
                                              ; POSIBLE RESPUESTA 2: si te fijas, la variable "natural-mortality-rate" se encuentra definida en los procedures de "to-become-XXXX (cow/heifer/steer/etc)", así que ya tiene el valor dado.
@@ -230,6 +233,18 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
+    become-heifer ]
+       ;;;
+
+create-cows initial-HEIFER [
+    set shape "cow"
+    set initial-weight initial-weight-heifer
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+    setxy 0 0
     become-heifer ]
        ;;;
 
@@ -297,18 +312,22 @@ to go
   ;; Orden original de los procedimientos:
   ;grow-grass
   ;update-grass-height
-  ;eat-grass2
+  ;eat-grass3
   ;move
   ;grow-livestock
   ;reproduce
 
 
   grow-grass
-  eat-grass2
+
+  update-grass-height
+
+  eat-grass3
+
+
   grow-livestock
   reproduce
-  update-grass-height
-  move
+  ;move
 
   tick
 end
@@ -334,14 +353,12 @@ ask patches [
 end
 
 
-
 to grow-grass ; VERSION CON "grass-height"
 ask patches [
 ;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014. Esta fórmula si da la misma "Distribución (%)" que el "Cuadro 3" del paper de Dieguez-Cameroni et al 2012 (pero no da la misma cantidad de "MS acumulada (kg MS/ha)").
 set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; ACTUALIZACION IMPORTANTE: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 end
-
 
 
 to grow-grass2 ; VERSION CON "initial-grass-height"
@@ -356,21 +373,6 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-to update-grass-height
-ask patches [
-  set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
-  ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
-                  ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
-    let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
-    set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
-                                        ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
-  set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
-  if grass-height < 0 [set grass-height 0.000000000001] ; to avoid negative values.
-  ifelse grass-height < 2 [
-     set pcolor 37][
-     set pcolor scale-color green grass-height 23 0]
-  ]
-end
 
 
 
@@ -409,7 +411,6 @@ set metabolic-body-size live-weight ^ (3 / 4)
 end
 
 
-
 to eat-grass2
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
@@ -442,23 +443,36 @@ set metabolic-body-size live-weight ^ (3 / 4)
 end
 
 
-
-
-
-
-
-
-
-
-to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
+to eat-grass3
 ask cows [
-  if grass-height < 5
-    [ifelse random-float 1 < perception ; perception es un slider con valores entre 0 y 1
-       [uphill grass-height] ; Moves the turtle to the neighboring patch with the highest value for patch-variable (en este caso, se llama a la patch-variable grass-height). If no neighboring patch has a higher value than the current patch, the turtle stays put. If there are multiple patches with the same highest value, the turtle picks one randomly. Non-numeric values are ignored. uphill considers the eight neighboring patches; uphill4 only considers the four neighbors.
-       [move-to one-of neighbors]]
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set metabolic-body-size live-weight ^ (3 / 4)
+; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
+;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
+;         [set metabolic-body-size live-weight ^ (3 / 4)]
+;         [set live-weight 0]
+
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+          [set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
   ]
 end
-
 
 
 
@@ -501,6 +515,8 @@ end
 
 
 
+
+
 to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rate y las reglas para convertirse en age class "Pregnant".  LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER PERO...
   ask cows [
   if (heifer? = true) or (cow? = true) or (cow-with-calf? = true) [set pregnancy-rate (1 / (1 + coefA * e ^ (- coefB * live-weight))) / 368] ; ...¿¿¿¿¿¿¿¿DUDA????? LO DIVIDE ENTRE 368, POR QUÉ?
@@ -520,6 +536,55 @@ to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rat
     become-cow-with-calf] ; la regla para cow-with-calf: este agente que acaba de dar la luz a un nuevo agente, se le pide que, además, se convierta en un agente del age class del tipo "cow-with-calf"
   ]
 end
+
+
+
+
+
+
+
+
+
+
+
+
+to update-grass-height
+ask patches [
+  set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
+  ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
+                  ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
+    let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
+    set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
+                                        ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
+  set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
+  if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+  ifelse grass-height < 2 [
+     set pcolor 37][
+     set pcolor scale-color green grass-height 23 0]
+  ]
+end
+
+
+
+
+
+
+
+
+
+
+
+
+to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
+ask cows [
+  if grass-height < 5
+    [ifelse random-float 1 < perception ; perception es un slider con valores entre 0 y 1
+       [uphill grass-height] ; Moves the turtle to the neighboring patch with the highest value for patch-variable (en este caso, se llama a la patch-variable grass-height). If no neighboring patch has a higher value than the current patch, the turtle stays put. If there are multiple patches with the same highest value, the turtle picks one randomly. Non-numeric values are ignored. uphill considers the eight neighboring patches; uphill4 only considers the four neighbors.
+       [move-to one-of neighbors]]
+  ]
+end
+
+
 
 
 
@@ -819,7 +884,7 @@ initial-season
 initial-season
 0
 3
-0.0
+1.0
 1
 1
 NIL
@@ -1092,7 +1157,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-260.0
+0.0
 1
 1
 NIL
@@ -1107,8 +1172,8 @@ initial-weight-heifer
 initial-weight-heifer
 100
 340
-300.0
-5
+222.0
+1
 1
 kg
 HORIZONTAL
@@ -1423,6 +1488,109 @@ MONITOR
 PR of heifers (%)
 mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 2
+1
+11
+
+SLIDER
+190
+236
+362
+269
+initial-HEIFER
+initial-HEIFER
+0
+100
+1.0
+1
+1
+NIL
+HORIZONTAL
+
+MONITOR
+177
+272
+373
+317
+GH patch (cm)
+[grass-height] of patch 0 0
+17
+1
+11
+
+MONITOR
+288
+272
+431
+317
+DM patch (kg/day)
+[grass-height] of patch 0 0 * DM-cm-ha
+17
+1
+11
+
+MONITOR
+185
+622
+366
+667
+DDMC cow 0 (kg/day)
+[ddmc] of cow 0
+17
+1
+11
+
+MONITOR
+184
+672
+366
+717
+DDMC cow 1 (kg/day)
+[ddmc] of cow 1
+17
+1
+11
+
+MONITOR
+293
+345
+430
+390
+Total DDMC (kg/day)
+sum [ddmc] of cows
+17
+1
+11
+
+MONITOR
+178
+417
+316
+462
+GH-consum patch (cm)
+[gh-consumed] of patch 0 0
+17
+1
+11
+
+MONITOR
+292
+417
+432
+462
+DM-consum patch (kg/day)
+[gh-consumed] of patch 0 0 * DM-cm-ha
+17
+1
+11
+
+MONITOR
+184
+558
+351
+603
+GH - GH-consum
+[grass-height] of patch 0 0 - [gh-consumed] of patch 0 0
+17
 1
 11
 
