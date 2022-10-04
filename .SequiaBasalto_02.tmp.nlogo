@@ -293,12 +293,15 @@ to go
 
   ;if (model-version = "open access") or (model-version = "management model") [ask cows [eat-grass move grow-livestock reproduce]]
 
-  grow-grass
-  update-grass-height
-  eat-grass2
-  move
-  grow-livestock
-  reproduce
+
+
+
+  ;grow-grass
+  ;eat-grass2
+  ;grow-livestock
+  ;reproduce
+  ;update-grass-height
+  ;move
 
   tick
 end
@@ -960,7 +963,7 @@ initial-grass-height
 initial-grass-height
 1
 7
-1.0
+7.0
 1
 1
 cm
@@ -1045,7 +1048,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.1
+1.0
 0.1
 1
 NIL
@@ -1082,7 +1085,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-1.0
+260.0
 1
 1
 NIL
