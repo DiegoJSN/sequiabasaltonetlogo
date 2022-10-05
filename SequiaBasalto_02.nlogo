@@ -92,6 +92,13 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
   ;initial-grass-height (slider); The initial grass height is chosen by users; Grass is homogeneously distributed along the paddock.
   grass-height ;State of the grass height, determines the carrying capacity of the system.
                ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height
+
+
+
+                                                                                                                                report-initial-grass-height
+
+
+
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
   GH-consumed ; grass-height consumed from the total consumption of dry matter.
@@ -199,7 +206,9 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     set r 0.002
   ]
 
-  ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche
+                                                                                                                                ;ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche
+                                                                                                                                 ask patch 0 0 [set report-initial-grass-height initial-grass-height]
+
 
 end
 
@@ -309,25 +318,20 @@ to go
   ;if (model-version = "open access") or (model-version = "management model") [ask cows [eat-grass move grow-livestock reproduce]]
 
 
-  ;; Orden original de los procedimientos:
-  ;grow-grass
-  ;update-grass-height
-  ;eat-grass3
-  ;move
-  ;grow-livestock
-  ;reproduce
+  ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass3  move  grow-livestock  reproduce
 
 
   grow-grass
+                                                                                                                                reports-initial-grass-height
+
 
   update-grass-height
-
   eat-grass3
 
 
   grow-livestock
   reproduce
-  ;move
+  move
 
   tick
 end
@@ -358,6 +362,9 @@ ask patches [
 ;set grass-height ((item current-season kmax / (1 + (((item current-season kmax - grass-height) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; REPLICA: intento de replicar la formula de GH de Dieguez-Cameroni et al 2014. Esta fórmula si da la misma "Distribución (%)" que el "Cuadro 3" del paper de Dieguez-Cameroni et al 2012 (pero no da la misma cantidad de "MS acumulada (kg MS/ha)").
 set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; ACTUALIZACION IMPORTANTE: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
+
+                                                                                                                                ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)]
+
 end
 
 
@@ -372,7 +379,9 @@ end
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
+                                                                                                                                to reports-initial-grass-height
+                                                                                                                                ask patches [set report-initial-grass-height grass-height]
+                                                                                                                                end
 
 
 
@@ -404,7 +413,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse live-weight-gain > 0  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-         [set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
@@ -437,7 +446,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
           [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
   ]
 end
@@ -469,9 +478,12 @@ set metabolic-body-size live-weight ^ (3 / 4)
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
           [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el DDMC < 0 (if >0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
-
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
   ]
+        ask patches [
+         ask cows-here [
+          if sum [DDMC] of cows-here > (grass-height * DM-cm-ha) [set DDMC (grass-height * DM-cm-ha) / count cows-here]]]
+
 end
 
 
@@ -557,18 +569,16 @@ ask patches [
     set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
-  if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
   ifelse grass-height < 2 [
      set pcolor 37][
      set pcolor scale-color green grass-height 23 0]
+
   ]
+
+                                                                                                                                ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)]
+
 end
-
-
-
-
-
-
 
 
 
@@ -861,10 +871,10 @@ NIL
 1
 
 SLIDER
-16
-337
-167
-370
+28
+226
+179
+259
 initial-num-cows
 initial-num-cows
 0
@@ -876,10 +886,10 @@ cows
 HORIZONTAL
 
 SLIDER
-26
-115
-124
-148
+282
+114
+380
+147
 initial-season
 initial-season
 0
@@ -938,10 +948,10 @@ simulation-time
 11
 
 PLOT
-610
-586
-851
-779
+858
+592
+1099
+785
 Total number of cattle
 Days
 Heads
@@ -956,10 +966,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count cows"
 
 MONITOR
-387
-538
-467
-583
+573
+539
+653
+584
 Stoking rate
 stocking-rate
 4
@@ -967,10 +977,10 @@ stocking-rate
 11
 
 PLOT
-855
-585
-1273
-780
+1103
+591
+1521
+786
 Age classes population sizes
 Days
 Heads
@@ -990,10 +1000,10 @@ PENS
 "Cow-with-calf" 1.0 0 -5825686 true "" "plot count cows with [cow-with-calf?]"
 
 SLIDER
-14
-479
-151
-512
+11
+525
+148
+558
 perception
 perception
 0
@@ -1005,10 +1015,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-540
-538
-663
-583
+726
+539
+849
+584
 Total number of cattle
 count cows
 7
@@ -1027,10 +1037,10 @@ mean [live-weight] of cows
 11
 
 SLIDER
-241
-115
-379
-148
+26
+114
+167
+147
 initial-grass-height
 initial-grass-height
 1
@@ -1052,20 +1062,20 @@ model-version
 1
 
 TEXTBOX
-15
-535
-186
-591
+12
+562
+183
+618
 Only if you have selected the management model, you can chose between the reactive and the proctive strategies.
 11
 0.0
 1
 
 CHOOSER
-13
-596
-161
-641
+10
+623
+158
+668
 management-strategy
 management-strategy
 "reactive" "proactive"
@@ -1091,10 +1101,10 @@ PENS
 "DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
 
 TEXTBOX
-30
-155
-180
-211
+307
+54
+457
+110
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
 0.0
@@ -1112,10 +1122,10 @@ grass-height-report
 11
 
 SLIDER
-130
-115
-237
-148
+171
+114
+278
+147
 set-climaCoef
 set-climaCoef
 0.1
@@ -1149,40 +1159,40 @@ year-cnt
 11
 
 SLIDER
-16
-235
-167
-268
+27
+156
+178
+189
 initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+257.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-16
-269
-167
-302
+27
+190
+178
+223
 initial-weight-heifer
 initial-weight-heifer
 100
 340
-222.0
+284.0
 1
 1
 kg
 HORIZONTAL
 
 MONITOR
-471
-538
-537
-583
+657
+539
+723
+584
 Area (ha)
 count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-units] of cows / count patches
 7
@@ -1309,10 +1319,10 @@ DM-cm-ha * mean [grass-height] of patches * 92
 11
 
 PLOT
-387
-586
-608
-779
+635
+592
+856
+785
 Stocking rate
 AU/ha
 Days
@@ -1355,10 +1365,10 @@ NIL
 1
 
 SLIDER
-16
-370
-167
-403
+28
+259
+179
+292
 initial-weight-cows
 initial-weight-cows
 100
@@ -1492,47 +1502,47 @@ mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 11
 
 SLIDER
-190
+214
 236
-362
+386
 269
 initial-HEIFER
 initial-HEIFER
 0
 100
-1.0
+0.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-177
-272
-373
-317
-GH patch (cm)
+191
+399
+387
+444
+GH(FINAL) patch (cm)
 [grass-height] of patch 0 0
 17
 1
 11
 
 MONITOR
-288
-272
-431
-317
-DM patch (kg/day)
+325
+399
+491
+444
+DM(FINAL) patch (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
 1
 11
 
 MONITOR
-185
-622
-366
-667
+332
+522
+513
+567
 DDMC cow 0 (kg/day)
 [ddmc] of cow 0
 17
@@ -1540,10 +1550,10 @@ DDMC cow 0 (kg/day)
 11
 
 MONITOR
-184
-672
-366
-717
+331
+572
+513
+617
 DDMC cow 1 (kg/day)
 [ddmc] of cow 1
 17
@@ -1551,10 +1561,10 @@ DDMC cow 1 (kg/day)
 11
 
 MONITOR
-293
-345
-430
-390
+328
+467
+492
+512
 Total DDMC (kg/day)
 sum [ddmc] of cows
 17
@@ -1562,10 +1572,10 @@ sum [ddmc] of cows
 11
 
 MONITOR
-178
-417
-316
-462
+190
+350
+334
+395
 GH-consum patch (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1573,10 +1583,10 @@ GH-consum patch (cm)
 11
 
 MONITOR
-292
-417
-432
-462
+327
+350
+490
+395
 DM-consum patch (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1584,12 +1594,97 @@ DM-consum patch (kg/day)
 11
 
 MONITOR
-184
-558
-351
-603
-GH - GH-consum
-[grass-height] of patch 0 0 - [gh-consumed] of patch 0 0
+187
+285
+332
+330
+GH(INICIO)-patch (cm)
+[report-initial-grass-height] of patch 0 0
+17
+1
+11
+
+MONITOR
+323
+285
+487
+330
+DM(INICIO) patch (kg/day)
+[report-initial-grass-height] of patch 0 0 * DM-cm-ha
+17
+1
+11
+
+MONITOR
+192
+467
+330
+512
+Total GH-consum (cm)
+sum [ddmc] of cows / Dm-cm-ha
+17
+1
+11
+
+TEXTBOX
+91
+306
+241
+324
+to grow-grass ->
+11
+0.0
+1
+
+TEXTBOX
+54
+391
+204
+409
+to update-grass-height ->
+11
+0.0
+1
+
+TEXTBOX
+104
+486
+254
+504
+to eat-grass ->
+11
+0.0
+1
+
+MONITOR
+330
+622
+512
+667
+DDMC cow 2 (kg/day)
+[ddmc] of cow 2
+17
+1
+11
+
+MONITOR
+330
+671
+511
+716
+DDMC cow 3 (kg/day)
+[ddmc] of cow 3
+17
+1
+11
+
+MONITOR
+329
+720
+511
+765
+DDMC cow 4 (kg/day)
+[ddmc] of cow 4
 17
 1
 11
