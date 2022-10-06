@@ -184,8 +184,8 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     set r 0.002
   ]
 
-                                                                                                                                ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche
-                                                                                                                                ask patch 0 0 [set report-initial-grass-height 20]
+                                                                                                                                ;ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche
+                                                                                                                                ;ask patch 0 0 [set report-initial-grass-height 20]
 
 
 end
@@ -221,7 +221,7 @@ create-cows initial-num-heifers [
     become-heifer ]
 
 
-create-cows initial-HEIFER [
+create-cows initial-HEIFER-in-patch-00 [
     set shape "cow"
     set initial-weight initial-weight-heifer
     set live-weight initial-weight
@@ -261,8 +261,8 @@ to go
 
   set simulation-time simulation-time + days-per-tick
   ;if simulation-time >= 3680 [stop]
-  if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
-
+  ;if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
+  ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
@@ -274,6 +274,7 @@ to go
   if simulation-time = 3496 [stop]
   if simulation-time = 3588 [stop]
   if simulation-time = 3680 [stop]
+
 
 
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
@@ -410,8 +411,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
   ]
         ask patches [
          ask cows-here [
-          if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC (grass-height * DM-cm-ha) / count cows-here]
-    ]
+          if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
   ]
 
 end
@@ -489,10 +489,11 @@ ask patches [
     set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
-  ;if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
   ifelse grass-height < 2 [
      set pcolor 37][
      set pcolor scale-color green grass-height 23 0]
+    if grass-height < 0 [set pcolor red]
   ]
 
                                                                                                                                 ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)]
@@ -813,7 +814,7 @@ initial-season
 initial-season
 0
 3
-1.0
+0.0
 1
 1
 NIL
@@ -963,9 +964,9 @@ SLIDER
 initial-grass-height
 initial-grass-height
 1
-7
-7.0
-1
+7.4
+7.4
+0.1
 1
 cm
 HORIZONTAL
@@ -1101,7 +1102,7 @@ initial-weight-heifer
 initial-weight-heifer
 100
 340
-120.0
+130.0
 1
 1
 kg
@@ -1413,13 +1414,13 @@ mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 SLIDER
 214
 236
-386
+406
 269
-initial-HEIFER
-initial-HEIFER
+initial-HEIFER-in-patch-00
+initial-HEIFER-in-patch-00
 0
 100
-4.0
+3.0
 1
 1
 NIL
@@ -1430,7 +1431,7 @@ MONITOR
 399
 387
 444
-GH(FINAL) patch 0 0 (cm)
+GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
 1
@@ -1439,9 +1440,9 @@ GH(FINAL) patch 0 0 (cm)
 MONITOR
 325
 399
-487
+486
 444
-DM(FINAL) patch 0 0 (kg/day)
+DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
 1
@@ -1474,7 +1475,7 @@ MONITOR
 467
 487
 512
-DDMC patch 0 0 (kg/day)
+DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
 1
@@ -1485,7 +1486,7 @@ MONITOR
 350
 348
 395
-GH-consum patch 0 0 (cm)
+GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
 1
@@ -1496,7 +1497,7 @@ MONITOR
 350
 487
 395
-DM-consum patch 0 0 (kg/day)
+DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
 1
@@ -1507,7 +1508,7 @@ MONITOR
 285
 348
 330
-GH(INICIO) patch 0 0 (cm)
+GH(INICIO) patch 00 (cm)
 [report-initial-grass-height] of patch 0 0
 17
 1
@@ -1516,9 +1517,9 @@ GH(INICIO) patch 0 0 (cm)
 MONITOR
 323
 285
-487
+486
 330
-DM(INICIO) patch 0 0 (kg/day)
+DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17
 1
@@ -1527,9 +1528,9 @@ DM(INICIO) patch 0 0 (kg/day)
 MONITOR
 192
 467
-329
+328
 512
-GH-consum patch 0 0 (cm)
+GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
 1
