@@ -280,11 +280,13 @@ to go
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
 
 
-  grow-grass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             reports-initial-grass-height ;;;;TEMP
+  grow-grass
+  reports-initial-grass-height ;;;;TEMP
 
   update-grass-height
 
-  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              report-DDMC-patch00 ;;;;TEMP
+  eat-grass3
+  report-DDMC-patch00 ;;;;TEMP
 
   grow-livestock
 
@@ -318,9 +320,12 @@ ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0
 
 end
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             to reports-initial-grass-height ;;;;TEMP
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ask patches [set report-initial-grass-height grass-height]
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             end
+
+to reports-initial-grass-height ;;;;TEMP
+
+ask patches [set report-initial-grass-height grass-height]
+
+end
 
 
 
@@ -344,7 +349,7 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -1527,10 +1532,10 @@ GH-consum patch 00 (cm)
 11
 
 MONITOR
-327
-350
-495
-395
+328
+352
+496
+397
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1549,10 +1554,10 @@ GH(INICIO) patch 00 (cm)
 11
 
 MONITOR
-323
-285
-496
-330
+325
+287
+498
+332
 DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1560,9 +1565,9 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-184
+182
 468
-330
+328
 513
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
