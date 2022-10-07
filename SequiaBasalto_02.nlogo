@@ -280,14 +280,14 @@ to go
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
 
 
-  grow-grass
-  reports-initial-grass-height ;;;;TEMP
+  grow-grass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             reports-initial-grass-height ;;;;TEMP
 
 
   update-grass-height
 
-  eat-grass3
-  report-DDMC-patch00 ;;;;TEMP
+  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               report-DDMC-patch00 ;;;;TEMP
+
+
 
   grow-livestock
   reproduce
@@ -309,9 +309,6 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
 ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
-
-
-
 
 to reports-initial-grass-height ;;;;TEMP
 ask patches [set report-initial-grass-height grass-height]
@@ -425,6 +422,8 @@ end
 
 
 
+
+
 to grow-livestock
 ask cows [
   set age age + days-per-tick
@@ -481,6 +480,10 @@ to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rat
 end
 
 
+
+
+
+
 to update-grass-height
 ask patches [
   set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
@@ -490,7 +493,11 @@ ask patches [
     set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
-  ;if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+
+
+  if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+
+
   ifelse grass-height < 2 [
      set pcolor 37][
      set pcolor scale-color green grass-height 23 0]
@@ -1051,7 +1058,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+1.1
 0.1
 1
 NIL
@@ -1421,7 +1428,7 @@ initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
 100
-2.0
+1.0
 1
 1
 NIL
