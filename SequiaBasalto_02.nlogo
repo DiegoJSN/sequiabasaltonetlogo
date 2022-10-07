@@ -282,15 +282,14 @@ to go
 
   grow-grass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             reports-initial-grass-height ;;;;TEMP
 
-
   update-grass-height
 
-  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               report-DDMC-patch00 ;;;;TEMP
-
-
+  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              report-DDMC-patch00 ;;;;TEMP
 
   grow-livestock
+
   reproduce
+
   ;move
 
   tick

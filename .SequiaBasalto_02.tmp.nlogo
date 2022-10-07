@@ -282,10 +282,9 @@ to go
 
   grow-grass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             reports-initial-grass-height ;;;;TEMP
 
+    update-grass-height
 
-  update-grass-height
-
-  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                report-DDMC-patch00 ;;;;TEMP
+  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                               report-DDMC-patch00 ;;;;TEMP
 
 
 
@@ -1058,7 +1057,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+1.1
 0.1
 1
 NIL
@@ -1428,7 +1427,7 @@ initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
 100
-7.0
+1.0
 1
 1
 NIL
