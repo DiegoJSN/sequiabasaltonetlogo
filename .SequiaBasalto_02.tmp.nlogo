@@ -316,7 +316,7 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -358,7 +358,7 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -497,7 +497,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
   ]
 
 ask patches [
- ask cows-here [let dif2cm (grass-height - 2) ; creamos una variable local que tenga en cuenta la diferencia en cm del valor actual de la altura de la vegetación - el límite inferior de 2 cm que es el límite en el que las vac
+ ask cows-here [let dif2cm (2 - grass-height ) print (word ">>> dif2cm "  dif2cm) ; creamos una variable local que tenga en cuenta la diferencia en cm del valor actual de la altura de la vegetación - el límite inferior de 2 cm que es el límite en el que las vacas no pueden comer más pasto.
                  if (grass-height >= 2) and (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC (((dif2cm * DM-cm-ha) - (grass-height * DM-cm-ha) + (grass-height * DM-cm-ha)) / count cows-here)]]
   ]
 
@@ -1499,7 +1499,7 @@ initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
 100
-1.0
+2.0
 1
 1
 NIL

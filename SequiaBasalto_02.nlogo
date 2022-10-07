@@ -497,7 +497,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
   ]
 
 ask patches [
- ask cows-here [let dif2cm (grass-height - 2) ; creamos una variable local que tenga en cuenta la diferencia en cm del valor actual de la altura de la vegetación - el límite inferior de 2 cm que es el límite en el que las vacas no pueden comer más pasto.
+ ask cows-here [let dif2cm (grass-height - 2) ;print (word ">>> dif2cm "  dif2cm) ;;;; TEMP; creamos una variable local que tenga en cuenta la diferencia en cm del valor actual de la altura de la vegetación - el límite inferior de 2 cm que es el límite en el que las vacas no pueden comer más pasto.
                  if (grass-height >= 2) and (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC (((dif2cm * DM-cm-ha) - (grass-height * DM-cm-ha) + (grass-height * DM-cm-ha)) / count cows-here)]]
   ]
 
