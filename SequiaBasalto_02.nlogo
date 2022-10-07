@@ -78,8 +78,8 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
   grass-height ;State of the grass height, determines the carrying capacity of the system.
                ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height
 
-                                                                                                                                report-initial-grass-height
-                                                                                                                                    DDMC-patch00
+report-initial-grass-height ;;;;TEMP
+DDMC-patch00 ;;;;TEMP
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
@@ -184,8 +184,8 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     set r 0.002
   ]
 
-                                                                                                                                ;ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche
-                                                                                                                                ;ask patch 0 0 [set report-initial-grass-height 20]
+;ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche ;;;;TEMP
+;ask patch 0 0 [set report-initial-grass-height 20] ;;;;TEMP
 
 
 end
@@ -281,12 +281,13 @@ to go
 
 
   grow-grass
-                                                                                                                                reports-initial-grass-height
+  reports-initial-grass-height ;;;;TEMP
 
 
   update-grass-height
+
   eat-grass3
-                                                                                                                                  report-DDMC-patch00
+  report-DDMC-patch00 ;;;;TEMP
 
   grow-livestock
   reproduce
@@ -305,16 +306,16 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-                                                                                                                                ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)]
+ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
 
 
 
-                                                                                                                                to reports-initial-grass-height
-                                                                                                                                ask patches [set report-initial-grass-height grass-height]
-                                                                                                                                end
+to reports-initial-grass-height ;;;;TEMP
+ask patches [set report-initial-grass-height grass-height]
+end
 
 
 
@@ -416,9 +417,9 @@ set metabolic-body-size live-weight ^ (3 / 4)
 
 end
 
-                                                                                                                                to report-DDMC-patch00
-                                                                                                                                ask patch 0 0 [set DDMC-patch00 sum [DDMC] of cows-here]
-                                                                                                                                end
+to report-DDMC-patch00 ;;;;TEMP
+ask patch 0 0 [set DDMC-patch00 sum [DDMC] of cows-here]
+end
 
 
 
@@ -496,7 +497,7 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-                                                                                                                                ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)]
+ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -982,10 +983,10 @@ model-version
 1
 
 TEXTBOX
-12
-562
-183
-618
+13
+602
+184
+658
 Only if you have selected the management model, you can chose between the reactive and the proctive strategies.
 11
 0.0
@@ -993,9 +994,9 @@ Only if you have selected the management model, you can chose between the reacti
 
 CHOOSER
 10
-623
+663
 158
-668
+708
 management-strategy
 management-strategy
 "reactive" "proactive"
@@ -1427,10 +1428,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-191
-399
-387
-444
+183
+400
+331
+446
 GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
@@ -1438,10 +1439,10 @@ GH(FINAL) patch 00 (cm)
 11
 
 MONITOR
-325
-399
-486
-444
+327
+400
+488
+445
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1482,10 +1483,10 @@ DDMC patch 00 (kg/day)
 11
 
 MONITOR
-190
-350
-348
-395
+182
+351
+340
+396
 GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1504,10 +1505,10 @@ DM-consum patch 00 (kg/day)
 11
 
 MONITOR
-187
-285
-348
-330
+179
+286
+340
+331
 GH(INICIO) patch 00 (cm)
 [report-initial-grass-height] of patch 0 0
 17
@@ -1526,10 +1527,10 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-192
-467
-328
-512
+184
+468
+330
+514
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
@@ -1537,30 +1538,30 @@ GH-consum patch 00 (cm)
 11
 
 TEXTBOX
-91
+84
 306
-177
-324
+181
+336
 to grow-grass ->
 11
 0.0
 1
 
 TEXTBOX
-54
+38
 391
-182
-409
+177
+410
 to update-grass-height ->
 11
 0.0
 1
 
 TEXTBOX
-104
-486
-181
-504
+94
+483
+184
+502
 to eat-grass ->
 11
 0.0
