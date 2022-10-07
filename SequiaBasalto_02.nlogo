@@ -261,7 +261,7 @@ to go
 
   set simulation-time simulation-time + days-per-tick
   ;if simulation-time >= 3680 [stop]
-  ;if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
+  if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
@@ -280,11 +280,13 @@ to go
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
 
 
-  grow-grass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             reports-initial-grass-height ;;;;TEMP
+  grow-grass
+  reports-initial-grass-height ;;;;TEMP
 
   update-grass-height
 
-  eat-grass2                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              report-DDMC-patch00 ;;;;TEMP
+  eat-grass3
+  report-DDMC-patch00 ;;;;TEMP
 
   grow-livestock
 
@@ -318,9 +320,12 @@ ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0
 
 end
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             to reports-initial-grass-height ;;;;TEMP
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ask patches [set report-initial-grass-height grass-height]
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             end
+
+to reports-initial-grass-height ;;;;TEMP
+
+  ask patches [set report-initial-grass-height grass-height]
+
+end
 
 
 
@@ -462,9 +467,12 @@ set metabolic-body-size live-weight ^ (3 / 4)
 
 end
 
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             to report-DDMC-patch00 ;;;;TEMP
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             ask patch 0 0 [set DDMC-patch00 sum [DDMC] of cows-here]
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             end
+
+to report-DDMC-patch00 ;;;;TEMP
+
+  ask patch 0 0 [set DDMC-patch00 sum [DDMC] of cows-here]
+
+end
 
 
 
