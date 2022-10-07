@@ -261,7 +261,7 @@ to go
 
   set simulation-time simulation-time + days-per-tick
   ;if simulation-time >= 3680 [stop]
-  ;if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
+  if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
@@ -285,7 +285,7 @@ to go
 
   update-grass-height
 
-  eat-grass3
+  eat-grass4
   report-DDMC-patch00 ;;;;TEMP
 
   grow-livestock
@@ -316,7 +316,7 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -349,7 +349,7 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height < 0 [set grass-height 0.001] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -358,7 +358,7 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -431,8 +431,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
   ]
 end
 
-
-to eat-grass3
+to eat-grass3; cuando la suma total de DDMC <= grass-height * DM-cm-ha de un parche, se reparte el DDMC entre el numero de vacas de ese parche
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
   ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
@@ -460,10 +459,48 @@ set metabolic-body-size live-weight ^ (3 / 4)
           [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
           [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
   ]
+
         ask patches [
          ask cows-here [
           if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
   ]
+
+end
+
+to eat-grass4;
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set metabolic-body-size live-weight ^ (3 / 4)
+; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
+;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
+;         [set metabolic-body-size live-weight ^ (3 / 4)]
+;         [set live-weight 0]
+
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+  ]
+
+ask patches [
+ ask cows-here [let dif2cm (grass-height - 2) ; creamos una variable local que tenga en cuenta la diferencia en cm del valor actual de la altura de la vegetación - el límite inferior de 2 cm que es el límite en el que las vac
+                 if (grass-height >= 2) and (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC (((dif2cm * DM-cm-ha) - (grass-height * DM-cm-ha) + (grass-height * DM-cm-ha)) / count cows-here)]]
+  ]
+
 
 end
 
@@ -1469,10 +1506,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-183
-400
-331
-445
+181
+392
+329
+437
 GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
@@ -1480,10 +1517,10 @@ GH(FINAL) patch 00 (cm)
 11
 
 MONITOR
-327
-400
-497
-445
+325
+392
+495
+437
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1513,10 +1550,10 @@ DDMC cow 1 (kg/day)
 11
 
 MONITOR
-326
-467
-496
-512
+324
+450
+494
+495
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1524,10 +1561,10 @@ DDMC patch 00 (kg/day)
 11
 
 MONITOR
-182
-351
-340
-396
+180
+343
+338
+388
 GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1535,10 +1572,10 @@ GH-consum patch 00 (cm)
 11
 
 MONITOR
-328
-352
-496
-397
+326
+344
+494
+389
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1568,10 +1605,10 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-182
-468
-328
-513
+180
+451
+326
+496
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
@@ -1589,20 +1626,20 @@ to grow-grass ->
 1
 
 TEXTBOX
-38
-391
-177
-410
+36
+383
+175
+402
 to update-grass-height ->
 11
 0.0
 1
 
 TEXTBOX
-94
-483
-184
-502
+92
+466
+182
+485
 to eat-grass ->
 11
 0.0
