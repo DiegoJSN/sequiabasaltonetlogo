@@ -920,9 +920,9 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot count cows"
 
 MONITOR
-573
+571
 539
-653
+651
 584
 Stoking rate
 stocking-rate
@@ -969,10 +969,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-726
+724
 539
-849
-584
+853
+585
 Total number of cattle
 count cows
 7
@@ -980,10 +980,10 @@ count cows
 11
 
 MONITOR
-1147
-439
-1272
-484
+1148
+440
+1281
+486
 Average LW (kg)
 mean [live-weight] of cows
 3
@@ -999,7 +999,7 @@ initial-grass-height
 initial-grass-height
 1
 7.4
-7.4
+7.0
 0.1
 1
 cm
@@ -1067,8 +1067,8 @@ TEXTBOX
 MONITOR
 1148
 297
-1241
-342
+1253
+343
 Average GH (cm)
 grass-height-report
 3
@@ -1084,7 +1084,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.1
+1.0
 0.1
 1
 NIL
@@ -1143,9 +1143,9 @@ kg
 HORIZONTAL
 
 MONITOR
-657
+655
 539
-723
+721
 584
 Area (ha)
 count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-units] of cows / count patches
@@ -1154,10 +1154,10 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1271
-439
-1567
-581
+1280
+443
+1576
+585
 Average of daily live-weight-gain (LWG)
 Days
 kg
@@ -1174,8 +1174,8 @@ PENS
 MONITOR
 1147
 483
-1272
-528
+1279
+529
 Average daily LWG (kg)
 mean [live-weight] of cows - (mean [live-weight] of cows - mean [live-weight-gain] of cows)
 3
@@ -1254,8 +1254,8 @@ PENS
 MONITOR
 1657
 10
-1802
-55
+1817
+56
 Accumulation of DM (kg/ha)
 DM-cm-ha * mean [grass-height] of patches * 92
 3
@@ -1283,8 +1283,8 @@ PENS
 MONITOR
 1199
 100
-1335
-145
+1345
+146
 Mean DDMC (kg/cow/day)
 mean [DDMC] of cows
 3
@@ -1372,8 +1372,8 @@ BCS of cows (points)
 MONITOR
 1745
 249
-1866
-294
+1875
+295
 BCS of heifers (points)
 (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40
 2
@@ -1426,8 +1426,8 @@ mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 MONITOR
 1746
 391
-1878
-436
+1889
+437
 PR of cows-with-calf (%)
 mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 2
@@ -1474,8 +1474,8 @@ GH(FINAL) patch 00 (cm)
 MONITOR
 327
 400
-488
-445
+497
+446
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1507,8 +1507,8 @@ DDMC cow 1 (kg/day)
 MONITOR
 326
 467
-487
-512
+496
+513
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1529,8 +1529,8 @@ GH-consum patch 00 (cm)
 MONITOR
 327
 350
-487
-395
+495
+396
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1551,8 +1551,8 @@ GH(INICIO) patch 00 (cm)
 MONITOR
 323
 285
-486
-330
+496
+331
 DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17

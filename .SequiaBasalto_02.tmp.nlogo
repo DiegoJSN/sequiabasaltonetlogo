@@ -298,6 +298,14 @@ end
 
 
 
+
+
+
+
+
+
+
+
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 ask patches [
 set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
@@ -991,7 +999,7 @@ initial-grass-height
 initial-grass-height
 1
 7.4
-7.4
+7.0
 0.1
 1
 cm
@@ -1059,8 +1067,8 @@ TEXTBOX
 MONITOR
 1148
 297
-1241
-342
+1253
+343
 Average GH (cm)
 grass-height-report
 3
@@ -1076,7 +1084,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.1
+1.0
 0.1
 1
 NIL
@@ -1246,8 +1254,8 @@ PENS
 MONITOR
 1657
 10
-1802
-55
+1817
+56
 Accumulation of DM (kg/ha)
 DM-cm-ha * mean [grass-height] of patches * 92
 3
@@ -1418,8 +1426,8 @@ mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 MONITOR
 1746
 391
-1878
-436
+1889
+437
 PR of cows-with-calf (%)
 mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 2
@@ -1466,8 +1474,8 @@ GH(FINAL) patch 00 (cm)
 MONITOR
 327
 400
-488
-445
+497
+446
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1499,8 +1507,8 @@ DDMC cow 1 (kg/day)
 MONITOR
 326
 467
-487
-512
+496
+513
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1521,8 +1529,8 @@ GH-consum patch 00 (cm)
 MONITOR
 327
 350
-487
-395
+495
+396
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1543,8 +1551,8 @@ GH(INICIO) patch 00 (cm)
 MONITOR
 323
 285
-486
-330
+496
+331
 DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17
