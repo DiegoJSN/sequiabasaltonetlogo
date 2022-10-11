@@ -80,6 +80,7 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
 
 report-initial-grass-height ;;;;TEMP
 DDMC-patch00 ;;;;TEMP
+                                                                                                                                          gh-final ;;;;TEMP
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
@@ -184,8 +185,8 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     set r 0.002
   ]
 
-ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche ;;;;TEMP
-ask patch 0 0 [set report-initial-grass-height 20] ;;;;TEMP
+;ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche ;;;;TEMP
+;ask patch 0 0 [set report-initial-grass-height 20] ;;;;TEMP
 
 
 end
@@ -294,7 +295,7 @@ to go
 
   reproduce
 
-  ;move
+  move
 
   tick
 end
@@ -464,106 +465,26 @@ set metabolic-body-size live-weight ^ (3 / 4)
           [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
   ]
 
-;ask patches [
-; ask cows-here [let dif2cm (grass-height - 2) ;print (word ">>> dif2cm "  dif2cm) ;;;; TEMP; creamos una variable local que tenga en cuenta la diferencia en cm del valor actual de la altura de la vegetación - el límite inferior de 2 cm que es el límite en el que las vacas no pueden comer más pasto.
-;                 if (grass-height >= 2) and (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC (((dif2cm * DM-cm-ha) - (grass-height * DM-cm-ha) + (grass-height * DM-cm-ha)) / count cows-here)]]
-;  ]
-
-;ask patches [
-; ask cows-here [let dif2cm (grass-height - 2)
-;                 if (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC ((dif2cm * DM-cm-ha) / count cows-here)]]
-;  ]
-
-
-
-;ask patches [
-; ask cows-here [let dif2cm (grass-height - 2)
-;                 if (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC ((dif2cm * DM-cm-ha) / count cows-here)]]
-; ask cows-here [let dif2cm (grass-height - 2)
-;                 if (grass-height >= 2) [set DDMC ((dif2cm * DM-cm-ha) / count cows-here)]]
-;  ]
-
-
-
-;ask patches [
-; ask cows-here [if (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)]]
-; ask cows-here [if (grass-height >= 2) [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)]]
-;  ]
-
-
-;ask patches [
-  ;ask cows-here [
-;     if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
-;  ]
-
-
-
-
-
 ask patches [
-    let DDMC-final 0
-    let gh-final 0
-  ask cows-here [
-    if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC-final ((grass-height * DM-cm-ha) / count cows-here)]]
-
-
-
   set GH-consumed 0
 
   ask cows-here [
-    let totDDMC sum [DDMC-final] of cows-here
+    let totDDMC sum [DDMC] of cows-here
     set GH-consumed totDDMC / DM-cm-ha ]
 
-  set gh-final grass-height - GH-consumed
-
-;    ask cow 0 [print (word ">>> gh-final "  [gh-final] of patch 0 0)]
-
-
-; ask cows-here [
-;   ifelse gh-final >= 2
-;    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
-;    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)]
-
-
+  set gh-final (grass-height - GH-consumed)
 
  ask cows-here [
    ifelse gh-final >= 2
     [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
     [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)]
 
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
 
-
+    ]
   ]
-  ]
 
-
-
-
-
-;ask patches [
-;    let DDMC-future 0
-;    let GH-consumed-future 0
-;    let grass-height-future 0
-; ask cows-here [
-;      if (sum [DDMC] of cows-here >= (grass-height * DM-cm-ha)) [set DDMC-future (grass-height * DM-cm-ha) / count cows-here]]
-;  ask cows-here [
-;    let totDDMC sum [DDMC-future] of cows-here
-;    set GH-consumed-future totDDMC / DM-cm-ha ]
-;  set grass-height-future grass-height - GH-consumed-future
-
-;    ask cow 0 [print (word ">>> DDMC-future "  DDMC-future)]
-;    ask cow 0 [print (word ">>> GH-consumed-future "  [GH-consumed-future] of patch 0 0)]
-;    ask cow 0 [print (word ">>> grass-height-future "  [grass-height-future] of patch 0 0)]
-
-;  ask cows-here [
-;   ifelse grass-height-future >= 2
-;      [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
-;      [set DDMC ((2 - grass-height) * DM-cm-ha) / count cows-here]
-;   ]
-;]
-
-
-
+;ask patch 0 0 [print (word ">>> gh-final "  [gh-final] of patch 0 0)]
 
 end
 
@@ -1226,7 +1147,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+0.1
 0.1
 1
 NIL
@@ -1263,7 +1184,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+50.0
 1
 1
 NIL
@@ -1278,7 +1199,7 @@ initial-weight-heifer
 initial-weight-heifer
 100
 340
-111.0
+130.0
 1
 1
 kg
@@ -1410,8 +1331,8 @@ PLOT
 856
 785
 Stocking rate
-AU/ha
 Days
+AU/ha
 0.0
 92.0
 0.0
@@ -1596,17 +1517,17 @@ initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
 100
-1.0
+0.0
 1
 1
 NIL
 HORIZONTAL
 
 MONITOR
-179
-455
-327
-500
+181
+393
+329
+438
 GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
@@ -1614,10 +1535,10 @@ GH(FINAL) patch 00 (cm)
 11
 
 MONITOR
-323
-455
-493
-500
+325
+393
+495
+438
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1625,10 +1546,10 @@ DM(FINAL) patch 00 (kg/day)
 11
 
 MONITOR
-498
-409
-679
-454
+330
+520
+511
+565
 DDMC cow 0 (kg/day)
 [ddmc] of cow 0
 17
@@ -1636,10 +1557,10 @@ DDMC cow 0 (kg/day)
 11
 
 MONITOR
-497
-459
-679
-504
+329
+570
+511
+615
 DDMC cow 1 (kg/day)
 [ddmc] of cow 1
 17
@@ -1647,10 +1568,10 @@ DDMC cow 1 (kg/day)
 11
 
 MONITOR
-322
-349
-492
-394
+323
+452
+493
+497
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1658,10 +1579,10 @@ DDMC patch 00 (kg/day)
 11
 
 MONITOR
-178
-406
-336
-451
+180
+344
+338
+389
 GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1669,10 +1590,10 @@ GH-consum patch 00 (cm)
 11
 
 MONITOR
-324
-407
-492
-452
+326
+345
+494
+390
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1702,10 +1623,10 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-178
-350
-324
-395
+179
+453
+325
+498
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
@@ -1723,30 +1644,30 @@ to grow-grass ->
 1
 
 TEXTBOX
-34
-446
-173
-465
+36
+384
+175
+403
 to update-grass-height ->
 11
 0.0
 1
 
 TEXTBOX
-90
-365
-180
-384
+91
+468
+181
+487
 to eat-grass ->
 11
 0.0
 1
 
 MONITOR
-496
-509
-678
-554
+328
+620
+510
+665
 DDMC cow 2 (kg/day)
 [ddmc] of cow 2
 17
@@ -1754,10 +1675,10 @@ DDMC cow 2 (kg/day)
 11
 
 MONITOR
-496
-558
-677
-603
+328
+669
+509
+714
 DDMC cow 3 (kg/day)
 [ddmc] of cow 3
 17
@@ -1765,10 +1686,10 @@ DDMC cow 3 (kg/day)
 11
 
 MONITOR
-495
-607
-677
-652
+327
+718
+509
+763
 DDMC cow 4 (kg/day)
 [ddmc] of cow 4
 17
