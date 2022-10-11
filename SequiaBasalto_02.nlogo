@@ -222,16 +222,16 @@ create-cows initial-num-heifers [
     become-heifer ]
 
 
-create-cows initial-HEIFER-in-patch-00 [
-    set shape "cow"
-    set initial-weight initial-weight-heifer
-    set live-weight initial-weight
-    set mortality-rate natural-mortality-rate
-    set DDMC 0
-    set age heifer-age-min
+; create-cows initial-HEIFER-in-patch-00 [
+    ;set shape "cow"
+    ;set initial-weight initial-weight-heifer
+    ;set live-weight initial-weight
+    ;set mortality-rate natural-mortality-rate
+    ;set DDMC 0
+    ;set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
-    setxy 0 0
-    become-heifer ]
+    ;setxy 0 0
+    ;become-heifer ]
 
 
 end
@@ -1147,7 +1147,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.1
+1.0
 0.1
 1
 NIL
@@ -1509,10 +1509,10 @@ mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 11
 
 SLIDER
-214
-236
-406
-269
+2412
+315
+2604
+348
 initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
@@ -1524,10 +1524,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-181
-393
-329
-438
+2385
+553
+2533
+598
 GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
@@ -1535,10 +1535,10 @@ GH(FINAL) patch 00 (cm)
 11
 
 MONITOR
-325
-393
-495
-438
+2529
+553
+2699
+598
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1546,10 +1546,10 @@ DM(FINAL) patch 00 (kg/day)
 11
 
 MONITOR
-330
-520
-511
-565
+2716
+504
+2897
+549
 DDMC cow 0 (kg/day)
 [ddmc] of cow 0
 17
@@ -1557,10 +1557,10 @@ DDMC cow 0 (kg/day)
 11
 
 MONITOR
-329
-570
-511
-615
+2715
+554
+2897
+599
 DDMC cow 1 (kg/day)
 [ddmc] of cow 1
 17
@@ -1568,10 +1568,10 @@ DDMC cow 1 (kg/day)
 11
 
 MONITOR
-323
-452
-493
-497
+2528
+445
+2698
+490
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1579,10 +1579,10 @@ DDMC patch 00 (kg/day)
 11
 
 MONITOR
-180
-344
-338
-389
+2384
+504
+2542
+549
 GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1590,10 +1590,10 @@ GH-consum patch 00 (cm)
 11
 
 MONITOR
-326
-345
-494
-390
+2530
+505
+2698
+550
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1601,10 +1601,10 @@ DM-consum patch 00 (kg/day)
 11
 
 MONITOR
-179
-286
-340
-331
+2384
+380
+2545
+425
 GH(INICIO) patch 00 (cm)
 [report-initial-grass-height] of patch 0 0
 17
@@ -1612,10 +1612,10 @@ GH(INICIO) patch 00 (cm)
 11
 
 MONITOR
-325
-287
-498
-332
+2530
+381
+2703
+426
 DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1623,10 +1623,10 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-179
-453
-325
-498
+2384
+446
+2530
+491
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
@@ -1634,40 +1634,40 @@ GH-consum patch 00 (cm)
 11
 
 TEXTBOX
-84
-306
-181
-336
+2289
+400
+2386
+430
 to grow-grass ->
 11
 0.0
 1
 
 TEXTBOX
-36
-384
-175
-403
+2240
+544
+2379
+563
 to update-grass-height ->
 11
 0.0
 1
 
 TEXTBOX
-91
-468
-181
-487
+2296
+461
+2386
+480
 to eat-grass ->
 11
 0.0
 1
 
 MONITOR
-328
-620
-510
-665
+2714
+604
+2896
+649
 DDMC cow 2 (kg/day)
 [ddmc] of cow 2
 17
@@ -1675,10 +1675,10 @@ DDMC cow 2 (kg/day)
 11
 
 MONITOR
-328
-669
-509
-714
+2714
+653
+2895
+698
 DDMC cow 3 (kg/day)
 [ddmc] of cow 3
 17
@@ -1686,15 +1686,25 @@ DDMC cow 3 (kg/day)
 11
 
 MONITOR
-327
-718
-509
-763
+2713
+702
+2895
+747
 DDMC cow 4 (kg/day)
 [ddmc] of cow 4
 17
 1
 11
+
+TEXTBOX
+2409
+252
+2716
+309
+OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2 CM EN UN PARCHE (YA SOLUCIONADO)
+11
+14.0
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
