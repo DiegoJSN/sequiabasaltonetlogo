@@ -80,7 +80,8 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
 
 report-initial-grass-height ;;;;TEMP
 DDMC-patch00 ;;;;TEMP
-                                                                                                                                          gh-final ;;;;TEMP
+
+gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
@@ -357,7 +358,7 @@ set live-weight live-weight + live-weight-gain
 set metabolic-body-size live-weight ^ (3 / 4)
    ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
 
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
 ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
     ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
@@ -389,13 +390,13 @@ set metabolic-body-size live-weight ^ (3 / 4)
 ;         [set live-weight 0]
 
 
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
   ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
     ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
           [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
   ]
 end
@@ -420,18 +421,18 @@ set metabolic-body-size live-weight ^ (3 / 4)
 ;         [set live-weight 0]
 
 
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
   ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
     ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
           [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
   ]
-
-        ask patches [
-         ask cows-here [
-          if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
+ ; Con el siguiente código de "ask patches" establecemos que las vacas no puedan comer más pasto del que hay en un parche. Esto se lee de la siguiente manera:
+        ask patches [ ; "Pidele a los parches que...
+         ask cows-here [ ; "... le pidan a las vacas que SE ENCUENTRAN SOBRE ELLOS (LOS PARCHES) que...
+          if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ; "... si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
   ]
 
 end
@@ -456,14 +457,17 @@ set metabolic-body-size live-weight ^ (3 / 4)
 ;         [set live-weight 0]
 
 
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que han consumido las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
   ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
     ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
           [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
   ]
+
+   ; Cuarto, una vez calculado el requerimiento diario de DM de las vacas (es decir, el DDMC), nos aseguramos de dos cosas: primero, que las vacas no puedan comer más DM del que hay disponible en un parche y, segundo, que estando en un parche en el que hay más de 2 cm de pasto, las vacas en un solo tick puedan bajar la altura del pasto a menos de 2 cm.
+   ; Para conseguir lo segundo, primero es necesario calcular de antemano el grass-height final que tendrá el pasto una vez calculado el DDMC de los animales (básicamente es ejecutar el procedimiento "to update-grass-height" pero sin cambiar la altura final del pasto).
 
 ask patches [
   set GH-consumed 0
@@ -472,12 +476,12 @@ ask patches [
     let totDDMC sum [DDMC] of cows-here
     set GH-consumed totDDMC / DM-cm-ha ]
 
-  set gh-final (grass-height - GH-consumed)
+  set gh-final (grass-height - GH-consumed) ; Hacemos el cálculo de la altura que tendrá el pasto al final de este tick (i.e., "gh-final") teniendo en cuenta el DDMC de las vacas (recordemos que es la misma operación que ocurre en "to update-grass-height", pero sin llegar a actualizar la altura del pasto)
 
- ask cows-here [
-   ifelse gh-final >= 2
-    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]]
-    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)]
+ ask cows-here [ ; Entonces, una vez calculado el "gh-"final", le pedimos a las vacas que se encuentran sobre el parche que...
+   ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
+    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
+    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
 
     if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
 
