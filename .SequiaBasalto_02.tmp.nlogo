@@ -285,11 +285,10 @@ to go
   grow-grass
   reports-initial-grass-height ;;;;TEMP
 
- update-grass-height
+  update-grass-height
 
   eat-grass
   report-DDMC-patch00 ;;;;TEMP
-
 
 
   grow-livestock
@@ -366,6 +365,7 @@ ask patches [
 ;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
+
 
 
 
