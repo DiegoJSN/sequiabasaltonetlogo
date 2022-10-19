@@ -223,7 +223,7 @@ create-cows initial-num-heifers [
     become-heifer ]
 
 
-; create-cows initial-HEIFER-in-patch-00 [
+ ;create-cows initial-HEIFER-in-patch-00 [
     ;set shape "cow"
     ;set initial-weight initial-weight-heifer
     ;set live-weight initial-weight
@@ -285,14 +285,12 @@ to go
   grow-grass
   reports-initial-grass-height ;;;;TEMP
 
-
-
-  update-live-weight
-
-  eat-grassNEW
+  eat-grass4NEW
   report-DDMC-patch00 ;;;;TEMP
 
+  update-grass-height
 
+  update-live-weight4
 
   grow-livestock
 
@@ -302,11 +300,6 @@ to go
 
   tick
 end
-
-
-
-
-
 
 
 
@@ -325,175 +318,14 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
 ;ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
-
-
 to reports-initial-grass-height ;;;;TEMP
 
   ask patches [set report-initial-grass-height grass-height]
 
 end
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-to update-live-weight
+to eat-grass4NEW
 ask cows [
-  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
-   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
-      [set live-weight-gain weight-gain-lactation] ; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
-      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
-         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
-         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
-
-  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
-set live-weight live-weight + live-weight-gain
-  ]
-end
-
-to eat-grassNEW
-ask cows [
-set metabolic-body-size live-weight ^ (3 / 4)
-   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
-
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
-; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
-       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
-       [ifelse live-weight-gain > 0  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
-
-     ;print (word ">>> UPDATED DDMC                  " DDMC)
-  ]
-end
-
-
-
-
-
-
-
-
-
-to eat-grass
-ask cows [
-  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
-   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
-      [set live-weight-gain weight-gain-lactation] ; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
-      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
-         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
-         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
-
-  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
-set live-weight live-weight + live-weight-gain
-set metabolic-body-size live-weight ^ (3 / 4)
-   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
-
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
-; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
-       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
-       [ifelse live-weight-gain > 0  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
-
-     ;print (word ">>> UPDATED DDMC                  " DDMC)
-  ]
-end
-
-to eat-grass2 ;en el DDMC, se ha cambiado el "ifelse live-weight-gain > 0" por "ifelse grass-height >= 2"
-ask cows [
-  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
-   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
-      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
-      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
-         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
-         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
-
-  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
-set live-weight live-weight + live-weight-gain
-
-set metabolic-body-size live-weight ^ (3 / 4)
-; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
-;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
-;         [set metabolic-body-size live-weight ^ (3 / 4)]
-;         [set live-weight 0]
-
-
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
-  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
-       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
-       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
-
-  ]
-end
-
-to eat-grass3; cuando la suma total de DDMC <= grass-height * DM-cm-ha de un parche, se reparte el DDMC entre el numero de vacas de ese parche
-ask cows [
-  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
-   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
-      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
-      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
-         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
-         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
-
-  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
-set live-weight live-weight + live-weight-gain
-
-set metabolic-body-size live-weight ^ (3 / 4)
-; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
-;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
-;         [set metabolic-body-size live-weight ^ (3 / 4)]
-;         [set live-weight 0]
-
-
-  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
-  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
-       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
-       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
-          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
-  ]
- ; Con el siguiente código de "ask patches" establecemos que las vacas no puedan comer más pasto del que hay en un parche. Esto se lee de la siguiente manera:
-        ask patches [ ; "Pidele a los parches que...
-         ask cows-here [ ; "... le pidan a las vacas que SE ENCUENTRAN SOBRE ELLOS (LOS PARCHES) que...
-          if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ; "... si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
-  ]
-
-end
-
-to eat-grass4;
-ask cows [
-  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
-  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
-   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
-      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
-      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
-         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
-         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
-
-  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
-set live-weight live-weight + live-weight-gain
-
 set metabolic-body-size live-weight ^ (3 / 4)
 ; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
 ;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
@@ -535,18 +367,11 @@ ask patches [
 ;ask patch 0 0 [print (word ">>> gh-final "  [gh-final] of patch 0 0)]
 
 end
-
-
 to report-DDMC-patch00 ;;;;TEMP
 
   ask patch 0 0 [set DDMC-patch00 sum [DDMC] of cows-here]
 
 end
-
-
-
-
-
 
 
 
@@ -569,7 +394,7 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -581,6 +406,32 @@ ask patches [
 ;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
+
+
+
+
+
+
+
+
+
+
+to update-live-weight4;
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+  ]
+end
+
+
 
 
 
@@ -887,15 +738,214 @@ end
 ;de una explotación ganadera extensiva criadora en basalto. Agrociencia Uruguay 16(2): 120-130.
 ;Robins, R., Bogen, S., Francis, A., Westhoek, A., Kanarek, A., Lenhart, S., Eda, S. 2015. Agent-based model for Johne’s disease dynamics
 ;in a dairy herd. Veterinary Research 46: 68.
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; OLD PROCEDURES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+to eat-grass
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation] ; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+set metabolic-body-size live-weight ^ (3 / 4)
+   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse live-weight-gain > 0  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+     ;print (word ">>> UPDATED DDMC                  " DDMC)
+  ]
+end
+
+
+
+to eat-grassNEW
+ask cows [
+set metabolic-body-size live-weight ^ (3 / 4)
+   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse live-weight-gain > 0  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+     ;print (word ">>> UPDATED DDMC                  " DDMC)
+  ]
+end
+
+
+to update-live-weight
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation] ; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+  ]
+end
+
+
+
+
+
+to eat-grass2 ;en el DDMC, se ha cambiado el "ifelse live-weight-gain > 0" por "ifelse grass-height >= 2"
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set metabolic-body-size live-weight ^ (3 / 4)
+; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
+;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
+;         [set metabolic-body-size live-weight ^ (3 / 4)]
+;         [set live-weight 0]
+
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+  ]
+end
+
+to eat-grass3; cuando la suma total de DDMC <= grass-height * DM-cm-ha de un parche, se reparte el DDMC entre el numero de vacas de ese parche
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set metabolic-body-size live-weight ^ (3 / 4)
+; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
+;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
+;         [set metabolic-body-size live-weight ^ (3 / 4)]
+;         [set live-weight 0]
+
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+  ]
+ ; Con el siguiente código de "ask patches" establecemos que las vacas no puedan comer más pasto del que hay en un parche. Esto se lee de la siguiente manera:
+        ask patches [ ; "Pidele a los parches que...
+         ask cows-here [ ; "... le pidan a las vacas que SE ENCUENTRAN SOBRE ELLOS (LOS PARCHES) que...
+          if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ; "... si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
+  ]
+
+end
+
+to eat-grass4;
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation]; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * grass-height ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set metabolic-body-size live-weight ^ (3 / 4)
+; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
+;ifelse live-weight >= 0 ; Este código lo he puesto para evitar valores de peso negativos que darían error a la hora de calcular el metabolic body size.
+;         [set metabolic-body-size live-weight ^ (3 / 4)]
+;         [set live-weight 0]
+
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+  ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si GH es >= 2 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+          [set DDMC 0]] ;... PERO si el grass-height < 2 (if >=2 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+  ]
+
+   ; Cuarto, una vez calculado el requerimiento diario de DM de las vacas (es decir, el DDMC), nos aseguramos de dos cosas: primero, que las vacas no puedan comer más DM del que hay disponible en un parche y, segundo, que estando en un parche en el que hay más de 2 cm de pasto, las vacas en un solo tick puedan bajar la altura del pasto a menos de 2 cm.
+   ; Para conseguir lo segundo, primero es necesario calcular de antemano el grass-height final que tendrá el pasto una vez calculado el DDMC de los animales (básicamente es ejecutar el procedimiento "to update-grass-height" pero sin cambiar la altura final del pasto).
+
+ask patches [
+  set GH-consumed 0
+
+  ask cows-here [
+    let totDDMC sum [DDMC] of cows-here
+    set GH-consumed totDDMC / DM-cm-ha ]
+
+  set gh-final (grass-height - GH-consumed) ; Hacemos el cálculo de la altura que tendrá el pasto al final de este tick (i.e., "gh-final") teniendo en cuenta el DDMC de las vacas (recordemos que es la misma operación que ocurre en "to update-grass-height", pero sin llegar a actualizar la altura del pasto)
+
+ ask cows-here [ ; Entonces, una vez calculado el "gh-"final", le pedimos a las vacas que se encuentran sobre el parche que...
+   ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
+    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
+    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
+
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
+
+    ]
+  ]
+
+;ask patch 0 0 [print (word ">>> gh-final "  [gh-final] of patch 0 0)]
+
+end
+
+
+
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
-387
+385
 70
 851
-535
+537
 -1
 -1
-19.83
+19.9130435
 1
 10
 1
@@ -1246,7 +1296,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+566.0
 1
 1
 NIL
@@ -1261,7 +1311,7 @@ initial-weight-heifer
 initial-weight-heifer
 100
 340
-130.0
+340.0
 1
 1
 kg
@@ -1571,10 +1621,10 @@ mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 11
 
 SLIDER
-2412
-315
-2604
-348
+2413
+328
+2605
+361
 initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
@@ -1586,10 +1636,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-2385
-553
-2533
-598
+2386
+566
+2534
+611
 GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
@@ -1597,10 +1647,10 @@ GH(FINAL) patch 00 (cm)
 11
 
 MONITOR
-2529
-553
-2699
-598
+2530
+566
+2700
+611
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1608,10 +1658,10 @@ DM(FINAL) patch 00 (kg/day)
 11
 
 MONITOR
-2716
-504
-2897
-549
+2717
+517
+2898
+562
 DDMC cow 0 (kg/day)
 [ddmc] of cow 0
 17
@@ -1619,10 +1669,10 @@ DDMC cow 0 (kg/day)
 11
 
 MONITOR
-2715
-554
-2897
-599
+2716
+567
+2898
+612
 DDMC cow 1 (kg/day)
 [ddmc] of cow 1
 17
@@ -1630,10 +1680,10 @@ DDMC cow 1 (kg/day)
 11
 
 MONITOR
-2528
-445
-2698
-490
+2529
+458
+2699
+503
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1641,10 +1691,10 @@ DDMC patch 00 (kg/day)
 11
 
 MONITOR
-2384
-504
-2542
-549
+2385
+517
+2543
+562
 GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1652,10 +1702,10 @@ GH-consum patch 00 (cm)
 11
 
 MONITOR
-2530
-505
-2698
-550
+2531
+518
+2699
+563
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1663,10 +1713,10 @@ DM-consum patch 00 (kg/day)
 11
 
 MONITOR
-2384
-380
-2545
-425
+2385
+393
+2546
+438
 GH(INICIO) patch 00 (cm)
 [report-initial-grass-height] of patch 0 0
 17
@@ -1674,10 +1724,10 @@ GH(INICIO) patch 00 (cm)
 11
 
 MONITOR
-2530
-381
-2703
-426
+2531
+394
+2704
+439
 DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1685,10 +1735,10 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-2384
-446
-2530
-491
+2385
+459
+2531
+504
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
@@ -1696,40 +1746,40 @@ GH-consum patch 00 (cm)
 11
 
 TEXTBOX
-2289
-400
-2386
-430
+2290
+413
+2387
+443
 to grow-grass ->
 11
 0.0
 1
 
 TEXTBOX
-2240
-544
-2379
-563
+2241
+557
+2380
+576
 to update-grass-height ->
 11
 0.0
 1
 
 TEXTBOX
-2296
-461
-2386
-480
+2297
+474
+2387
+493
 to eat-grass ->
 11
 0.0
 1
 
 MONITOR
-2714
-604
-2896
-649
+2715
+617
+2897
+662
 DDMC cow 2 (kg/day)
 [ddmc] of cow 2
 17
@@ -1737,10 +1787,10 @@ DDMC cow 2 (kg/day)
 11
 
 MONITOR
-2714
-653
-2895
-698
+2715
+666
+2896
+711
 DDMC cow 3 (kg/day)
 [ddmc] of cow 3
 17
@@ -1748,10 +1798,10 @@ DDMC cow 3 (kg/day)
 11
 
 MONITOR
-2713
-702
-2895
-747
+2714
+715
+2896
+760
 DDMC cow 4 (kg/day)
 [ddmc] of cow 4
 17
