@@ -151,7 +151,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
-  set DM-cm-ha (180 / 92) * 0.4 ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by 0.4 because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+  set DM-cm-ha (180 / 92) * DM-available-for-cattle ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-available] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
@@ -928,7 +928,6 @@ ask patches [
 end
 
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 385
@@ -992,10 +991,10 @@ NIL
 1
 
 SLIDER
-28
-226
-179
-259
+29
+260
+180
+293
 initial-num-cows
 initial-num-cows
 0
@@ -1007,10 +1006,10 @@ cows
 HORIZONTAL
 
 SLIDER
-282
-114
-380
-147
+283
+148
+381
+181
 initial-season
 initial-season
 0
@@ -1158,10 +1157,10 @@ mean [live-weight] of cows
 11
 
 SLIDER
-26
-114
-167
-147
+27
+148
+168
+181
 initial-grass-height
 initial-grass-height
 1
@@ -1222,10 +1221,10 @@ PENS
 "DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
 
 TEXTBOX
-307
-54
-457
-110
+311
+79
+461
+135
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
 0.0
@@ -1243,10 +1242,10 @@ grass-height-report
 11
 
 SLIDER
-171
-114
-278
-147
+172
+148
+279
+181
 set-climaCoef
 set-climaCoef
 0.1
@@ -1280,10 +1279,10 @@ year-cnt
 11
 
 SLIDER
-27
-156
-178
-189
+28
+190
+179
+223
 initial-num-heifers
 initial-num-heifers
 0
@@ -1295,10 +1294,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-27
-190
-178
-223
+28
+224
+179
+257
 initial-weight-heifer
 initial-weight-heifer
 100
@@ -1476,10 +1475,10 @@ NIL
 1
 
 SLIDER
-28
-259
-179
-292
+29
+293
+180
+326
 initial-weight-cows
 initial-weight-cows
 100
@@ -1809,6 +1808,21 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 11
 14.0
 0
+
+SLIDER
+27
+108
+182
+141
+DM-available-for-cattle
+DM-available-for-cattle
+0
+1
+0.4
+0.1
+1
+NIL
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
