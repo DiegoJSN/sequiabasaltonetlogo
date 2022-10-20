@@ -930,7 +930,6 @@ ask patches [
 
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 385
@@ -1409,7 +1408,7 @@ PLOT
 160
 Seasonal Accumulation of dry-matter (DM) per ha
 Days
-kg/ha
+kg/ha * 92
 0.0
 92.0
 0.0
@@ -1423,9 +1422,9 @@ PENS
 MONITOR
 1657
 10
-1817
+1907
 55
-Accumulation of DM (kg/ha)
+SEASONAL Accumulation of DM (kg/ha * 92 days)
 DM-cm-ha * mean [grass-height] of patches * 92
 3
 1
@@ -1836,6 +1835,17 @@ change-of-seasons?
 change-of-seasons?
 "yes" "no"
 0
+
+MONITOR
+1657
+54
+1907
+99
+DAILY Accumulation of DM (kg/ha/day)
+DM-cm-ha * mean [grass-height] of patches
+3
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
