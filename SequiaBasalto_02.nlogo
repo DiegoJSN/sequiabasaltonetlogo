@@ -243,7 +243,9 @@ end
 
 
 to go
-  if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
+
+  if (change-of-seasons? = "yes") [
+    if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
     set number-of-season number-of-season + 1 ; to count the number of seasons in the simulation period (useful for external data of weather and market prices).
     ifelse current-season = 0 [
       set current-season 1
@@ -260,6 +262,7 @@ to go
     set year-cnt year-cnt + 1 / 4
     reset-ticks
   ]
+]
 
   set simulation-time simulation-time + days-per-tick
   ;if simulation-time >= 3680 [stop]
@@ -1823,6 +1826,16 @@ DM-available-for-cattle
 1
 NIL
 HORIZONTAL
+
+CHOOSER
+266
+21
+379
+66
+change-of-seasons?
+change-of-seasons?
+"yes" "no"
+0
 
 @#$#@#$#@
 ## WHAT IS IT?

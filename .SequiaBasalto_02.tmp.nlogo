@@ -243,7 +243,9 @@ end
 
 
 to go
-  if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
+
+  if (change-of-seasons? = "yes") [
+    if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
     set number-of-season number-of-season + 1 ; to count the number of seasons in the simulation period (useful for external data of weather and market prices).
     ifelse current-season = 0 [
       set current-season 1
@@ -260,6 +262,7 @@ to go
     set year-cnt year-cnt + 1 / 4
     reset-ticks
   ]
+]
 
   set simulation-time simulation-time + days-per-tick
   ;if simulation-time >= 3680 [stop]
@@ -290,9 +293,7 @@ to go
 
   update-grass-height
 
-  eat-grass
-
-  ;update-live-weight4
+  update-live-weight4
 
   grow-livestock
 
@@ -1181,7 +1182,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-1
+0
 
 TEXTBOX
 13
@@ -1252,7 +1253,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.5
+1.0
 0.1
 1
 NIL
@@ -1825,6 +1826,16 @@ DM-available-for-cattle
 1
 NIL
 HORIZONTAL
+
+CHOOSER
+222
+39
+360
+84
+change-of-seasons?
+change-of-seasons?
+"yes" "no"
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
