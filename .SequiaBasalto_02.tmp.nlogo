@@ -151,7 +151,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
-  set DM-cm-ha (180 / 92) * DM-available-for-cattle ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-available] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+  set DM-cm-ha (180 / 92) * DM-utilization-rate ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-utilization-rate] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
@@ -244,7 +244,7 @@ end
 
 to go
 
-  if (change-of-seasons? = "yes") [
+  if (changing-seasons? = "yes") [
     if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
     set number-of-season number-of-season + 1 ; to count the number of seasons in the simulation period (useful for external data of weather and market prices).
     ifelse current-season = 0 [
@@ -288,10 +288,12 @@ to go
   grow-grass
   reports-initial-grass-height ;;;;TEMP
 
-  eat-grass4NEW
+  ;eat-grass4NEW
   report-DDMC-patch00 ;;;;TEMP
 
   update-grass-height
+
+  eat-grass
 
   update-live-weight4
 
@@ -558,7 +560,8 @@ to become-born-calf
   set age 0
   set initial-weight 40
   set live-weight initial-weight
-  set animal-units 0.2
+  ;set animal-units 0.2
+  set animal-units live-weight / set-1-AU
   set min-weight 0
   set natural-mortality-rate 0.000054
   set except-mort-rate 0
@@ -579,7 +582,8 @@ to become-weaned-calf
   set cow-with-calf? false
   set size 0.6
   set color orange
-  set animal-units 0.5
+  ;set animal-units 0.5
+  set animal-units live-weight / set-1-AU
   set min-weight 60
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
@@ -599,7 +603,8 @@ to become-heifer
   set cow? false
   set size 0.8
   set color pink
-  set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
+  ;set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
+  set animal-units live-weight / set-1-AU
   set min-weight 100
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
@@ -620,7 +625,8 @@ to become-steer
   set cow-with-calf? false
   set size 0.9
   set color red
-  set animal-units 0.7
+  ;set animal-units 0.7
+  set animal-units live-weight / set-1-AU
   set min-weight 100
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
@@ -642,7 +648,8 @@ to become-cow
   set cow-with-calf? false
   set size 1
   set color brown
-  set animal-units 1
+  ;set animal-units 1
+  set animal-units live-weight / set-1-AU
   set min-weight 180
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.15
@@ -663,7 +670,8 @@ to become-cow-with-calf
   set cow-with-calf? true
   set size 1.1
   set color magenta
-  set animal-units 1
+  ;set animal-units 1
+  set animal-units live-weight / set-1-AU
   set min-weight 180
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.3
@@ -929,7 +937,6 @@ ask patches [
 ;ask patch 0 0 [print (word ">>> gh-final "  [gh-final] of patch 0 0)]
 
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 385
@@ -1223,10 +1230,10 @@ PENS
 "DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
 
 TEXTBOX
-311
-79
-461
-135
+298
+188
+448
+244
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
 0.0
@@ -1814,10 +1821,10 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 SLIDER
 27
 108
-182
+167
 141
-DM-available-for-cattle
-DM-available-for-cattle
+DM-utilization-rate
+DM-utilization-rate
 0
 1
 0.4
@@ -1827,14 +1834,14 @@ NIL
 HORIZONTAL
 
 CHOOSER
-266
-21
-379
-66
-change-of-seasons?
-change-of-seasons?
+279
+22
+381
+67
+changing-seasons?
+changing-seasons?
 "yes" "no"
-0
+1
 
 MONITOR
 1657
@@ -1846,6 +1853,21 @@ DM-cm-ha * mean [grass-height] of patches
 3
 1
 11
+
+SLIDER
+174
+108
+279
+141
+set-1-AU
+set-1-AU
+1
+1000
+380.0
+1
+1
+kg
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
