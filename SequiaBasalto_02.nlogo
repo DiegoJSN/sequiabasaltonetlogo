@@ -151,7 +151,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
-  set DM-cm-ha (180 / 92) * DM-utilization-rate ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-utilization-rate] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+  set DM-cm-ha (180 / 92) * DM-available-for-cattle ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-utilization-rate] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
@@ -967,10 +967,10 @@ days
 30.0
 
 BUTTON
-27
-72
-91
-105
+5
+71
+69
+104
 Setup
 Setup
 NIL
@@ -1001,10 +1001,10 @@ NIL
 1
 
 SLIDER
-29
-260
-180
-293
+7
+259
+158
+292
 initial-num-cows
 initial-num-cows
 0
@@ -1016,9 +1016,9 @@ cows
 HORIZONTAL
 
 SLIDER
-283
+263
 148
-381
+380
 181
 initial-season
 initial-season
@@ -1032,9 +1032,9 @@ HORIZONTAL
 
 PLOT
 853
-297
-1148
-439
+283
+1180
+408
 Average of grass-height (GH)
 Days
 cm
@@ -1049,10 +1049,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot grass-height-report"
 
 PLOT
-853
-438
-1148
-581
+854
+589
+1182
+732
 Average of live-weight (LW)
 Days
 kg
@@ -1077,41 +1077,23 @@ simulation-time
 1
 11
 
-PLOT
-858
-592
-1099
-785
-Total number of cattle
-Days
-Heads
-0.0
-92.0
-0.0
-0.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plot count cows"
-
 MONITOR
-571
-539
-651
-584
-Stoking rate
+385
+540
+498
+585
+Stoking rate (AU/ha)
 stocking-rate
 4
 1
 11
 
 PLOT
-1103
-591
-1521
-786
-Age classes population sizes
+383
+588
+850
+809
+Cattle age classes population sizes
 Days
 Heads
 0.0
@@ -1128,12 +1110,13 @@ PENS
 "Steer" 1.0 0 -2674135 true "" "plot count cows with [steer?]"
 "Cow" 1.0 0 -6459832 true "" "plot count cows with [cow?]"
 "Cow-with-calf" 1.0 0 -5825686 true "" "plot count cows with [cow-with-calf?]"
+"Total" 1.0 0 -16777216 true "" "plot count cows"
 
 SLIDER
-11
-525
-148
-558
+5
+369
+142
+402
 perception
 perception
 0
@@ -1145,10 +1128,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-724
-539
-853
-584
+571
+540
+700
+585
 Total number of cattle
 count cows
 7
@@ -1156,10 +1139,10 @@ count cows
 11
 
 MONITOR
-1148
-440
-1281
-485
+1183
+610
+1308
+655
 Average LW (kg)
 mean [live-weight] of cows
 3
@@ -1167,10 +1150,10 @@ mean [live-weight] of cows
 11
 
 SLIDER
-27
-148
-168
-181
+5
+147
+146
+180
 initial-grass-height
 initial-grass-height
 1
@@ -1182,40 +1165,40 @@ cm
 HORIZONTAL
 
 CHOOSER
-28
-20
-120
-65
+6
+19
+98
+64
 model-version
 model-version
 "grass model" "open access" "management model"
 1
 
 TEXTBOX
-13
-602
-184
-658
+7
+446
+178
+502
 Only if you have selected the management model, you can chose between the reactive and the proctive strategies.
 11
 0.0
 1
 
 CHOOSER
-10
-663
-158
-708
+4
+507
+152
+552
 management-strategy
 management-strategy
 "reactive" "proactive"
 0
 
 PLOT
-853
-10
-1200
-154
+854
+18
+1240
+267
 Dry-matter (DM) and DM consumption (DDMC)
 Days
 kg
@@ -1227,13 +1210,14 @@ true
 true
 "" ""
 PENS
-"DM" 1.0 0 -16777216 true "" "plot dmgr"
-"DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
+"Total DM" 1.0 0 -16777216 true "" "plot dmgr / DM-available-for-cattle"
+"Available DM" 1.0 0 -13345367 true "" "plot dmgr"
+"Total DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
 
 TEXTBOX
-298
+291
 188
-448
+441
 244
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
@@ -1241,10 +1225,10 @@ TEXTBOX
 1
 
 MONITOR
-1148
-297
-1253
-342
+1180
+284
+1285
+329
 Average GH (cm)
 grass-height-report
 3
@@ -1252,9 +1236,9 @@ grass-height-report
 11
 
 SLIDER
-172
+152
 148
-279
+259
 181
 set-climaCoef
 set-climaCoef
@@ -1289,10 +1273,10 @@ year-cnt
 11
 
 SLIDER
-28
-190
-179
-223
+6
+189
+157
+222
 initial-num-heifers
 initial-num-heifers
 0
@@ -1304,10 +1288,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-28
-224
-179
-257
+6
+223
+157
+256
 initial-weight-heifer
 initial-weight-heifer
 100
@@ -1319,10 +1303,10 @@ kg
 HORIZONTAL
 
 MONITOR
-655
-539
-721
-584
+502
+540
+568
+585
 Area (ha)
 count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-units] of cows / count patches
 7
@@ -1330,10 +1314,10 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1280
-443
-1576
-585
+1309
+587
+1724
+729
 Average of daily live-weight-gain (LWG)
 Days
 kg
@@ -1348,10 +1332,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows - (mean [live-weight] of cows - mean [live-weight-gain] of cows)"
 
 MONITOR
-1147
-483
-1279
-528
+1183
+656
+1309
+701
 Average daily LWG (kg)
 mean [live-weight] of cows - (mean [live-weight] of cows - mean [live-weight-gain] of cows)
 3
@@ -1359,10 +1343,10 @@ mean [live-weight] of cows - (mean [live-weight] of cows - mean [live-weight-gai
 11
 
 PLOT
-853
-154
-1151
-296
+854
+425
+1180
+567
 Crop-efficiency (CE)
 Days
 %
@@ -1377,10 +1361,10 @@ PENS
 "CE" 1.0 0 -16777216 true "" "plot crop-efficiency"
 
 MONITOR
-1149
-154
-1205
-199
+1181
+426
+1237
+471
 CE (%)
 crop-efficiency
 0
@@ -1388,10 +1372,10 @@ crop-efficiency
 11
 
 MONITOR
-1199
-54
-1335
-99
+1161
+178
+1310
+223
 Total DDMC (kg/day)
 sum [DDMC] of cows
 3
@@ -1399,22 +1383,22 @@ sum [DDMC] of cows
 11
 
 MONITOR
-1199
-11
-1335
-56
-Total DM (kg/day)
+1161
+134
+1310
+179
+Available DM (kg/day)
 dmgr
 3
 1
 11
 
 PLOT
-1335
+1312
 10
-1657
-160
-Seasonal Accumulation of dry-matter (DM) per ha
+1607
+133
+Seasonal Accumulation of Available DM per ha
 Days
 kg/ha * 92
 0.0
@@ -1428,50 +1412,32 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92"
 
 MONITOR
-1657
-10
-1907
-55
-SEASONAL Accumulation of DM (kg/ha * 92 days)
+1312
+179
+1607
+224
+SEASONAL Accumulation of Available DM (kg/ha * 92 days)
 DM-cm-ha * mean [grass-height] of patches * 92
 3
 1
 11
 
-PLOT
-635
-592
-856
-785
-Stocking rate
-Days
-AU/ha
-0.0
-92.0
-0.0
-0.0
-true
-false
-"" ""
-PENS
-"default" 1.0 0 -16777216 true "" "plot stocking-rate"
-
 MONITOR
-1199
-100
-1345
-145
-Mean DDMC (kg/cow/day)
+1161
+222
+1310
+267
+Mean DDMC (kg/animal/day)
 mean [DDMC] of cows
 3
 1
 11
 
 BUTTON
-93
-72
-159
-105
+71
+71
+137
+104
 Go (1 day)
 go
 NIL
@@ -1485,10 +1451,10 @@ NIL
 1
 
 SLIDER
-29
-293
-180
-326
+7
+292
+158
+325
 initial-weight-cows
 initial-weight-cows
 100
@@ -1500,10 +1466,10 @@ kg
 HORIZONTAL
 
 PLOT
-1335
-159
-1745
-301
+1311
+265
+1721
+407
 Body Condition Score (BCS)
 Days
 points
@@ -1524,10 +1490,10 @@ PENS
 "Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-SW-1-AU) / set-1-AU)) / 40"
 
 MONITOR
-1745
-159
-1866
-204
+1721
+265
+1852
+310
 Average BCS (points)
 ; (mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-SW-1-AU) / set-1-AU)) / 40
 2
@@ -1535,10 +1501,10 @@ Average BCS (points)
 11
 
 MONITOR
-1745
-204
-1866
-249
+1721
+310
+1851
+355
 BCS of cows (points)
 ; (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-SW-1-AU) / set-1-AU)) / 40
 2
@@ -1546,10 +1512,10 @@ BCS of cows (points)
 11
 
 MONITOR
-1745
-249
-1875
-294
+1721
+355
+1851
+400
 BCS of heifers (points)
 ; (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-SW-1-AU) / set-1-AU)) / 40
 2
@@ -1557,10 +1523,10 @@ BCS of heifers (points)
 11
 
 PLOT
-1335
-300
-1745
-441
+1312
+425
+1722
+566
 Pregnancy Rate (PR)
 Days
 %
@@ -1578,10 +1544,10 @@ PENS
 "Average PR" 1.0 0 -16777216 true "" "plot mean [pregnancy-rate] of cows * 368 * 100"
 
 MONITOR
-1745
-300
-1876
-345
+1722
+425
+1853
+470
 Average PR (%)
 mean [pregnancy-rate] of cows * 368 * 100
 2
@@ -1589,10 +1555,10 @@ mean [pregnancy-rate] of cows * 368 * 100
 11
 
 MONITOR
-1745
-345
-1877
-390
+1722
+470
+1854
+515
 PR of cows (%)
 mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 2
@@ -1600,10 +1566,10 @@ mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 11
 
 MONITOR
-1746
-391
-1889
-436
+1723
+516
+1866
+561
 PR of cows-with-calf (%)
 mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 2
@@ -1611,10 +1577,10 @@ mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 11
 
 MONITOR
-1746
-435
-1879
-480
+1723
+560
+1856
+605
 PR of heifers (%)
 mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 2
@@ -1820,12 +1786,12 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 0
 
 SLIDER
-27
+5
 108
-155
+156
 141
-DM-utilization-rate
-DM-utilization-rate
+DM-available-for-cattle
+DM-available-for-cattle
 0
 1
 0.4
@@ -1845,11 +1811,11 @@ changing-seasons?
 0
 
 MONITOR
-1657
-54
-1907
-99
-DAILY Accumulation of DM (kg/ha/day)
+1312
+134
+1607
+179
+DAILY Accumulation of Available DM (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches
 3
 1
@@ -1884,6 +1850,17 @@ set-SW-1-AU
 1
 kg
 HORIZONTAL
+
+MONITOR
+1161
+90
+1310
+135
+Total DM (kg/day)
+dmgr / DM-available-for-cattle
+3
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
