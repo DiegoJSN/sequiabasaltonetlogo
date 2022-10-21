@@ -288,12 +288,12 @@ to go
   grow-grass
   reports-initial-grass-height ;;;;TEMP
 
-  ;eat-grass4NEW
+  eat-grass4NEW
   report-DDMC-patch00 ;;;;TEMP
 
   update-grass-height
 
-  eat-grass
+  ;eat-grass
 
   update-live-weight4
 
@@ -441,9 +441,10 @@ ask cows [
 
   ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
 set live-weight live-weight + live-weight-gain
+
+set animal-units live-weight / set-1-AU
   ]
 end
-
 
 
 
@@ -1296,7 +1297,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+1.0
 1
 1
 NIL
@@ -1841,7 +1842,7 @@ CHOOSER
 changing-seasons?
 changing-seasons?
 "yes" "no"
-1
+0
 
 MONITOR
 1657

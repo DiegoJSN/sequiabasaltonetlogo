@@ -441,9 +441,10 @@ ask cows [
 
   ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
 set live-weight live-weight + live-weight-gain
+
+set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
   ]
 end
-
 
 
 
