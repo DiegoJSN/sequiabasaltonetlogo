@@ -461,7 +461,7 @@ ask cows [
 ; Primero: se codifican las reglas por las que los animales mueren.
 ; Es interesante mencionar que, por ahora (en el open access (antes llamado "wild model"), los animales tienen dos formas de morir: por edad (age) o por mortality rate (que puede ser natural o expecional)
   if age > cow-age-max [die] ; Si la edad (age) del agente es mayor que la edad máxima establecida (cow-age-max), el agente muere
-  ifelse live-weight < min-weight ; Pero si la edad se encuentra por debajo del cow-age-max Y SI el peso vivo del animal se encuentra por debajo del peso mínimo (min-weight)...
+   ifelse live-weight < min-weight ; Pero si la edad se encuentra por debajo del cow-age-max Y SI el peso vivo del animal se encuentra por debajo del peso mínimo (min-weight)...
      [set mortality-rate except-mort-rate] ; ...si esto es TRUE, el animal tendrá una mortality rate = except-mort-rate (mortality rate excepcional, recordemos que exceptional mortality rates increases to 15% (= 0.00041 a day) in cows, 30% (= 0.000815) in pregnant cows, and 23% (0.000625) in the rest of categories.)
      [set mortality-rate natural-mortality-rate] ;...si esto es FALSE, el animal tendrá una mortality rate = natural-mortality rate (annual natural mortality = 2% (in a day = 0.000054))
   if random-float 1 < mortality-rate [die] ; Como el mortality rate es una probabilidad, el animal morirá cuando el mortality rate sea mayor que un número generado al azar entre 0 y 0.999
@@ -1515,13 +1515,13 @@ true
 true
 "" ""
 PENS
-"Born-calf" 1.0 0 -13791810 true "" "plot (mean [live-weight] of cows with [born-calf?] - mean [min-weight] of cows with [born-calf?]) / 40"
-"Weaned-calf" 1.0 0 -955883 true "" "plot (mean [live-weight] of cows with [weaned-calf?] - mean [min-weight] of cows with [weaned-calf?]) / 40"
-"Heifer" 1.0 0 -2064490 true "" "plot (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40"
-"Steer" 1.0 0 -2674135 true "" "plot (mean [live-weight] of cows with [steer?] - mean [min-weight] of cows with [steer?]) / 40"
-"Cow" 1.0 0 -6459832 true "" "plot (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40"
-"Cow-with-calf" 1.0 0 -5825686 true "" "plot (mean [live-weight] of cows with [cow-with-calf?] - mean [min-weight] of cows with [cow-with-calf?]) / 40"
-"Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - mean [min-weight] of cows) / 40"
+"Born-calf" 1.0 0 -13791810 true "" "plot (mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-SW-1-AU) / set-1-AU)) / 40   "
+"Weaned-calf" 1.0 0 -955883 true "" "plot (mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-SW-1-AU) / set-1-AU)) / 40      "
+"Heifer" 1.0 0 -2064490 true "" "(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-SW-1-AU) / set-1-AU)) / 40"
+"Steer" 1.0 0 -2674135 true "" "plot (mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-SW-1-AU) / set-1-AU)) / 40"
+"Cow" 1.0 0 -6459832 true "" "(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-SW-1-AU) / set-1-AU)) / 40"
+"Cow-with-calf" 1.0 0 -5825686 true "" "plot (mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-SW-1-AU) / set-1-AU)) / 40"
+"Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-SW-1-AU) / set-1-AU)) / 40"
 
 MONITOR
 1745
@@ -1529,7 +1529,7 @@ MONITOR
 1866
 204
 Average BCS (points)
-(mean [live-weight] of cows - mean [min-weight] of cows) / 40
+; (mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-SW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -1540,7 +1540,7 @@ MONITOR
 1866
 249
 BCS of cows (points)
-(mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40
+; (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-SW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -1551,7 +1551,7 @@ MONITOR
 1875
 294
 BCS of heifers (points)
-(mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40
+; (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-SW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -1822,7 +1822,7 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 SLIDER
 27
 108
-167
+155
 141
 DM-utilization-rate
 DM-utilization-rate
@@ -1856,15 +1856,30 @@ DM-cm-ha * mean [grass-height] of patches
 11
 
 SLIDER
-174
-108
-279
-141
+158
+109
+257
+142
 set-1-AU
 set-1-AU
 1
 1000
 380.0
+1
+1
+kg
+HORIZONTAL
+
+SLIDER
+260
+109
+381
+142
+set-SW-1-AU
+set-SW-1-AU
+1
+1000
+220.0
 1
 1
 kg
