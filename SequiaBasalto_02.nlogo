@@ -286,10 +286,10 @@ to go
 
 
   grow-grass
-  reports-initial-grass-height ;;;;TEMP
+  ;reports-initial-grass-height ;;;;TEMP
 
   eat-grass4NEW
-  report-DDMC-patch00 ;;;;TEMP
+  ;report-DDMC-patch00 ;;;;TEMP
 
   update-grass-height
 
@@ -884,7 +884,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
 
 end
 
-to eat-grass4;
+to eat-grass4; se ha añadido un condicionante que hace que las vacas coman hasta que dejan el pasto a 2 cm.
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
   ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):

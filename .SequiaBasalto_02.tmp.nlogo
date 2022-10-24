@@ -286,10 +286,10 @@ to go
 
 
   grow-grass
-  reports-initial-grass-height ;;;;TEMP
+  ;reports-initial-grass-height ;;;;TEMP
 
   eat-grass4NEW
-  report-DDMC-patch00 ;;;;TEMP
+  ;report-DDMC-patch00 ;;;;TEMP
 
   update-grass-height
 
@@ -884,7 +884,7 @@ set metabolic-body-size live-weight ^ (3 / 4)
 
 end
 
-to eat-grass4;
+to eat-grass4; se ha añadido un condicionante que hace que las vacas coman hasta que dejan el pasto a 2 cm (es decir, que no puedan consumir pasto
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
   ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
@@ -1588,10 +1588,10 @@ mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 11
 
 SLIDER
-2593
-318
-2785
-351
+2773
+323
+2965
+356
 initial-HEIFER-in-patch-00
 initial-HEIFER-in-patch-00
 0
@@ -1603,10 +1603,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-2566
-556
-2714
-601
+2746
+561
+2894
+606
 GH(FINAL) patch 00 (cm)
 [grass-height] of patch 0 0
 17
@@ -1614,10 +1614,10 @@ GH(FINAL) patch 00 (cm)
 11
 
 MONITOR
-2710
-556
-2880
-601
+2890
+561
+3060
+606
 DM(FINAL) patch 00 (kg/day)
 [grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1625,10 +1625,10 @@ DM(FINAL) patch 00 (kg/day)
 11
 
 MONITOR
-2897
-507
-3078
-552
+3077
+512
+3258
+557
 DDMC cow 0 (kg/day)
 [ddmc] of cow 0
 17
@@ -1636,10 +1636,10 @@ DDMC cow 0 (kg/day)
 11
 
 MONITOR
-2896
-557
-3078
-602
+3076
+562
+3258
+607
 DDMC cow 1 (kg/day)
 [ddmc] of cow 1
 17
@@ -1647,10 +1647,10 @@ DDMC cow 1 (kg/day)
 11
 
 MONITOR
-2709
-448
-2879
-493
+2889
+453
+3059
+498
 DDMC patch 00 (kg/day)
 [DDMC-patch00] of patch 0 0
 17
@@ -1658,10 +1658,10 @@ DDMC patch 00 (kg/day)
 11
 
 MONITOR
-2565
-507
-2723
-552
+2745
+512
+2903
+557
 GH-consum patch 00 (cm)
 [gh-consumed] of patch 0 0
 17
@@ -1669,10 +1669,10 @@ GH-consum patch 00 (cm)
 11
 
 MONITOR
-2711
-508
-2879
-553
+2891
+513
+3059
+558
 DM-consum patch 00 (kg/day)
 [gh-consumed] of patch 0 0 * DM-cm-ha
 17
@@ -1680,10 +1680,10 @@ DM-consum patch 00 (kg/day)
 11
 
 MONITOR
-2565
-383
-2726
-428
+2745
+388
+2906
+433
 GH(INICIO) patch 00 (cm)
 [report-initial-grass-height] of patch 0 0
 17
@@ -1691,10 +1691,10 @@ GH(INICIO) patch 00 (cm)
 11
 
 MONITOR
-2711
-384
-2884
-429
+2891
+389
+3064
+434
 DM(INICIO) patch 00 (kg/day)
 [report-initial-grass-height] of patch 0 0 * DM-cm-ha
 17
@@ -1702,10 +1702,10 @@ DM(INICIO) patch 00 (kg/day)
 11
 
 MONITOR
-2565
-449
-2711
-494
+2745
+454
+2891
+499
 GH-consum patch 00 (cm)
 [DDMC-patch00] of patch 0 0 / Dm-cm-ha
 17
@@ -1713,40 +1713,40 @@ GH-consum patch 00 (cm)
 11
 
 TEXTBOX
-2470
-403
-2567
-433
+2650
+408
+2747
+438
 to grow-grass ->
 11
 0.0
 1
 
 TEXTBOX
-2421
-547
-2560
-566
+2601
+552
+2740
+571
 to update-grass-height ->
 11
 0.0
 1
 
 TEXTBOX
-2477
-464
-2567
-483
+2657
+469
+2747
+488
 to eat-grass ->
 11
 0.0
 1
 
 MONITOR
-2895
-607
-3077
-652
+3075
+612
+3257
+657
 DDMC cow 2 (kg/day)
 [ddmc] of cow 2
 17
@@ -1754,10 +1754,10 @@ DDMC cow 2 (kg/day)
 11
 
 MONITOR
-2895
-656
-3076
-701
+3075
+661
+3256
+706
 DDMC cow 3 (kg/day)
 [ddmc] of cow 3
 17
@@ -1765,10 +1765,10 @@ DDMC cow 3 (kg/day)
 11
 
 MONITOR
-2894
-705
-3076
-750
+3074
+710
+3256
+755
 DDMC cow 4 (kg/day)
 [ddmc] of cow 4
 17
@@ -1776,10 +1776,10 @@ DDMC cow 4 (kg/day)
 11
 
 TEXTBOX
-2589
-242
-2896
-299
+2769
+247
+3076
+304
 OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2 CM EN UN PARCHE (YA SOLUCIONADO)
 11
 14.0
