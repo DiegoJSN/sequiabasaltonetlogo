@@ -222,7 +222,6 @@ create-cows initial-num-heifers [
     setxy random-pxcor random-pycor
     become-heifer ]
 
-
  ;create-cows initial-HEIFER-in-patch-00 [
     ;set shape "cow"
     ;set initial-weight initial-weight-heifer
@@ -233,6 +232,17 @@ create-cows initial-num-heifers [
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     ;setxy 0 0
     ;become-heifer ]
+
+  create-cows initial-num-steers [
+    set shape "cow"
+    set initial-weight initial-weight-steer
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+    setxy random-pxcor random-pycor
+    become-steer ]
 
 
 end
@@ -1006,10 +1016,10 @@ NIL
 1
 
 SLIDER
-8
-251
-159
-284
+9
+356
+160
+389
 initial-num-cows
 initial-num-cows
 0
@@ -1125,10 +1135,10 @@ PENS
 "Total" 1.0 0 -16777216 true "" "plot count cows"
 
 SLIDER
-6
-361
-143
-394
+10
+615
+147
+648
 perception
 perception
 0
@@ -1187,20 +1197,20 @@ model-version
 1
 
 TEXTBOX
-8
-438
-179
-494
+12
+692
+183
+748
 Only if you have selected the management model, you can chose between the reactive and the proctive strategies.
 11
 0.0
 1
 
 CHOOSER
-5
-499
-153
-544
+9
+753
+157
+798
 management-strategy
 management-strategy
 "reactive" "proactive"
@@ -1227,10 +1237,10 @@ PENS
 "Total DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
 
 TEXTBOX
-292
-180
-442
-236
+307
+179
+457
+235
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
 0.0
@@ -1285,25 +1295,25 @@ year-cnt
 11
 
 SLIDER
-7
-181
-158
-214
+8
+271
+159
+304
 initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+0.0
 1
 1
 NIL
 HORIZONTAL
 
 SLIDER
-7
-215
-158
-248
+8
+305
+159
+338
 initial-weight-heifer
 initial-weight-heifer
 100
@@ -1458,10 +1468,10 @@ NIL
 1
 
 SLIDER
-8
-284
-159
-317
+9
+389
+160
+422
 initial-weight-cows
 initial-weight-cows
 100
@@ -1945,6 +1955,36 @@ mean [live-weight-gain] of cows with [cow?]
 3
 1
 11
+
+SLIDER
+8
+193
+159
+226
+initial-num-steers
+initial-num-steers
+0
+1000
+315.0
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+8
+224
+159
+257
+initial-weight-steer
+initial-weight-steer
+100
+1500
+300.0
+1
+1
+kg
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
