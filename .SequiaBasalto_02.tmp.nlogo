@@ -945,13 +945,13 @@ ask patches [
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
-385
+386
 70
 851
-537
+536
 -1
 -1
-19.9130435
+19.74
 1
 10
 1
@@ -1013,7 +1013,7 @@ SLIDER
 initial-num-cows
 initial-num-cows
 0
-700
+1000
 0.0
 1
 1
@@ -1057,7 +1057,7 @@ PLOT
 854
 589
 1182
-732
+809
 Live-weight (LW)
 Days
 kg
@@ -1080,9 +1080,9 @@ PENS
 
 MONITOR
 566
-20
+11
 644
-65
+56
 Time (days)
 simulation-time
 2
@@ -1178,9 +1178,9 @@ HORIZONTAL
 
 CHOOSER
 6
-19
+10
 98
-64
+55
 model-version
 model-version
 "grass model" "open access" "management model"
@@ -1208,7 +1208,7 @@ management-strategy
 
 PLOT
 854
-18
+10
 1240
 267
 Dry-matter (DM) and DM consumption (DDMC)
@@ -1264,9 +1264,9 @@ HORIZONTAL
 
 MONITOR
 385
-20
+11
 472
-65
+56
 Season
 season-report
 17
@@ -1275,9 +1275,9 @@ season-report
 
 MONITOR
 479
-20
+11
 561
-65
+56
 Time (years)
 year-cnt
 2
@@ -1307,7 +1307,7 @@ SLIDER
 initial-weight-heifer
 initial-weight-heifer
 100
-1000
+1500
 200.0
 1
 1
@@ -1329,7 +1329,7 @@ PLOT
 1309
 587
 1724
-729
+810
 Daily live-weight-gain (LWG)
 Days
 kg
@@ -1403,7 +1403,7 @@ dmgr
 PLOT
 1312
 10
-1607
+1718
 133
 Seasonal Accumulation of Available DM per ha
 Days
@@ -1465,7 +1465,7 @@ SLIDER
 initial-weight-cows
 initial-weight-cows
 100
-1000
+1500
 380.0
 1
 1
@@ -1809,9 +1809,9 @@ HORIZONTAL
 
 CHOOSER
 279
-22
+13
 381
-67
+58
 changing-seasons?
 changing-seasons?
 "yes" "no"
@@ -1836,7 +1836,7 @@ SLIDER
 set-1-AU
 set-1-AU
 1
-1000
+1500
 380.0
 1
 1
@@ -1851,7 +1851,7 @@ SLIDER
 set-MW-1-AU
 set-MW-1-AU
 1
-1000
+1500
 220.0
 1
 1
