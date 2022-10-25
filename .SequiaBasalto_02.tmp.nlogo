@@ -472,7 +472,7 @@ ask cows [
     ifelse random-float 1 < 0.5 ; ...hay un 50% de probabilidades de que el animal se convierta en el age class "heifer" o "steer".
       [become-heifer] ; la regla para heifer: Si un número generado al azar entre 0 y 0.99 (random-float 1) es menor que 0.5, el animal se convertira en "heifer"
       [become-steer]] ; la regla para steer: Si el número es mayor que 0.5, se convertirá en "steer"
-  if (heifer? = true) and (age >= cow-age-min) and (live-weight >= set-1-AU ) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= , el animal pasa al age class de "cow"
+  if (heifer? = true) and (age >= cow-age-min) and (live-weight >= set-1-AU ) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= set-1-AU, el animal pasa al age class de "cow"
 
   if cow-with-calf? = true [set lactating-time lactating-time + days-per-tick] ; si el agente es un "cow-with-calf" (si esto es TRUE), se establece (set) que el lactating-time = lactating-time + days-per-tick
   if lactating-time = lactation-period [become-cow] ; la regla para cow: cuando el lactating-time = lactation-period, el agente del age class "cow-with-calf" se convierte en el age class "cow"
@@ -1058,7 +1058,7 @@ PLOT
 589
 1182
 732
-Average of live-weight (LW)
+Live-weight (LW)
 Days
 kg
 0.0
@@ -1066,10 +1066,17 @@ kg
 0.0
 0.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
+"Average LW" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
+"Born-calf" 1.0 0 -13791810 true "" "plot mean [live-weight] of cows with [born-calf?]"
+"Weaned-calf" 1.0 0 -955883 true "" "plot mean [live-weight] of cows with [weaned-calf?]"
+"Heifer" 1.0 0 -2064490 true "" "plot mean [live-weight] of cows with [heifer?]"
+"Steer" 1.0 0 -2674135 true "" "plot mean [live-weight] of cows with [steer?]"
+"Cow" 1.0 0 -6459832 true "" "plot mean [live-weight] of cows with [cow?]"
+"Cow-with-calf" 1.0 0 -5825686 true "" "plot mean [live-weight] of cows with [cow-with-calf?]"
+"Average" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
 
 MONITOR
 566
@@ -1145,9 +1152,9 @@ count cows
 
 MONITOR
 1183
-610
+589
 1308
-655
+634
 Average LW (kg)
 mean [live-weight] of cows
 3
@@ -1232,7 +1239,7 @@ TEXTBOX
 MONITOR
 1180
 284
-1285
+1288
 329
 Average GH (cm)
 grass-height-report
@@ -1323,7 +1330,7 @@ PLOT
 587
 1724
 729
-Average of daily live-weight-gain (LWG)
+Daily live-weight-gain (LWG)
 Days
 kg
 0.0
@@ -1331,21 +1338,16 @@ kg
 0.0
 0.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows - (mean [live-weight] of cows - mean [live-weight-gain] of cows)"
-
-MONITOR
-1183
-656
-1309
-701
-Average daily LWG (kg)
-mean [live-weight] of cows - (mean [live-weight] of cows - mean [live-weight-gain] of cows)
-3
-1
-11
+"Born-calf" 1.0 0 -13791810 true "" "plot mean [live-weight-gain] of cows with [born-calf?]"
+"Weaned-calf" 1.0 0 -955883 true "" "plot mean [live-weight-gain] of cows with [weaned-calf?]"
+"Heifer" 1.0 0 -2064490 true "" "plot mean [live-weight-gain] of cows with [heifer?]"
+"Steer" 1.0 0 -2674135 true "" "plot mean [live-weight-gain] of cows with [steer?]"
+"Cow" 1.0 0 -6459832 true "" "plot mean [live-weight-gain] of cows with [cow?]"
+"Cow-with-calf" 1.0 0 -7500403 true "" "plot mean [live-weight-gain] of cows with [cow-with-calf?]"
+"Average LWG" 1.0 0 -16777216 true "" "plot mean [live-weight-gain] of cows"
 
 PLOT
 854
@@ -1430,9 +1432,9 @@ DM-cm-ha * mean [grass-height] of patches * 92
 MONITOR
 1161
 222
-1310
+1348
 267
-Mean DDMC (kg/animal/day)
+Average DDMC (kg/animal/day)
 mean [DDMC] of cows
 3
 1
@@ -1471,10 +1473,10 @@ kg
 HORIZONTAL
 
 PLOT
-1311
-265
-1721
-407
+1309
+236
+1719
+378
 Body Condition Score (BCS)
 Days
 points
@@ -1495,10 +1497,10 @@ PENS
 "Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40"
 
 MONITOR
-1721
-265
-1852
-310
+1784
+370
+1915
+415
 Average BCS (points)
 ; (mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1506,10 +1508,10 @@ Average BCS (points)
 11
 
 MONITOR
-1721
-310
-1851
-355
+1719
+281
+1849
+326
 BCS of cows (points)
 ; (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1517,10 +1519,10 @@ BCS of cows (points)
 11
 
 MONITOR
-1721
-355
-1851
-400
+1719
+326
+1849
+371
 BCS of heifers (points)
 ; (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1550,9 +1552,9 @@ PENS
 
 MONITOR
 1722
-425
+559
 1853
-470
+604
 Average PR (%)
 mean [pregnancy-rate] of cows * 368 * 100
 2
@@ -1571,10 +1573,10 @@ mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 11
 
 MONITOR
-1723
-516
-1866
-561
+1722
+426
+1865
+471
 PR of cows-with-calf (%)
 mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 2
@@ -1582,10 +1584,10 @@ mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 11
 
 MONITOR
-1723
-560
-1856
-605
+1722
+514
+1855
+559
 PR of heifers (%)
 mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 2
@@ -1863,6 +1865,83 @@ MONITOR
 135
 Total DM (kg/day)
 dmgr / DM-available-for-cattle
+3
+1
+11
+
+MONITOR
+1183
+635
+1308
+680
+Average daily LWG (kg)
+mean [live-weight-gain] of cows
+3
+1
+11
+
+MONITOR
+1719
+236
+1874
+281
+BCS of cows-with-calf (points)
+(mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
+2
+1
+11
+
+MONITOR
+1848
+280
+2015
+325
+BCS of weaned-calf (points)
+(mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
+2
+1
+11
+
+MONITOR
+1848
+325
+2015
+370
+BCS of steer (points)
+(mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40
+2
+1
+11
+
+MONITOR
+1874
+236
+2015
+281
+BCS of born-calf (points)
+(mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
+2
+1
+11
+
+MONITOR
+1181
+687
+1314
+732
+Average LW of cows (kg)
+mean [live-weight] of cows with [cow?]
+3
+1
+11
+
+MONITOR
+1182
+732
+1347
+777
+Average daily LWG of cows (kg)
+mean [live-weight-gain] of cows with [cow?]
 3
 1
 11
