@@ -15,7 +15,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  season-coef ;It affects the live weight gain in relation with the grass quality according to the season, winter = 1; spring = 1.15, summer = 1.05, fall = 1.
              ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain (seasonCoef variable)
 
-;Time related global variables
+;Time related global variables.
 
  days-per-tick ; variable to simulate time.
  number-of-season ; to keep track of the number of seasons in 10 years of simulation (10 years = 3680 days = 40 seasons).
