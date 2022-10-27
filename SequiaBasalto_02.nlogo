@@ -744,9 +744,9 @@ end
 
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
-; export-plot plotname filename ; por ejemplo 1: export-plot "Dinamica del pasto" "dm_winter.csv"
-;                                     ejemplo 2: export-plot "Average of grass height" "gh_winter.csv"
-;                                     ejemplo 3: export-plot "Average of live-weight" "047_1_lw_winter.csv"
+; export-plot plotname filename ; por ejemplo 1: export-plot "Dry-matter (DM) and DM consumption (DDMC)" "dm_winter.csv"
+;                                     ejemplo 2: export-plot "Average of grass-height (GH)" "gh_winter.csv"
+;                                     ejemplo 3: export-plot "Live-weight (LW)" "047_1_lw_winter.csv"
 
 
 
@@ -1047,9 +1047,9 @@ HORIZONTAL
 
 PLOT
 854
-274
+278
 1181
-399
+403
 Average of grass-height (GH)
 Days
 cm
@@ -1194,7 +1194,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-1
+0
 
 TEXTBOX
 12
@@ -1248,9 +1248,9 @@ TEXTBOX
 
 MONITOR
 1181
-275
+279
 1289
-320
+324
 Average GH (cm)
 grass-height-report
 3
@@ -1389,10 +1389,10 @@ crop-efficiency
 11
 
 MONITOR
-1161
-178
-1310
-223
+1159
+163
+1308
+208
 Total DDMC (kg/day)
 sum [DDMC] of cows
 3
@@ -1400,10 +1400,10 @@ sum [DDMC] of cows
 11
 
 MONITOR
-1161
-134
-1310
-179
+1159
+119
+1308
+164
 Available DM (kg/day)
 dmgr
 3
@@ -1411,39 +1411,40 @@ dmgr
 11
 
 PLOT
-1312
+1475
 10
-1718
-133
-Seasonal Accumulation of Available DM per ha
+1881
+200
+Seasonal Accumulation DM per ha
 Days
-kg/ha * 92
+(kg/ha) * 92
 0.0
 92.0
 0.0
 10.0
 true
-false
+true
 "" ""
 PENS
-"default" 1.0 0 -16777216 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92"
+"Total DM" 1.0 0 -16777216 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle"
+"Available DM" 1.0 0 -13345367 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92"
 
 MONITOR
-1312
-179
-1607
-224
-SEASONAL Accumulation of Available DM (kg/ha * 92 days)
+1799
+122
+1948
+167
+Available DM (kg/ha/season)
 DM-cm-ha * mean [grass-height] of patches * 92
 3
 1
 11
 
 MONITOR
-1161
-222
-1348
-267
+1159
+207
+1346
+252
 Average DDMC (kg/animal/day)
 mean [DDMC] of cows
 3
@@ -1483,10 +1484,10 @@ kg
 HORIZONTAL
 
 PLOT
-1310
-227
-1720
-369
+1353
+228
+1754
+370
 Body Condition Score (BCS)
 Days
 points
@@ -1507,10 +1508,10 @@ PENS
 "Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40"
 
 MONITOR
-1785
-361
-1916
-406
+1819
+362
+1950
+407
 Average BCS (points)
 ; (mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1518,10 +1519,10 @@ Average BCS (points)
 11
 
 MONITOR
-1720
-272
-1850
-317
+1754
+273
+1884
+318
 BCS of cows (points)
 ; (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1529,10 +1530,10 @@ BCS of cows (points)
 11
 
 MONITOR
-1720
-317
-1850
-362
+1754
+318
+1884
+363
 BCS of heifers (points)
 ; (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1540,10 +1541,10 @@ BCS of heifers (points)
 11
 
 PLOT
-1313
-416
-1723
-557
+1347
+417
+1757
+558
 Pregnancy Rate (PR)
 Days
 %
@@ -1561,10 +1562,10 @@ PENS
 "Average PR" 1.0 0 -16777216 true "" "plot mean [pregnancy-rate] of cows * 368 * 100"
 
 MONITOR
-1723
-550
-1854
-595
+1757
+551
+1888
+596
 Average PR (%)
 mean [pregnancy-rate] of cows * 368 * 100
 2
@@ -1572,10 +1573,10 @@ mean [pregnancy-rate] of cows * 368 * 100
 11
 
 MONITOR
-1723
-461
-1855
-506
+1757
+462
+1889
+507
 PR of cows (%)
 mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 2
@@ -1583,10 +1584,10 @@ mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 11
 
 MONITOR
-1723
-417
-1866
-462
+1757
+418
+1900
+463
 PR of cows-with-calf (%)
 mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 2
@@ -1594,10 +1595,10 @@ mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 11
 
 MONITOR
-1723
-505
-1856
-550
+1757
+506
+1890
+551
 PR of heifers (%)
 mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 2
@@ -1828,11 +1829,11 @@ changing-seasons?
 0
 
 MONITOR
-1312
-134
-1607
-179
-DAILY Accumulation of Available DM (kg/ha/day)
+1307
+119
+1476
+164
+Available DM per ha (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches
 3
 1
@@ -1869,10 +1870,10 @@ kg
 HORIZONTAL
 
 MONITOR
-1161
-90
-1310
-135
+1159
+75
+1308
+120
 Total DM (kg/day)
 dmgr / DM-available-for-cattle
 3
@@ -1891,10 +1892,10 @@ mean [live-weight-gain] of cows
 11
 
 MONITOR
-1720
-227
-1875
-272
+1754
+228
+1909
+273
 BCS of cows-with-calf (points)
 (mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1902,10 +1903,10 @@ BCS of cows-with-calf (points)
 11
 
 MONITOR
-1849
-271
-2016
-316
+1883
+272
+2050
+317
 BCS of weaned-calf (points)
 (mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1913,10 +1914,10 @@ BCS of weaned-calf (points)
 11
 
 MONITOR
-1849
-316
-2016
-361
+1883
+317
+2050
+362
 BCS of steer (points)
 (mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1924,10 +1925,10 @@ BCS of steer (points)
 11
 
 MONITOR
-1875
-227
-2016
-272
+1909
+228
+2050
+273
 BCS of born-calf (points)
 (mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1985,6 +1986,28 @@ initial-weight-steer
 1
 kg
 HORIZONTAL
+
+MONITOR
+1799
+79
+1948
+124
+Total DM (kg/ha/season)
+DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle
+3
+1
+11
+
+MONITOR
+1307
+75
+1476
+120
+Total DM per ha (kg/ha/day)
+DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
+3
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
