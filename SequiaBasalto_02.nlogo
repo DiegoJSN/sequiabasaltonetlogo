@@ -419,7 +419,7 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -1305,7 +1305,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+315.0
 1
 1
 NIL
@@ -1320,7 +1320,7 @@ initial-weight-heifer
 initial-weight-heifer
 100
 1500
-200.0
+300.0
 1
 1
 kg
@@ -1968,7 +1968,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-315.0
+0.0
 1
 1
 NIL
