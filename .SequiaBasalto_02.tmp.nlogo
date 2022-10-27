@@ -280,12 +280,14 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
+  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+
   if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
   if simulation-time = 184 [stop]
   if simulation-time = 276 [stop]
   if simulation-time = 368 [stop]
 
-  if simulation-time = 3404 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 3404 [stop]
   if simulation-time = 3496 [stop]
   if simulation-time = 3588 [stop]
   if simulation-time = 3680 [stop]
@@ -324,7 +326,7 @@ end
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 ask patches [
-set grass-height ((item current-season kmax / (1 + ((((item current-season kmax ) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
@@ -1039,7 +1041,7 @@ initial-season
 initial-season
 0
 3
-2.0
+0.0
 1
 1
 NIL
@@ -1179,8 +1181,8 @@ SLIDER
 initial-grass-height
 initial-grass-height
 1
-7.4
-3.0
+7
+7.0
 0.1
 1
 cm
@@ -1411,13 +1413,13 @@ dmgr
 11
 
 PLOT
-1475
+1483
 10
 1881
-200
+208
 Seasonal Accumulation DM per ha
 Days
-(kg/ha) * 92
+kg/ha/season
 0.0
 92.0
 0.0
@@ -1441,10 +1443,10 @@ DM-cm-ha * mean [grass-height] of patches * 92
 11
 
 MONITOR
-1159
-207
-1346
-252
+1307
+163
+1476
+208
 Average DDMC (kg/animal/day)
 mean [DDMC] of cows
 3
@@ -1831,9 +1833,9 @@ changing-seasons?
 MONITOR
 1307
 119
-1476
+1481
 164
-Available DM per ha (kg/ha/day)
+Available DM G. Rate (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches
 3
 1
@@ -1989,9 +1991,9 @@ HORIZONTAL
 
 MONITOR
 1799
-79
+78
 1948
-124
+123
 Total DM (kg/ha/season)
 DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle
 3
@@ -2001,9 +2003,9 @@ DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle
 MONITOR
 1307
 75
-1476
+1484
 120
-Total DM per ha (kg/ha/day)
+Total DM G. Rate (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
 3
 1

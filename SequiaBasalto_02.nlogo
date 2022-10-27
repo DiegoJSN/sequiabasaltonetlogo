@@ -280,12 +280,14 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
+  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+
   if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
   if simulation-time = 184 [stop]
   if simulation-time = 276 [stop]
   if simulation-time = 368 [stop]
 
-  if simulation-time = 3404 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 3404 [stop]
   if simulation-time = 3496 [stop]
   if simulation-time = 3588 [stop]
   if simulation-time = 3680 [stop]
@@ -1179,7 +1181,7 @@ SLIDER
 initial-grass-height
 initial-grass-height
 1
-7.4
+7
 7.0
 0.1
 1
@@ -1411,13 +1413,13 @@ dmgr
 11
 
 PLOT
-1475
+1481
 10
 1881
-200
+208
 Seasonal Accumulation DM per ha
 Days
-(kg/ha) * 92
+kg/ha/season
 0.0
 92.0
 0.0
@@ -1441,10 +1443,10 @@ DM-cm-ha * mean [grass-height] of patches * 92
 11
 
 MONITOR
-1159
-207
-1346
-252
+1307
+163
+1481
+208
 Average DDMC (kg/animal/day)
 mean [DDMC] of cows
 3
@@ -1831,9 +1833,9 @@ changing-seasons?
 MONITOR
 1307
 119
-1476
+1481
 164
-Available DM per ha (kg/ha/day)
+Available DM G. Rate (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches
 3
 1
@@ -1989,9 +1991,9 @@ HORIZONTAL
 
 MONITOR
 1799
-79
+78
 1948
-124
+123
 Total DM (kg/ha/season)
 DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle
 3
@@ -2001,9 +2003,9 @@ DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle
 MONITOR
 1307
 75
-1476
+1481
 120
-Total DM per ha (kg/ha/day)
+Total DM G. Rate (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
 3
 1
