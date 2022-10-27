@@ -298,18 +298,18 @@ to go
   grow-grass
   ;reports-initial-grass-height ;;;;TEMP
 
-  eat-grass4NEW
+  update-live-weight4 ;LWG
+
+  eat-grass4NEW ; DDMC
   ;report-DDMC-patch00 ;;;;TEMP
 
-  update-grass-height
-
   ;eat-grass
-
-  update-live-weight4
 
   grow-livestock
 
   reproduce
+
+  update-grass-height
 
   move
 
@@ -1303,7 +1303,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+50.0
 1
 1
 NIL
@@ -1965,7 +1965,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-315.0
+0.0
 1
 1
 NIL
