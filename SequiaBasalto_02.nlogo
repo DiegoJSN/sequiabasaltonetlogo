@@ -280,7 +280,7 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
   if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
   if simulation-time = 184 [stop]
@@ -419,7 +419,7 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -748,7 +748,7 @@ end
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
 ; export-plot plotname filename ; por ejemplo 1: export-plot "Seasonal Accumulation DM per ha" "dm_winter.csv"
 ;                                     ejemplo 2: export-plot "Average of grass-height (GH)" "gh_winter.csv"
-;                                     ejemplo 3: export-plot "Live-weight (LW)" "047_1_lw_winter.csv"
+;                                     ejemplo 3: export-plot "Daily live-weight-gain (LWG)" "047_05_winter.csv"
 
 
 
@@ -1165,7 +1165,7 @@ count cows
 MONITOR
 1184
 580
-1309
+1340
 625
 Average LW (kg)
 mean [live-weight] of cows
@@ -1338,10 +1338,10 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1310
-578
-1725
-801
+1341
+579
+1756
+802
 Daily live-weight-gain (LWG)
 Days
 kg
@@ -1884,10 +1884,10 @@ dmgr / DM-available-for-cattle
 
 MONITOR
 1184
-626
-1309
-671
-Average daily LWG (kg)
+624
+1353
+669
+Average daily LWG (kg/day)
 mean [live-weight-gain] of cows
 3
 1
@@ -1940,7 +1940,7 @@ BCS of born-calf (points)
 MONITOR
 1182
 678
-1315
+1340
 723
 Average LW of cows (kg)
 mean [live-weight] of cows with [cow?]
@@ -1951,9 +1951,9 @@ mean [live-weight] of cows with [cow?]
 MONITOR
 1183
 723
-1348
+1371
 768
-Average daily LWG of cows (kg)
+Average daily LWG of cows (kg/day)
 mean [live-weight-gain] of cows with [cow?]
 3
 1
