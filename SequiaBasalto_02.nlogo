@@ -744,7 +744,7 @@ end
 
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
-; export-plot plotname filename ; por ejemplo 1: export-plot "Dry-matter (DM) and DM consumption (DDMC)" "dm_winter.csv"
+; export-plot plotname filename ; por ejemplo 1: export-plot "Seasonal Accumulation DM per ha" "dm_winter.csv"
 ;                                     ejemplo 2: export-plot "Average of grass-height (GH)" "gh_winter.csv"
 ;                                     ejemplo 3: export-plot "Live-weight (LW)" "047_1_lw_winter.csv"
 
@@ -1180,7 +1180,7 @@ initial-grass-height
 initial-grass-height
 1
 7.4
-7.0
+3.0
 0.1
 1
 cm

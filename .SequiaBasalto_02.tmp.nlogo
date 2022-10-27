@@ -745,8 +745,8 @@ end
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
 ; export-plot plotname filename ; por ejemplo 1: export-plot "Dry-matter (DM) and DM consumption (DDMC)" "dm_winter.csv"
-;                                     ejemplo 2: export-plot "Average of grass height" "gh_winter.csv"
-;                                     ejemplo 3: export-plot "Average of live-weight" "047_1_lw_winter.csv"
+;                                     ejemplo 2: export-plot "Average of grass-height (GH)" "gh_winter.csv"
+;                                     ejemplo 3: export-plot "Live-weight (LW)" "047_1_lw_winter.csv"
 
 
 
@@ -1039,7 +1039,7 @@ initial-season
 initial-season
 0
 3
-0.0
+3.0
 1
 1
 NIL
@@ -1484,10 +1484,10 @@ kg
 HORIZONTAL
 
 PLOT
-1475
-214
-1876
-356
+1353
+228
+1754
+370
 Body Condition Score (BCS)
 Days
 points
@@ -1508,10 +1508,10 @@ PENS
 "Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40"
 
 MONITOR
-1941
-348
-2072
-393
+1819
+362
+1950
+407
 Average BCS (points)
 ; (mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1519,10 +1519,10 @@ Average BCS (points)
 11
 
 MONITOR
-1876
-259
-2006
-304
+1754
+273
+1884
+318
 BCS of cows (points)
 ; (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1530,10 +1530,10 @@ BCS of cows (points)
 11
 
 MONITOR
-1876
-304
-2006
-349
+1754
+318
+1884
+363
 BCS of heifers (points)
 ; (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1541,10 +1541,10 @@ BCS of heifers (points)
 11
 
 PLOT
-1469
-403
-1879
-544
+1347
+417
+1757
+558
 Pregnancy Rate (PR)
 Days
 %
@@ -1562,10 +1562,10 @@ PENS
 "Average PR" 1.0 0 -16777216 true "" "plot mean [pregnancy-rate] of cows * 368 * 100"
 
 MONITOR
-1879
-537
-2010
-582
+1757
+551
+1888
+596
 Average PR (%)
 mean [pregnancy-rate] of cows * 368 * 100
 2
@@ -1573,10 +1573,10 @@ mean [pregnancy-rate] of cows * 368 * 100
 11
 
 MONITOR
-1879
-448
-2011
-493
+1757
+462
+1889
+507
 PR of cows (%)
 mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 2
@@ -1584,10 +1584,10 @@ mean [pregnancy-rate] of cows with [cow?] * 368 * 100
 11
 
 MONITOR
-1879
-404
-2022
-449
+1757
+418
+1900
+463
 PR of cows-with-calf (%)
 mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 2
@@ -1595,10 +1595,10 @@ mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
 11
 
 MONITOR
-1879
-492
-2012
-537
+1757
+506
+1890
+551
 PR of heifers (%)
 mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
 2
@@ -1892,10 +1892,10 @@ mean [live-weight-gain] of cows
 11
 
 MONITOR
-1876
-214
-2031
-259
+1754
+228
+1909
+273
 BCS of cows-with-calf (points)
 (mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1903,10 +1903,10 @@ BCS of cows-with-calf (points)
 11
 
 MONITOR
-2005
-258
-2172
-303
+1883
+272
+2050
+317
 BCS of weaned-calf (points)
 (mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1914,10 +1914,10 @@ BCS of weaned-calf (points)
 11
 
 MONITOR
-2005
-303
-2172
-348
+1883
+317
+2050
+362
 BCS of steer (points)
 (mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
@@ -1925,10 +1925,10 @@ BCS of steer (points)
 11
 
 MONITOR
-2031
-214
-2172
-259
+1909
+228
+2050
+273
 BCS of born-calf (points)
 (mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
