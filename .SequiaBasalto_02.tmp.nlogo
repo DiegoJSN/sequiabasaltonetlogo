@@ -298,18 +298,18 @@ to go
   grow-grass
   ;reports-initial-grass-height ;;;;TEMP
 
-  eat-grass4NEW
+  update-live-weight4 ;LWG
+
+  eat-grass4NEW ; DDMC
   ;report-DDMC-patch00 ;;;;TEMP
 
-  update-grass-height
-
   ;eat-grass
-
-
 
   grow-livestock
 
   reproduce
+
+  update-grass-height
 
   move
 

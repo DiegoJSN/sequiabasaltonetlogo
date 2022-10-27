@@ -298,18 +298,18 @@ to go
   grow-grass
   ;reports-initial-grass-height ;;;;TEMP
 
-  update-live-weight4 ;LWG
-
   eat-grass4NEW ; DDMC
   ;report-DDMC-patch00 ;;;;TEMP
 
   ;eat-grass
 
+  update-grass-height
+
+  update-live-weight4 ;LWG
+
   grow-livestock
 
   reproduce
-
-  update-grass-height
 
   move
 
@@ -348,7 +348,7 @@ end
 
 
 
-to eat-grass4NEW
+to eat-grass4NEW ; DDMC
 ask cows [
 set metabolic-body-size live-weight ^ (3 / 4)
 ; Otra alternativa para el metabolic-body-size (elegir esta alternativa si te da error por valores negativos en live-weight)
@@ -439,7 +439,7 @@ end
 
 
 
-to update-live-weight4;
+to update-live-weight4 ;LWG
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
   ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
@@ -1303,7 +1303,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+0.0
 1
 1
 NIL
@@ -1965,7 +1965,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-0.0
+315.0
 1
 1
 NIL
