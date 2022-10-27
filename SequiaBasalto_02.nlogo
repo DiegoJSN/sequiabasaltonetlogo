@@ -1180,7 +1180,7 @@ initial-grass-height
 initial-grass-height
 1
 7.4
-3.0
+7.0
 0.1
 1
 cm
@@ -1194,7 +1194,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-0
+1
 
 TEXTBOX
 12
