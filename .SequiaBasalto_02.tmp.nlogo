@@ -22,7 +22,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  simulation-time ; variable to keep track of the days of the simulation.
  year-cnt ; year count: variable to keep track of the years of the simulation.
 
-;Market prices & economic balance related global variables
+;Market prices & economic balance related global variables.
 
   exploitation-costs ; External data, regular costs for maintaining the plot ($/ha).
   grazing-prices ; External data, costs for renting an external plot ($/head/season sent it to the external plot).
@@ -1491,13 +1491,13 @@ true
 true
 "" ""
 PENS
-"Born-calf" 1.0 0 -13791810 true "" "plot (mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40   "
-"Weaned-calf" 1.0 0 -955883 true "" "plot (mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40      "
-"Heifer" 1.0 0 -2064490 true "" "(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40"
-"Steer" 1.0 0 -2674135 true "" "plot (mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40"
-"Cow" 1.0 0 -6459832 true "" "(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40"
-"Cow-with-calf" 1.0 0 -5825686 true "" "plot (mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40"
-"Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40"
+"Born-calf" 1.0 0 -13791810 true "" "plot (mean [live-weight] of cows with [born-calf?] - mean [min-weight] of cows with [born-calf?]) / 40"
+"Weaned-calf" 1.0 0 -955883 true "" "plot (mean [live-weight] of cows with [weaned-calf?] - mean [min-weight] of cows with [weaned-calf?]) / 40"
+"Heifer" 1.0 0 -2064490 true "" "plot (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40"
+"Steer" 1.0 0 -2674135 true "" "plot (mean [live-weight] of cows with [steer?] - mean [min-weight] of cows with [steer?]) / 40"
+"Cow" 1.0 0 -6459832 true "" "plot (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40"
+"Cow-with-calf" 1.0 0 -5825686 true "" "plot (mean [live-weight] of cows with [cow-with-calf?] - mean [min-weight] of cows with [cow-with-calf?]) / 40"
+"Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - mean [min-weight] of cows) / 40"
 
 MONITOR
 1819
@@ -1505,7 +1505,7 @@ MONITOR
 1950
 407
 Average BCS (points)
-; (mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows - mean [min-weight] of cows) / 40
 2
 1
 11
@@ -1516,7 +1516,7 @@ MONITOR
 1884
 318
 BCS of cows (points)
-; (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40
 2
 1
 11
@@ -1527,7 +1527,7 @@ MONITOR
 1884
 363
 BCS of heifers (points)
-; (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40
 2
 1
 11
@@ -1889,7 +1889,7 @@ MONITOR
 1909
 273
 BCS of cows-with-calf (points)
-(mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows with [cow-with-calf?] - mean [min-weight] of cows with [cow-with-calf?]) / 40
 2
 1
 11
@@ -1900,7 +1900,7 @@ MONITOR
 2050
 317
 BCS of weaned-calf (points)
-(mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows with [weaned-calf?] - mean [min-weight] of cows with [weaned-calf?]) / 40
 2
 1
 11
@@ -1911,7 +1911,7 @@ MONITOR
 2050
 362
 BCS of steer (points)
-(mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows with [steer?] - mean [min-weight] of cows with [steer?]) / 40
 2
 1
 11
@@ -1922,7 +1922,7 @@ MONITOR
 2050
 273
 BCS of born-calf (points)
-(mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
+(mean [live-weight] of cows with [born-calf?] - mean [min-weight] of cows with [born-calf?]) / 40
 2
 1
 11
