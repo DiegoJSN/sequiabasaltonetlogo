@@ -81,7 +81,7 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
 report-initial-grass-height ;;;;TEMP
 DDMC-patch00 ;;;;TEMP
 
-gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm
+gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm.
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
@@ -124,6 +124,7 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
 
 to setup
   ca
+  resize-world 0 (set-x-size - 1)  0 (set-y-size - 1) ; resize-world min-x-cor max-x-cor min-y-cor max-y-cor; Changes the size of the patch grid. Remember min coordinate must be 0 or less than 0
   setup-globals ; Procedure para darle valores (info) a las globals variables
   setup-grassland
   if (model-version = "open access") or (model-version = "management model") [setup-livestock]
@@ -959,11 +960,11 @@ end
 GRAPHICS-WINDOW
 386
 61
-852
-528
+828
+485
 -1
 -1
-19.9130435
+20.0
 1
 10
 1
@@ -973,10 +974,10 @@ GRAPHICS-WINDOW
 1
 1
 1
--11
-11
--11
-11
+0
+22
+0
+21
 1
 1
 1
@@ -985,9 +986,9 @@ days
 
 BUTTON
 6
-63
+115
 70
-96
+148
 Setup
 Setup
 NIL
@@ -1002,9 +1003,9 @@ NIL
 
 BUTTON
 163
-64
+116
 226
-97
+149
 Go
 Go
 T
@@ -1019,9 +1020,9 @@ NIL
 
 SLIDER
 9
-356
+408
 160
-389
+441
 initial-num-cows
 initial-num-cows
 0
@@ -1034,9 +1035,9 @@ HORIZONTAL
 
 SLIDER
 264
-140
+192
 381
-173
+225
 initial-season
 initial-season
 0
@@ -1175,9 +1176,9 @@ mean [live-weight] of cows
 
 SLIDER
 6
-139
+191
 147
-172
+224
 initial-grass-height
 initial-grass-height
 1
@@ -1240,9 +1241,9 @@ PENS
 
 TEXTBOX
 307
-179
+231
 457
-235
+287
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
 0.0
@@ -1261,9 +1262,9 @@ grass-height-report
 
 SLIDER
 153
-140
+192
 260
-173
+225
 set-climaCoef
 set-climaCoef
 0.1
@@ -1298,9 +1299,9 @@ year-cnt
 
 SLIDER
 8
-271
+323
 159
-304
+356
 initial-num-heifers
 initial-num-heifers
 0
@@ -1313,9 +1314,9 @@ HORIZONTAL
 
 SLIDER
 8
-305
+357
 159
-338
+390
 initial-weight-heifer
 initial-weight-heifer
 100
@@ -1327,10 +1328,10 @@ kg
 HORIZONTAL
 
 MONITOR
-503
-532
-569
-577
+308
+62
+381
+107
 Area (ha)
 count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-units] of cows / count patches
 7
@@ -1455,9 +1456,9 @@ mean [DDMC] of cows
 
 BUTTON
 72
-63
+115
 138
-96
+148
 Go (1 day)
 go
 NIL
@@ -1472,9 +1473,9 @@ NIL
 
 SLIDER
 9
-389
+441
 160
-422
+474
 initial-weight-cows
 initial-weight-cows
 100
@@ -1807,9 +1808,9 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 
 SLIDER
 6
-100
+152
 157
-133
+185
 DM-available-for-cattle
 DM-available-for-cattle
 0
@@ -1843,9 +1844,9 @@ DM-cm-ha * mean [grass-height] of patches
 
 SLIDER
 159
-101
+153
 258
-134
+186
 set-1-AU
 set-1-AU
 1
@@ -1858,14 +1859,14 @@ HORIZONTAL
 
 SLIDER
 261
-101
+153
 382
-134
+186
 set-MW-1-AU
 set-MW-1-AU
 1
 1500
-220.0
+213.0
 1
 1
 kg
@@ -1961,9 +1962,9 @@ mean [live-weight-gain] of cows with [cow?]
 
 SLIDER
 8
-193
+245
 159
-226
+278
 initial-num-steers
 initial-num-steers
 0
@@ -1976,9 +1977,9 @@ HORIZONTAL
 
 SLIDER
 8
-224
+276
 159
-257
+309
 initial-weight-steer
 initial-weight-steer
 100
@@ -2008,6 +2009,57 @@ MONITOR
 Total DM G. Rate (kg/ha/day)
 DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
 3
+1
+11
+
+SLIDER
+6
+74
+150
+107
+set-X-size
+set-X-size
+1
+100
+23.0
+1
+1
+hm
+HORIZONTAL
+
+SLIDER
+157
+74
+301
+107
+set-Y-size
+set-Y-size
+1
+100
+22.0
+1
+1
+hm
+HORIZONTAL
+
+TEXTBOX
+121
+54
+271
+82
+GRAZING AREA
+11
+0.0
+1
+
+MONITOR
+503
+531
+569
+576
+Area (ha)
+count patches
+17
 1
 11
 
