@@ -1306,7 +1306,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-315.0
+0.0
 1
 1
 NIL
@@ -1866,7 +1866,7 @@ set-MW-1-AU
 set-MW-1-AU
 1
 1500
-213.0
+220.0
 1
 1
 kg
@@ -1969,7 +1969,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-0.0
+301.0
 1
 1
 NIL
