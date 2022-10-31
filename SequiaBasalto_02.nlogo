@@ -960,8 +960,8 @@ end
 GRAPHICS-WINDOW
 386
 61
-828
-485
+834
+530
 -1
 -1
 20.0
@@ -975,9 +975,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-22
-0
 21
+0
+22
 1
 1
 1
@@ -2015,25 +2015,10 @@ DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
 SLIDER
 6
 74
-150
+143
 107
 set-X-size
 set-X-size
-1
-100
-23.0
-1
-1
-hm
-HORIZONTAL
-
-SLIDER
-157
-74
-301
-107
-set-Y-size
-set-Y-size
 1
 100
 22.0
@@ -2042,13 +2027,28 @@ set-Y-size
 hm
 HORIZONTAL
 
+SLIDER
+174
+74
+302
+107
+set-Y-size
+set-Y-size
+1
+100
+23.0
+1
+1
+hm
+HORIZONTAL
+
 TEXTBOX
-121
+119
 54
-271
+269
 82
 GRAZING AREA
-11
+12
 0.0
 1
 
@@ -2062,6 +2062,16 @@ count patches
 17
 1
 11
+
+TEXTBOX
+153
+81
+178
+100
+X
+15
+0.0
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
