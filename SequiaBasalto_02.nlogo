@@ -455,7 +455,7 @@ ask cows [
   ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
 set live-weight live-weight + live-weight-gain
 
-set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
+;set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
   ]
 end
 
@@ -485,7 +485,7 @@ ask cows [
     ifelse random-float 1 < 0.5 ; ...hay un 50% de probabilidades de que el animal se convierta en el age class "heifer" o "steer".
       [become-heifer] ; la regla para heifer: Si un número generado al azar entre 0 y 0.99 (random-float 1) es menor que 0.5, el animal se convertira en "heifer"
       [become-steer]] ; la regla para steer: Si el número es mayor que 0.5, se convertirá en "steer"
-  if (heifer? = true) and (age >= cow-age-min) and (live-weight >= set-1-AU ) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= set-1-AU, el animal pasa al age class de "cow"
+  if (heifer? = true) and (age >= cow-age-min) and (live-weight >= 280) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= 280, el animal pasa al age class de "cow"
 
   if cow-with-calf? = true [set lactating-time lactating-time + days-per-tick] ; si el agente es un "cow-with-calf" (si esto es TRUE), se establece (set) que el lactating-time = lactating-time + days-per-tick
   if lactating-time = lactation-period [become-cow] ; la regla para cow: cuando el lactating-time = lactation-period, el agente del age class "cow-with-calf" se convierte en el age class "cow"
@@ -572,12 +572,10 @@ to become-born-calf
   set size 0.4
   set color sky
   set age 0
-  set initial-weight 35 ;he visto que el rango de un borncalf de la raza británica Hereford tiene un peso al nacer que va desde 27 kg hasta 45 kg. La media es 36 kg, pero pongo 35 kg.
+  set initial-weight 40
   set live-weight initial-weight
-  ;set animal-units 0.2
-  set animal-units live-weight / set-1-AU
+  set animal-units 0.2
   set min-weight 0
-  ;set min-weight set-MW-1-AU * 0.2
   set natural-mortality-rate 0.000054
   set except-mort-rate 0
   set category-coef 1
@@ -597,10 +595,8 @@ to become-weaned-calf
   set cow-with-calf? false
   set size 0.6
   set color orange
-  ;set animal-units 0.5
-  set animal-units live-weight / set-1-AU
-  ;set min-weight 60
-  set min-weight set-MW-1-AU * 0.5
+  set animal-units 0.5
+  set min-weight 60
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -619,10 +615,8 @@ to become-heifer
   set cow? false
   set size 0.8
   set color pink
-  ;set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
-  set animal-units live-weight / set-1-AU
-  ;set min-weight 100
-  set min-weight set-MW-1-AU * 0.7
+  set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
+  set min-weight 100
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -642,10 +636,8 @@ to become-steer
   set cow-with-calf? false
   set size 0.9
   set color red
-  ;set animal-units 0.7
-  set animal-units live-weight / set-1-AU
-  ;set min-weight 100
-  set min-weight set-MW-1-AU * 0.7
+  set animal-units 0.7
+  set min-weight 100
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -666,10 +658,8 @@ to become-cow
   set cow-with-calf? false
   set size 1
   set color brown
-  ;set animal-units 1
-  set animal-units live-weight / set-1-AU
-  ;set min-weight 180
-  set min-weight set-MW-1-AU
+  set animal-units 1
+  set min-weight 180
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.15
   set category-coef 1
@@ -689,8 +679,7 @@ to become-cow-with-calf
   set cow-with-calf? true
   set size 1.1
   set color magenta
-  ;set animal-units 1
-  set animal-units live-weight / set-1-AU
+  set animal-units 1
   set min-weight 180
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.3
@@ -1306,7 +1295,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-315.0
+340.0
 1
 1
 NIL
@@ -1321,7 +1310,7 @@ initial-weight-heifer
 initial-weight-heifer
 100
 1500
-300.0
+200.0
 1
 1
 kg
@@ -1480,7 +1469,7 @@ initial-weight-cows
 initial-weight-cows
 100
 1500
-380.0
+280.0
 1
 1
 kg
@@ -1866,7 +1855,7 @@ set-MW-1-AU
 set-MW-1-AU
 1
 1500
-213.0
+220.0
 1
 1
 kg
@@ -1984,7 +1973,7 @@ initial-weight-steer
 initial-weight-steer
 100
 1500
-300.0
+150.0
 1
 1
 kg
