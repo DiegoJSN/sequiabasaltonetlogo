@@ -221,6 +221,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
+    ;setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
@@ -290,7 +291,7 @@ to go
   grow-grass
   ;reports-initial-grass-height ;;;;TEMP
 
-
+  gh/cow
 
   LWG
 
@@ -301,7 +302,7 @@ to go
 
   reproduce
 
-
+  update-grass-height
 
   move
 
@@ -325,11 +326,27 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
 ;ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
+
 to reports-initial-grass-height ;;;;TEMP
 
   ask patches [set report-initial-grass-height grass-height]
 
 end
+
+
+
+
+
+
+
+to gh/cow
+ask cows [set grass-height (grass-height / count cows-here)]
+
+;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+end
+
+
 
 
 
@@ -350,6 +367,8 @@ ask cows [
   ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
 set live-weight live-weight + live-weight-gain
   ]
+
+  ;ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -515,6 +534,7 @@ ask cows [
        [move-to one-of neighbors]]
   ]
 end
+
 
 
 
@@ -992,7 +1012,6 @@ set live-weight live-weight + live-weight-gain
 ;set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
@@ -1343,7 +1362,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-340.0
+50.0
 1
 1
 NIL
