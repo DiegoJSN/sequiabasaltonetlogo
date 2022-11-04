@@ -86,6 +86,8 @@ gh-final ; patch variable with same value that grass-height, and its only fuctio
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
   GH-consumed ; grass-height consumed from the total consumption of dry matter.
+
+  gh-individual
    ]
 
 cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and patches-own keywords, can only be used at the beginning of a program, before any function definitions. It defines the variables belonging to each turtle. If you specify a breed instead of "turtles", only turtles of that breed have the listed variables. (More than one turtle breed may list the same variable.)
@@ -221,7 +223,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
-    ;setxy 0 0
+    setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
@@ -304,7 +306,7 @@ to go
 
   update-grass-height
 
-  move
+  ;move
 
   tick
 end
@@ -316,14 +318,18 @@ end
 
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
-ask patches [
+
+ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+  ask patches [
+
 set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -340,9 +346,16 @@ end
 
 
 to gh/cow
-ask cows [set grass-height (grass-height / count cows-here)]
+;ask cows [set grass-height (grass-height / count cows-here)]
 
 ;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+  ask cows [set gh-individual ((grass-height) / count cows-here)]
+  ask patch 0 0 [print [(word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+  ask cows [set grass-height gh-individual]
+
+  ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -368,7 +381,7 @@ ask cows [
 set live-weight live-weight + live-weight-gain
   ]
 
-  ;ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+  ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -1139,14 +1152,13 @@ true
 true
 "" ""
 PENS
-"Average LW" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
 "Born-calf" 1.0 0 -13791810 true "" "plot mean [live-weight] of cows with [born-calf?]"
 "Weaned-calf" 1.0 0 -955883 true "" "plot mean [live-weight] of cows with [weaned-calf?]"
 "Heifer" 1.0 0 -2064490 true "" "plot mean [live-weight] of cows with [heifer?]"
 "Steer" 1.0 0 -2674135 true "" "plot mean [live-weight] of cows with [steer?]"
 "Cow" 1.0 0 -6459832 true "" "plot mean [live-weight] of cows with [cow?]"
 "Cow-with-calf" 1.0 0 -5825686 true "" "plot mean [live-weight] of cows with [cow-with-calf?]"
-"Average" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
+"Average LW" 1.0 0 -16777216 true "" "plot mean [live-weight] of cows"
 
 MONITOR
 566
@@ -1363,7 +1375,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+1.0
 1
 1
 NIL
