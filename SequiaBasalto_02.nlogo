@@ -69,6 +69,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  lactation-period ; 184 days (6 months) ; Determines the lactating period of cows with calves ; Esta global variable determina el FINAL de la etapa "cow-with-calf" del ciclo de vida de livestock (es decir, cuando el agente de la age class "cow-with-calf" alcanza los 184 días, pasa a la age class de "cow")
  weight-gain-lactation ; 0.61 Kg / day. The born calves do not depend on grasslands. We assume that born calves increase their live weight by 0.61 Kg/day. After 6 months, they should reach 150 Kg (the initial weight for weaned calves).
 ;perception (slider); parameter used to define the degree of perception of the animals regarding to the surrounding pastures. Chosen by users
+ ghlow2
 ]
 
 breed [cows cow] ;We consider cows as the unique type of livestock (***future-step: to include sheep or goats as other types of livestock, and producers as decision makers).
@@ -83,7 +84,7 @@ DDMC-patch00 ;;;;TEMP
 
 gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm.
 gh-individual
-gh-repartido
+gh-available
 
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
@@ -182,6 +183,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set lactating-cows-prices [0.51	0.52 0.54	0.55 0.53	0.45 0.47	0.42 0.42	0.39 0.42	0.42 0.45	0.55 0.61	0.63 0.57	0.64 0.7 0.68	0.67 0.67	0.78 0.65	0.58 0.85	0.77 0.77	0.81 0.83	0.91 0.89	0.92 1.1 0.81	0.52 0.64	0.64 0.64	0.64] ; 40 valores: misma lógica que antes
   set sheep-prices [0.47 0.52	0.47 0.48	0.51 0.49	0.54 0.46	0.49 0.49	0.56 0.51	0.59 0.76	0.92 0.81	0.82 0.96	1.05 0.84	0.81 0.77	0.68 0.59	0.45 0.46	0.56 0.57	0.48 0.64	0.8	0.92 0.94	0.88 0.98	0.98 0.98	0.98 0.98	0.98] ; 40 valores: misma lógica que antes
   set wool-prices [5.6 5.81	5.65 5.76	6.18 5.81	5.86 7.08	9.52 9.31	11.83	13.01	13.79	8.65 12.37 12.43 12.69 12.53 11.59 10.64 10.43 10.01 9.85	8.52 8.26	9	9	9.15 11.1 12.78	14.27 15.4 17.36 17.75 16.07 8.17	8.17 8.17	8.17 8.17] ; 40 valores: misma lógica que antes
+  set ghlow2 1
 end
 
 
@@ -303,7 +305,7 @@ to go
   grow-grass
   ;reports-initial-grass-height ;;;;TEMP
 
-  gh/cow2
+  gh/cow6
 
   LWG
 
@@ -354,18 +356,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 to NOTA
 ask patches [
   set GH-consumed 0
@@ -389,79 +379,46 @@ end
 
 
 
-to procedureentero
-;ask cows [set grass-height (grass-height / count cows-here)]
-
-;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
-ask cows [set gh-individual ((grass-height) / count cows-here)]
-ask cows [set gh-final gh-individual]
-
-  ask cows [
-    ifelse born-calf? = true
-      [set live-weight-gain2 weight-gain-lactation]
-      [ifelse gh-final >= 2
-      [set live-weight-gain2 ( item current-season maxLWG - ( xi * e ^ ( - ni * gh-final ) ) ) / ( 92 * item current-season season-coef )] ;
-         [set live-weight-gain2 live-weight2 * -0.005]]
-
-    set live-weight2 live-weight2 + live-weight-gain2
-    set metabolic-body-size2 live-weight2 ^ (3 / 4)
-
-    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
-       [set DDMC2 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
-       [ifelse gh-final >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-         [set DDMC2 ((0.107 * metabolic-body-size2 * (- 0.0132 *  gh-final + 1.1513) + (0.141 * metabolic-body-size2 * live-weight-gain2) ) / grass-energy) * category-coef]
-         [set DDMC2 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
-]
-
-  ask patches [
-  set GH-consumed 0
-  ask cows-here [
-    let totDDMC sum [DDMC2] of cows-here
-    set GH-consumed totDDMC / DM-cm-ha ]
-
-  set gh-final gh-final - GH-consumed
-  ]
-end
 
 
 
 
-to gh/cow2
-ask cows [set gh-individual ((grass-height) / count cows-here)]
-ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
 
 
-ask patches [
-  ask cows-here [
-    ifelse gh-individual < 2
-    [set grass-height 2]
+to gh/cow6
+  ask cows [set gh-individual ((grass-height) / count cows-here)]
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+  ask cows [set gh-available (grass-height - 2) / count cows-here]
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-available " [gh-available] of patch 0 0)] ;;;;TEMP
+
+ ask cows [
+   ifelse gh-individual < 2
+    [set grass-height gh-available]
     [set grass-height gh-individual]
   ]
-  ]
 
-;ask patch 0 0 [print (word ">>> BEFORE LWG gh-repartido " [gh-repartido] of patch 0 0)] ;;;;TEMP
-
-
-;ask cows [set grass-height gh-repartido]
-ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+  ;ask cows [set grass-height gh-individual]
+  ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
+
 
 
 
 
 to gh/cow
 ;ask cows [set grass-height (grass-height / count cows-here)]
-
 ;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
   ask cows [set gh-individual ((grass-height) / count cows-here)]
-  ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
 
   ask cows [set grass-height gh-individual]
-  ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
+
 
 
 
@@ -485,7 +442,7 @@ ask cows [
 set live-weight live-weight + live-weight-gain
   ]
 
-  ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -501,12 +458,32 @@ ask cows [
 ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
     ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
-       [ifelse live-weight-gain > 0  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
          [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
+
+  ask patches [
+  set GH-consumed 0
+
+  ask cows-here [
+    let totDDMC sum [DDMC] of cows-here
+    set GH-consumed totDDMC / DM-cm-ha ]
+
+  set gh-final (grass-height - GH-consumed) ; Hacemos el cálculo de la altura que tendrá el pasto al final de este tick (i.e., "gh-final") teniendo en cuenta el DDMC de las vacas (recordemos que es la misma operación que ocurre en "to update-grass-height", pero sin llegar a actualizar la altura del pasto)
+
+ ask cows-here [ ; Entonces, una vez calculado el "gh-"final", le pedimos a las vacas que se encuentran sobre el parche que...
+   ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
+    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
+    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
+
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
+    ]
+  ]
+
+
 end
 
 to report-DDMC-patch00 ;;;;TEMP
@@ -623,7 +600,9 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
+
+ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -1130,6 +1109,173 @@ set live-weight live-weight + live-weight-gain
 ;set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
   ]
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+to gh/cow5
+;ask patch 0 0 [print (word ">>> BEFORE gh/cow grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+
+ask cows [set gh-individual ((grass-height) / count cows-here)]
+ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+ask cows [set gh-final gh-individual]
+
+ask cows [
+  set metabolic-body-size live-weight ^ (3 / 4)
+   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+     ;print (word ">>> UPDATED DDMC                  " DDMC)
+  ]
+
+  ask patches [
+  set GH-consumed 0
+
+  ask cows-here [
+    let totDDMC sum [DDMC] of cows-here
+    set GH-consumed totDDMC / DM-cm-ha ]
+
+  set gh-final (grass-height - GH-consumed) ; Hacemos el cálculo de la altura que tendrá el pasto al final de este tick (i.e., "gh-final") teniendo en cuenta el DDMC de las vacas (recordemos que es la misma operación que ocurre en "to update-grass-height", pero sin llegar a actualizar la altura del pasto)
+
+ ask cows-here [ ; Entonces, una vez calculado el "gh-"final", le pedimos a las vacas que se encuentran sobre el parche que...
+   ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
+    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
+    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
+
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
+    ]
+  ]
+
+  ask patches [
+  set GH-consumed 0
+  ask cows-here [
+    let totDDMC sum [DDMC2] of cows-here
+    set GH-consumed totDDMC / DM-cm-ha ]
+
+  set gh-final gh-final - GH-consumed
+  ]
+
+ask patch 0 0 [print (word ">>> AFTER gh/cow gh-final " [gh-final] of patch 0 0)] ;;;;TEMP
+
+
+  ask patches [
+   ask cows-here [
+    ifelse gh-final > 2
+      [set grass-height (2 - grass-height) / count cows-here]
+      [set grass-height gh-individual]
+    ]
+  ]
+
+
+;  ask patches [
+;   ask cows-here [
+;   ifelse gh-final >= 2
+;    [set grass-height gh-individual]
+;    [set grass-height gh-individual + (2 - gh-final)]
+
+    ;if DDMC < 0 [set DDMC 0]
+;    ]
+;  ]
+
+ask patch 0 0 [print (word ">>> AFTER gh/cow grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+
+end
+to gh/cow4
+ask cows [set gh-individual ((grass-height) / count cows-here)]
+ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+ask cows [set gh-available grass-height - 2]
+
+ask patch 0 0 [print (word ">>> BEFORE LWG grass-height BEFORE gh-available " [grass-height] of patch 0 0)] ;;;;TEMP
+
+ask patches [
+   ask cows-here [
+      ifelse gh-available > 0
+      [set grass-height gh-individual]
+      [set grass-height 2 ]
+    ]
+  ]
+
+ask patch 0 0 [print (word ">>> BEFORE LWG grass-height AFTER gh-available " [grass-height] of patch 0 0)] ;;;;TEMP
+
+
+end
+to gh/cow3
+ask patches [
+      set gh-available grass-height - 2
+       ask cows-here [
+          ifelse gh-available > 0
+              [set gh-individual ((gh-available) / count cows-here)]
+              [set gh-individual 0]
+                     ]
+             ]
+
+ ; ask cows [set gh-individual ((grass-height) / count cows-here)]
+
+
+
+;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+ask cows [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of cows)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> BEFORE LWG gh-disp " [gh-available] of patch 0 0)] ;;;;TEMP
+
+end
+to gh/cow2
+ask cows [set gh-individual ((grass-height) / count cows-here)]
+ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+
+ask patches [
+  ask cows-here [
+    ifelse gh-individual < 2
+    [set grass-height 2]
+    [set grass-height gh-individual]
+  ]
+  ]
+
+;ask patch 0 0 [print (word ">>> BEFORE LWG gh-repartido " [gh-repartido] of patch 0 0)] ;;;;TEMP
+
+
+;ask cows [set grass-height gh-repartido]
+ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+end
+
+
+
+
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
@@ -1479,7 +1625,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-1.0
+2.0
 1
 1
 NIL
