@@ -69,14 +69,13 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  lactation-period ; 184 days (6 months) ; Determines the lactating period of cows with calves ; Esta global variable determina el FINAL de la etapa "cow-with-calf" del ciclo de vida de livestock (es decir, cuando el agente de la age class "cow-with-calf" alcanza los 184 días, pasa a la age class de "cow")
  weight-gain-lactation ; 0.61 Kg / day. The born calves do not depend on grasslands. We assume that born calves increase their live weight by 0.61 Kg/day. After 6 months, they should reach 150 Kg (the initial weight for weaned calves).
 ;perception (slider); parameter used to define the degree of perception of the animals regarding to the surrounding pastures. Chosen by users
- ghlow2
 ]
 
 breed [cows cow] ;We consider cows as the unique type of livestock (***future-step: to include sheep or goats as other types of livestock, and producers as decision makers).
 
 patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-own keywords, can only be used at the beginning of a program, before any function definitions. It defines the variables that all patches can use. All patches will then have the given variables and be able to use them.
   ;initial-grass-height (slider); The initial grass height is chosen by users; Grass is homogeneously distributed along the paddock.
-  grass-height ;State of the grass height, determines the carrying capacity of the system.
+grass-height ;State of the grass height, determines the carrying capacity of the system.
                ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height
 
 report-initial-grass-height ;;;;TEMP
@@ -84,8 +83,6 @@ DDMC-patch00 ;;;;TEMP
 
 gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm.
 gh-individual
-gh-available
-
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
@@ -127,11 +124,7 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
   pregnancy-time ; variable to determine gestation-period.
   lactating-time ; variable to determine lactating-period.
 
-
-  live-weight2
-  live-weight-gain2
   DDMC2
-  metabolic-body-size2
 
   ]
 
@@ -183,7 +176,6 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set lactating-cows-prices [0.51	0.52 0.54	0.55 0.53	0.45 0.47	0.42 0.42	0.39 0.42	0.42 0.45	0.55 0.61	0.63 0.57	0.64 0.7 0.68	0.67 0.67	0.78 0.65	0.58 0.85	0.77 0.77	0.81 0.83	0.91 0.89	0.92 1.1 0.81	0.52 0.64	0.64 0.64	0.64] ; 40 valores: misma lógica que antes
   set sheep-prices [0.47 0.52	0.47 0.48	0.51 0.49	0.54 0.46	0.49 0.49	0.56 0.51	0.59 0.76	0.92 0.81	0.82 0.96	1.05 0.84	0.81 0.77	0.68 0.59	0.45 0.46	0.56 0.57	0.48 0.64	0.8	0.92 0.94	0.88 0.98	0.98 0.98	0.98 0.98	0.98] ; 40 valores: misma lógica que antes
   set wool-prices [5.6 5.81	5.65 5.76	6.18 5.81	5.86 7.08	9.52 9.31	11.83	13.01	13.79	8.65 12.37 12.43 12.69 12.53 11.59 10.64 10.43 10.01 9.85	8.52 8.26	9	9	9.15 11.1 12.78	14.27 15.4 17.36 17.75 16.07 8.17	8.17 8.17	8.17 8.17] ; 40 valores: misma lógica que antes
-  set ghlow2 1
 end
 
 
@@ -235,7 +227,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
-    setxy 0 0
+    ;setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
@@ -305,7 +297,7 @@ to go
   grow-grass
   ;reports-initial-grass-height ;;;;TEMP
 
-  gh/cow6
+  gh/cow
 
   LWG
 
@@ -318,7 +310,7 @@ to go
 
   update-grass-height
 
-  ;move
+  move
 
   tick
 end
@@ -331,7 +323,7 @@ end
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 
-ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
   ask patches [
 
@@ -341,7 +333,7 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -385,41 +377,13 @@ end
 
 
 
-to gh/cow6
-  ask cows [set gh-individual ((grass-height) / count cows-here)]
-  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
-
-  ask cows [set gh-available (grass-height - 2) / count cows-here]
-  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-available " [gh-available] of patch 0 0)] ;;;;TEMP
-
- ask cows [
-   ifelse gh-individual < 2
-    [set grass-height gh-available]
-    [set grass-height gh-individual]
-  ]
-
-  ;ask cows [set grass-height gh-individual]
-  ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
-
-end
-
-
 
 
 
 to gh/cow
-;ask cows [set grass-height (grass-height / count cows-here)]
-;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
-
   ask cows [set gh-individual ((grass-height) / count cows-here)]
-  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
-
   ask cows [set grass-height gh-individual]
-  ;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
-
 end
-
-
 
 
 
@@ -442,7 +406,7 @@ ask cows [
 set live-weight live-weight + live-weight-gain
   ]
 
- ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ ;ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -478,6 +442,8 @@ ask cows [
    ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
     [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
     [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
+
+    set DDMC2 DDMC
 
     if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
     ]
@@ -585,7 +551,7 @@ ask patches [
   set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
   ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
                   ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
-    let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
+    let totDDMC sum [DDMC2] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
     set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
@@ -600,9 +566,8 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
-
-ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
+;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -1135,6 +1100,33 @@ end
 
 
 
+
+
+
+
+
+to gh/cow6
+  ask cows [set gh-individual ((grass-height) / count cows-here)]
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
+
+  ;ask cows [set gh-available (grass-height - 2) / count cows-here]
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-available " [gh-available] of patch 0 0)] ;;;;TEMP
+
+  ;ask cows [
+  ; ifelse gh-individual < 2
+  ;  [set grass-height gh-available]
+  ;  [set grass-height gh-individual]
+  ;]
+
+  ;ask cows [set grass-height gh-individual]
+  ;ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+end
+
+
+
+
+
 to gh/cow5
 ;ask patch 0 0 [print (word ">>> BEFORE gh/cow grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
@@ -1216,31 +1208,31 @@ to gh/cow4
 ask cows [set gh-individual ((grass-height) / count cows-here)]
 ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
 
-ask cows [set gh-available grass-height - 2]
+;ask cows [set gh-available grass-height - 2]
 
 ask patch 0 0 [print (word ">>> BEFORE LWG grass-height BEFORE gh-available " [grass-height] of patch 0 0)] ;;;;TEMP
 
-ask patches [
-   ask cows-here [
-      ifelse gh-available > 0
-      [set grass-height gh-individual]
-      [set grass-height 2 ]
-    ]
-  ]
+;ask patches [
+;   ask cows-here [
+;      ifelse gh-available > 0
+;      [set grass-height gh-individual]
+;      [set grass-height 2 ]
+;    ]
+;  ]
 
 ask patch 0 0 [print (word ">>> BEFORE LWG grass-height AFTER gh-available " [grass-height] of patch 0 0)] ;;;;TEMP
 
 
 end
 to gh/cow3
-ask patches [
-      set gh-available grass-height - 2
-       ask cows-here [
-          ifelse gh-available > 0
-              [set gh-individual ((gh-available) / count cows-here)]
-              [set gh-individual 0]
-                     ]
-             ]
+;ask patches [
+      ;set gh-available grass-height - 2
+      ; ask cows-here [
+      ;    ifelse gh-available > 0
+      ;        [set gh-individual ((gh-available) / count cows-here)]
+      ;        [set gh-individual 0]
+      ;               ]
+      ;       ]
 
  ; ask cows [set gh-individual ((grass-height) / count cows-here)]
 
@@ -1249,7 +1241,7 @@ ask patches [
 ;ask patch 0 0 [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of patch 0 0)] ;;;;TEMP
 
 ask cows [print (word ">>> BEFORE LWG gh-individual " [gh-individual] of cows)] ;;;;TEMP
-ask patch 0 0 [print (word ">>> BEFORE LWG gh-disp " [gh-available] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0 [print (word ">>> BEFORE LWG gh-disp " [gh-available] of patch 0 0)] ;;;;TEMP
 
 end
 to gh/cow2
@@ -1433,7 +1425,7 @@ stocking-rate
 11
 
 PLOT
-384
+503
 580
 851
 801
@@ -1465,7 +1457,7 @@ perception
 perception
 0
 1
-0.7
+1.0
 0.1
 1
 NIL
@@ -1625,7 +1617,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-2.0
+50.0
 1
 1
 NIL
@@ -2386,6 +2378,24 @@ PARAMETROS QUE ESTARAN EN LA VERSION ADAPTADA PARA EL MODELO SOSLIVESTOCK
 11
 0.0
 1
+
+PLOT
+298
+580
+499
+801
+Stocking rate
+Days
+AU/ha
+0.0
+92.0
+0.0
+0.0
+true
+false
+"" ""
+PENS
+"default" 1.0 0 -16777216 true "" "plot stocking-rate"
 
 @#$#@#$#@
 ## WHAT IS IT?
