@@ -227,7 +227,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
-    setxy 0 0
+    ;setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
@@ -310,7 +310,7 @@ to go
 
   update-grass-height
 
-  ;move
+  move
 
   tick
 end
@@ -1267,13 +1267,12 @@ end
 
 
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
 61
-834
-530
+594
+170
 -1
 -1
 20.0
@@ -1287,9 +1286,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-21
+9
 0
-22
+4
 1
 1
 1
@@ -1457,7 +1456,7 @@ perception
 perception
 0
 1
-0.7
+0.5
 0.1
 1
 NIL
@@ -1580,7 +1579,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+0.5
 0.1
 1
 NIL
@@ -1617,7 +1616,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-2.0
+0.0
 1
 1
 NIL
@@ -2235,7 +2234,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-0.0
+60.0
 1
 1
 NIL
@@ -2250,7 +2249,7 @@ initial-weight-steer
 initial-weight-steer
 100
 1500
-150.0
+300.0
 1
 1
 kg
@@ -2287,7 +2286,7 @@ set-X-size
 set-X-size
 1
 100
-22.0
+10.0
 1
 1
 hm
@@ -2302,7 +2301,7 @@ set-Y-size
 set-Y-size
 1
 100
-23.0
+5.0
 1
 1
 hm
