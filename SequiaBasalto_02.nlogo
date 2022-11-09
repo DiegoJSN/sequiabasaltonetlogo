@@ -227,7 +227,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
-    ;setxy 0 0
+    setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
@@ -304,13 +304,13 @@ to go
   DM-consumption
   ;report-DDMC-patch00 ;;;;TEMP
 
-  ;grow-livestock
+  grow-livestock
 
   reproduce
 
   update-grass-height
 
-  move
+  ;move
 
   tick
 end
@@ -323,7 +323,7 @@ end
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
   ask patches [
 
@@ -333,7 +333,7 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -406,7 +406,7 @@ ask cows [
 set live-weight live-weight + live-weight-gain
   ]
 
- ;ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -566,8 +566,8 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
-;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
+ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -1266,13 +1266,12 @@ ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patc
 end
 
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
 61
-594
-170
+834
+530
 -1
 -1
 20.0
@@ -1286,9 +1285,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-9
+21
 0
-4
+22
 1
 1
 1
@@ -1616,7 +1615,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+2.0
 1
 1
 NIL
@@ -2234,7 +2233,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+0.0
 1
 1
 NIL
@@ -2286,7 +2285,7 @@ set-X-size
 set-X-size
 1
 100
-10.0
+22.0
 1
 1
 hm
@@ -2301,7 +2300,7 @@ set-Y-size
 set-Y-size
 1
 100
-5.0
+23.0
 1
 1
 hm

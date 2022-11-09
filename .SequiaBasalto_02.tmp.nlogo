@@ -227,7 +227,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
-    ;setxy 0 0
+    setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
@@ -310,7 +310,7 @@ to go
 
   update-grass-height
 
-  move
+  ;move
 
   tick
 end
@@ -323,7 +323,7 @@ end
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
   ask patches [
 
@@ -1266,13 +1266,12 @@ ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patc
 end
 
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
 61
-594
-170
+834
+530
 -1
 -1
 20.0
@@ -1286,9 +1285,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-9
+21
 0
-4
+22
 1
 1
 1
@@ -1616,7 +1615,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+2.0
 1
 1
 NIL
@@ -2234,7 +2233,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-60.0
+0.0
 1
 1
 NIL
@@ -2286,7 +2285,7 @@ set-X-size
 set-X-size
 1
 100
-10.0
+22.0
 1
 1
 hm
@@ -2301,7 +2300,7 @@ set-Y-size
 set-Y-size
 1
 100
-5.0
+23.0
 1
 1
 hm
