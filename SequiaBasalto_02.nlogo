@@ -1265,7 +1265,6 @@ ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patc
 
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386

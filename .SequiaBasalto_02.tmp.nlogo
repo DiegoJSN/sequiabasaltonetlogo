@@ -333,7 +333,7 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -406,7 +406,7 @@ ask cows [
 set live-weight live-weight + live-weight-gain
   ]
 
- ;ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+ ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -566,8 +566,8 @@ ask patches [
     if grass-height < 0 [set pcolor red]
   ]
 
-;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
-;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
+ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
 
@@ -1265,7 +1265,6 @@ ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patc
 
 end
 
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
@@ -1578,7 +1577,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.5
+1.0
 0.1
 1
 NIL
