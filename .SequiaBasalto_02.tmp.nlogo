@@ -193,10 +193,6 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     set r 0.002
   ]
 
-;ask patch 0 0 [set grass-height 20] ; añado esta línea de código temporal para trabajar en el problema de qué pasa cuando dos vacas consumen la hierba de un mismo parche ;;;;TEMP
-;ask patch 0 0 [set report-initial-grass-height 20] ;;;;TEMP
-
-
 end
 
 
@@ -287,7 +283,15 @@ to go
   if simulation-time = 3404 [stop]
   if simulation-time = 3496 [stop]
   if simulation-time = 3588 [stop]
-  if simulation-time = 3680 [stop]
+  if simulation-time = 3680 [stop] ; 9.75 years
+
+  if simulation-time = 18400 [stop] ; 49.75 years
+
+  if simulation-time = 36800 [stop] ; 99.75 years
+
+  if simulation-time = 55200 [stop] ; 149.75 years
+
+  if simulation-time = 73600 [stop] ; 199.75 years
 
 
 
@@ -295,14 +299,13 @@ to go
 
 
   grow-grass
-  ;reports-initial-grass-height ;;;;TEMP
 
   gh/cow
 
   LWG
 
   DM-consumption
-  ;report-DDMC-patch00 ;;;;TEMP
+
 
   grow-livestock
 
@@ -381,7 +384,7 @@ end
 
 
 to gh/cow
-  ask cows [set gh-individual ((grass-height) / count cows-here)]
+  ask cows [set gh-individual ((grass-height - 2) / count cows-here)]
   ask cows [set grass-height gh-individual]
 end
 
@@ -1264,7 +1267,6 @@ ask patches [
 ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
@@ -1490,7 +1492,7 @@ SLIDER
 initial-grass-height
 initial-grass-height
 1
-7
+22.2
 7.0
 0.1
 1
