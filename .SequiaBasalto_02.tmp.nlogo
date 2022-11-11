@@ -306,7 +306,6 @@ to go
 
   DM-consumption
 
-
   grow-livestock
 
   reproduce
@@ -339,39 +338,6 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
 ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
-
-to reports-initial-grass-height ;;;;TEMP
-
-  ask patches [set report-initial-grass-height grass-height]
-
-end
-
-
-
-
-
-
-to NOTA
-ask patches [
-  set GH-consumed 0
-
-  ask cows-here [
-    let totDDMC sum [DDMC] of cows-here
-    set GH-consumed totDDMC / DM-cm-ha ]
-
-  set gh-final (grass-height - GH-consumed) ; Hacemos el cálculo de la altura que tendrá el pasto al final de este tick (i.e., "gh-final") teniendo en cuenta el DDMC de las vacas (recordemos que es la misma operación que ocurre en "to update-grass-height", pero sin llegar a actualizar la altura del pasto)
-
- ask cows-here [ ; Entonces, una vez calculado el "gh-"final", le pedimos a las vacas que se encuentran sobre el parche que...
-   ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
-    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
-    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
-
-    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
-
-    ]
-  ]
-end
-
 
 
 
@@ -455,11 +421,6 @@ ask cows [
 
 end
 
-to report-DDMC-patch00 ;;;;TEMP
-
-  ask patch 0 0 [set DDMC-patch00 sum [DDMC] of cows-here]
-
-end
 
 
 
@@ -1267,6 +1228,40 @@ ask patches [
 ask patch 0 0 [print (word ">>> BEFORE LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+to NOTA
+ask patches [
+  set GH-consumed 0
+
+  ask cows-here [
+    let totDDMC sum [DDMC] of cows-here
+    set GH-consumed totDDMC / DM-cm-ha ]
+
+  set gh-final (grass-height - GH-consumed) ; Hacemos el cálculo de la altura que tendrá el pasto al final de este tick (i.e., "gh-final") teniendo en cuenta el DDMC de las vacas (recordemos que es la misma operación que ocurre en "to update-grass-height", pero sin llegar a actualizar la altura del pasto)
+
+ ask cows-here [ ; Entonces, una vez calculado el "gh-"final", le pedimos a las vacas que se encuentran sobre el parche que...
+   ifelse gh-final >= 2 ; ... si esta altura final es igual o mayor a 2 cm...
+    [if sum [DDMC] of cows-here >= (grass-height * DM-cm-ha) [set DDMC ((grass-height * DM-cm-ha) / count cows-here)]] ;... (es decir, si gh-final >= 2 es TRUE) Y si la suma del DDMC que van a consumir las vacas que se encuentran en un determinado parche es mayor o igual al DM disponible en el parche, Le pedimos a las vacas de ese parche que dividan el DM disponible de ese parche entre el nº de vacas que hay en el parche, y que esta cantidad sea la DDMC de cada vaca.
+    [set DDMC (((grass-height - 2) * DM-cm-ha) / count cows-here)] ;... PERO si el gh-final < 2 (es decir, si >= 2 is FALSE), le pedimos que las vacas calculen su DM requerida respetando los 2 cm mínimos que debe tener el pasto (recordemos la asunción de que las vacas no pueden comer pasto con altura inferior a 2 cm), y que esta DM requerida lo deividan entre el número de vacas que hay en ese parche. Esta es una forma de hacer que las vacas no puedan comer pasto por debajo de los 2 cm de altura.
+
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
+
+    ]
+  ]
+end
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
@@ -1616,7 +1611,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-2.0
+1.0
 1
 1
 NIL

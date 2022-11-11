@@ -1262,7 +1262,6 @@ ask patches [
     ]
   ]
 end
-
 @#$#@#$#@
 GRAPHICS-WINDOW
 386
