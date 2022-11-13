@@ -223,7 +223,7 @@ create-cows initial-num-heifers [
     set age heifer-age-min
     ;set age random (cow-age-max - cow-age-min) + cow-age-min
     setxy random-pxcor random-pycor
-    setxy 0 0
+    ;setxy 0 0
     become-heifer ]
 
   create-cows initial-num-steers [
