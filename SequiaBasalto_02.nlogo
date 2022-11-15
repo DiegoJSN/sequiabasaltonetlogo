@@ -373,6 +373,8 @@ ask cows [
 
   ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
 set live-weight live-weight + live-weight-gain
+
+set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
   ]
 
 ; ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
@@ -458,7 +460,7 @@ ask cows [
     ifelse random-float 1 < 0.5 ; ...hay un 50% de probabilidades de que el animal se convierta en el age class "heifer" o "steer".
       [become-heifer] ; la regla para heifer: Si un número generado al azar entre 0 y 0.99 (random-float 1) es menor que 0.5, el animal se convertira en "heifer"
       [become-steer]] ; la regla para steer: Si el número es mayor que 0.5, se convertirá en "steer"
-  if (heifer? = true) and (age >= cow-age-min) and (live-weight >= 280) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= 280, el animal pasa al age class de "cow"
+  if (heifer? = true) and (age >= cow-age-min) and (live-weight >= set-1-AU ) [become-cow] ; la regla para cow: si el agente es un "heifer" (si esto es TRUE) Y el age = cow-age-min Y live-weight >= 280, el animal pasa al age class de "cow"
 
   if cow-with-calf? = true [set lactating-time lactating-time + days-per-tick] ; si el agente es un "cow-with-calf" (si esto es TRUE), se establece (set) que el lactating-time = lactating-time + days-per-tick
   if lactating-time = lactation-period [become-cow] ; la regla para cow: cuando el lactating-time = lactation-period, el agente del age class "cow-with-calf" se convierte en el age class "cow"
@@ -597,8 +599,10 @@ to become-born-calf
   set age 0
   set initial-weight 40
   set live-weight initial-weight
-  set animal-units 0.2
-  set min-weight 0
+  ;set animal-units 0.2
+  set animal-units live-weight / set-1-AU
+  ;set min-weight 0
+  set min-weight set-MW-1-AU * 0.2
   set natural-mortality-rate 0.000054
   set except-mort-rate 0
   set category-coef 1
@@ -618,8 +622,10 @@ to become-weaned-calf
   set cow-with-calf? false
   set size 0.6
   set color orange
-  set animal-units 0.5
-  set min-weight 60
+  ;set animal-units 0.5
+  set animal-units live-weight / set-1-AU
+  ;set min-weight 60
+  set min-weight set-MW-1-AU * 0.5
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -638,8 +644,10 @@ to become-heifer
   set cow? false
   set size 0.8
   set color pink
-  set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
-  set min-weight 100
+  ;set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
+  set animal-units live-weight / set-1-AU
+  ;set min-weight 100
+  set min-weight set-MW-1-AU * 0.7
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -659,8 +667,10 @@ to become-steer
   set cow-with-calf? false
   set size 0.9
   set color red
-  set animal-units 0.7
-  set min-weight 100
+  ;set animal-units 0.7
+  set animal-units live-weight / set-1-AU
+  ;set min-weight 100
+  set min-weight set-MW-1-AU * 0.7
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -681,8 +691,10 @@ to become-cow
   set cow-with-calf? false
   set size 1
   set color brown
-  set animal-units 1
-  set min-weight 180
+  ;set animal-units 1
+  set animal-units live-weight / set-1-AU
+  ;set min-weight 180
+  set min-weight set-MW-1-AU
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.15
   set category-coef 1
@@ -1785,7 +1797,7 @@ initial-weight-cows
 initial-weight-cows
 100
 1500
-280.0
+380.0
 1
 1
 kg
@@ -1807,13 +1819,13 @@ true
 true
 "" ""
 PENS
-"Born-calf" 1.0 0 -13791810 true "" "plot (mean [live-weight] of cows with [born-calf?] - mean [min-weight] of cows with [born-calf?]) / 40"
-"Weaned-calf" 1.0 0 -955883 true "" "plot (mean [live-weight] of cows with [weaned-calf?] - mean [min-weight] of cows with [weaned-calf?]) / 40"
-"Heifer" 1.0 0 -2064490 true "" "plot (mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40"
-"Steer" 1.0 0 -2674135 true "" "plot (mean [live-weight] of cows with [steer?] - mean [min-weight] of cows with [steer?]) / 40"
-"Cow" 1.0 0 -6459832 true "" "plot (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40"
-"Cow-with-calf" 1.0 0 -5825686 true "" "plot (mean [live-weight] of cows with [cow-with-calf?] - mean [min-weight] of cows with [cow-with-calf?]) / 40"
-"Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - mean [min-weight] of cows) / 40"
+"Born-calf" 1.0 0 -13791810 true "" "plot (mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40"
+"Weaned-calf" 1.0 0 -955883 true "" "plot (mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40"
+"Heifer" 1.0 0 -2064490 true "" "plot (mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40"
+"Steer" 1.0 0 -2674135 true "" "plot (mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40"
+"Cow" 1.0 0 -6459832 true "" "plot (mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40"
+"Cow-with-calf" 1.0 0 -5825686 true "" "plot (mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40"
+"Average BCS" 1.0 0 -16777216 true "" "plot (mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40"
 
 MONITOR
 1819
@@ -1821,7 +1833,7 @@ MONITOR
 1950
 407
 Average BCS (points)
-(mean [live-weight] of cows - mean [min-weight] of cows) / 40
+;(mean [live-weight] of cows - mean [min-weight] of cows) / 40\n(mean [live-weight] of cows - (((mean [live-weight] of cows) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -1832,7 +1844,7 @@ MONITOR
 1884
 318
 BCS of cows (points)
-(mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40
+;(mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40\n(mean [live-weight] of cows with [cow?] - (((mean [live-weight] of cows with [cow?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -1843,7 +1855,7 @@ MONITOR
 1884
 363
 BCS of heifers (points)
-(mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40
+;(mean [live-weight] of cows with [heifer?] - mean [min-weight] of cows with [heifer?]) / 40\n(mean [live-weight] of cows with [heifer?] - (((mean [live-weight] of cows with [heifer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -2099,7 +2111,7 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 SLIDER
 6
 152
-157
+155
 185
 DM-available-for-cattle
 DM-available-for-cattle
@@ -2112,10 +2124,10 @@ NIL
 HORIZONTAL
 
 CHOOSER
-3222
-89
-3324
-134
+279
+10
+381
+55
 changing-seasons?
 changing-seasons?
 "yes" "no"
@@ -2160,7 +2172,7 @@ MONITOR
 1909
 273
 BCS of cows-with-calf (points)
-(mean [live-weight] of cows with [cow-with-calf?] - mean [min-weight] of cows with [cow-with-calf?]) / 40
+;(mean [live-weight] of cows with [cow-with-calf?] - mean [min-weight] of cows with [cow-with-calf?]) / 40\n(mean [live-weight] of cows with [cow-with-calf?] - (((mean [live-weight] of cows with [cow-with-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -2171,7 +2183,7 @@ MONITOR
 2050
 317
 BCS of weaned-calf (points)
-(mean [live-weight] of cows with [weaned-calf?] - mean [min-weight] of cows with [weaned-calf?]) / 40
+;(mean [live-weight] of cows with [weaned-calf?] - mean [min-weight] of cows with [weaned-calf?]) / 40\n(mean [live-weight] of cows with [weaned-calf?] - (((mean [live-weight] of cows with [weaned-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -2182,7 +2194,7 @@ MONITOR
 2050
 362
 BCS of steer (points)
-(mean [live-weight] of cows with [steer?] - mean [min-weight] of cows with [steer?]) / 40
+;(mean [live-weight] of cows with [steer?] - mean [min-weight] of cows with [steer?]) / 40\n(mean [live-weight] of cows with [steer?] - (((mean [live-weight] of cows with [steer?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -2193,7 +2205,7 @@ MONITOR
 2050
 273
 BCS of born-calf (points)
-(mean [live-weight] of cows with [born-calf?] - mean [min-weight] of cows with [born-calf?]) / 40
+;(mean [live-weight] of cows with [born-calf?] - mean [min-weight] of cows with [born-calf?]) / 40\n(mean [live-weight] of cows with [born-calf?] - (((mean [live-weight] of cows with [born-calf?]) * set-MW-1-AU) / set-1-AU)) / 40
 2
 1
 11
@@ -2334,10 +2346,10 @@ X
 1
 
 SLIDER
-3105
-144
-3204
-177
+159
+153
+257
+186
 set-1-AU
 set-1-AU
 1
@@ -2349,10 +2361,10 @@ kg
 HORIZONTAL
 
 SLIDER
-3207
-144
-3328
-177
+260
+153
+381
+186
 set-MW-1-AU
 set-MW-1-AU
 1
