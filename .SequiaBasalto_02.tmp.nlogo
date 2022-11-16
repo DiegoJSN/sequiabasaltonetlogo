@@ -387,7 +387,7 @@ end
 to DM-consumption
 ask cows [
   set metabolic-body-size live-weight ^ (3 / 4)
-   ;print (word ">>> UPDATED live-weight-gain   " live-weight-gain)
+   ;print (word ">>> UPDATED live-weight-gain     " live-weight-gain)
 
   ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
 ; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
