@@ -52,6 +52,8 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
          ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc (grass-energy variable)
  DM-kg-ha
 
+  gh-total
+
 ;Livestock related global variables
 
  ;initial-num-cows (slider) ;The initial number of animals is chosen by users.
@@ -312,7 +314,7 @@ to go
 
   update-grass-height
 
-  move
+  ;move
 
   tick
 end
@@ -334,6 +336,8 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
   ]
+
+  set gh-total sum [grass-height] of patches
 
 ;ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
@@ -511,6 +515,8 @@ ask patches [
      set pcolor scale-color green grass-height 23 0]
     if grass-height < 0 [set pcolor red]
   ]
+
+  set gh-total sum [grass-height] of patches
 
 ;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
 ;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
@@ -1603,7 +1609,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+5.0
 1
 1
 NIL
@@ -2382,6 +2388,39 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
+
+MONITOR
+249
+343
+334
+388
+gh-total (cm)
+gh-total
+3
+1
+11
+
+MONITOR
+249
+390
+354
+435
+dm-total (kg DM)
+gh-total * DM-cm-ha / DM-available-for-cattle
+3
+1
+11
+
+MONITOR
+245
+457
+373
+502
+dm-available (kg DM)
+gh-total * DM-cm-ha
+3
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
