@@ -81,7 +81,7 @@ grass-height ;State of the grass height, determines the carrying capacity of the
 report-initial-grass-height ;;;;TEMP
 DDMC-patch00 ;;;;TEMP
 
-gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm.
+gh-final ; patch variable with same value that grass-height, and its only fuction is to tell cows to not eat grass below 2 cm
 gh-individual
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
