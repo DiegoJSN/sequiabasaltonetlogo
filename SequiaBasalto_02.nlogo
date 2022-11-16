@@ -1566,7 +1566,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.5
+1.0
 0.1
 1
 NIL
@@ -1603,7 +1603,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+5.0
 1
 1
 NIL
