@@ -546,6 +546,12 @@ end
 
 
 
+to move
+  ;let empty-patches patches with [not any? cows-here]
+  ;ask cows [move-to max-one-of patches [grass-height]] ;para que las vacas se muevan al parche con el valor más alto de grass-height.
+  ask cows [if any? other cows-here [move-to max-one-of patches [grass-height]]]
+  ;ask cows [move-to one-of empty-patches]
+end
 
 
 
@@ -1603,7 +1609,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-50.0
+5.0
 1
 1
 NIL

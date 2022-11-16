@@ -546,6 +546,12 @@ end
 
 
 
+to move1
+  ;let empty-patches patches with [not any? cows-here]
+  ;ask cows [move-to max-one-of patches [grass-height]] ;para que las vacas se muevan al parche con el valor más alto de grass-height.
+  ask cows [if any? other cows-here [move-to max-one-of patches [grass-height]]]
+  ;ask cows [move-to one-of empty-patches]
+end
 
 
 
