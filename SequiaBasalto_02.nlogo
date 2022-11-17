@@ -275,16 +275,16 @@ to go
 
   set simulation-time simulation-time + days-per-tick
   ;if simulation-time >= 3680 [stop]
-  if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
+  ;if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 184 [stop]
-  if simulation-time = 276 [stop]
-  if simulation-time = 368 [stop]
+  ;if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 184 [stop]
+  ;if simulation-time = 276 [stop]
+  ;if simulation-time = 368 [stop]
 
   if simulation-time = 3314 [stop] ; INVIERNO: COMIENZO ESTACION
   if simulation-time = 3405 [stop] ; INVIERNO: FINAL ESTACION
@@ -1270,8 +1270,8 @@ end
 GRAPHICS-WINDOW
 386
 61
-834
-530
+594
+170
 -1
 -1
 20.0
@@ -1285,9 +1285,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-21
+9
 0
-22
+4
 1
 1
 1
@@ -1615,7 +1615,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-5.0
+0.0
 1
 1
 NIL
@@ -2285,7 +2285,7 @@ set-X-size
 set-X-size
 1
 100
-22.0
+10.0
 1
 1
 hm
@@ -2300,7 +2300,7 @@ set-Y-size
 set-Y-size
 1
 100
-23.0
+5.0
 1
 1
 hm
@@ -2394,6 +2394,17 @@ false
 "" ""
 PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
+
+MONITOR
+186
+300
+355
+345
+Average daily LWG (kg/day)
+mean [live-weight-gain] of cows
+3
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
