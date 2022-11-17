@@ -193,6 +193,11 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     set r 0.002
   ]
 
+  ;ask patch 0 0 [set grass-height 500]
+  ;ask patch 3 3 [set grass-height 400]
+  ;ask patch 5 5 [set grass-height 300]
+  ;ask patch 9 9 [set grass-height 300]
+
 end
 
 
@@ -522,17 +527,6 @@ end
 
 
 
-
-
-
-
-
-
-
-
-
-
-
 to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
 ask cows [
   if grass-height < 5
@@ -546,11 +540,12 @@ end
 
 
 
-to move1
-  ;let empty-patches patches with [not any? cows-here]
-  ;ask cows [move-to max-one-of patches [grass-height]] ;para que las vacas se muevan al parche con el valor más alto de grass-height.
-  ask cows [if any? other cows-here [move-to max-one-of patches [grass-height]]]
-  ;ask cows [move-to one-of empty-patches]
+to teleport
+  ask cows [
+   let empty-patches patches with [not any? cows-here] ;creamos variable local (empty-patches) que represente a los parches que no tienen vacas
+   let target max-one-of empty-patches [grass-height] ;creamos variable local (target) que represente a los parches que no tienen vacas Y que tienen el mayor valor (max-one-of) de grass-height
+    if target != nobody and [grass-height] of target > grass-height [move-to target] ;aqui decimos que [si los parches que están vacios Y que tienen el valor maximo de grass-height] (-> if target) [tienen una vaca] (-> != nobody) [Y] (-> and) [la altura maxima del target es mayor que la altura del parche en la que se encuentra la vaca (-> [grass-height] of target > grass-height), [que se mueva al target (-> [move-to target])
+     ]
 end
 
 
@@ -1545,7 +1540,7 @@ PENS
 TEXTBOX
 307
 231
-457
+371
 287
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
