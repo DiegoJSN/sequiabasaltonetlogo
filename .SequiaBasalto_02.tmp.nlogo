@@ -575,7 +575,7 @@ to become-born-calf
   set cow? false
   set cow-with-calf? false
   set pregnant? false
-   set color sky
+  set color sky
   set age 0
   set initial-weight 40
   set live-weight initial-weight
@@ -583,6 +583,7 @@ to become-born-calf
   set animal-units live-weight / set-1-AU
   ;set min-weight 0
   set min-weight set-MW-1-AU * 0.2
+  set size 0.4
   set natural-mortality-rate 0.000054
   set except-mort-rate 0
   set category-coef 1
@@ -693,7 +694,7 @@ to become-cow-with-calf
   set cow? false
   set cow-with-calf? true
   set color magenta
-  set animal-units 1
+  ;set animal-units 1
   ;set min-weight 180
   set min-weight set-MW-1-AU
   set size 1.1
