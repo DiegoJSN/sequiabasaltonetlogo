@@ -242,6 +242,7 @@ create-cows initial-num-heifers [
     setxy random-pxcor random-pycor
     become-steer ]
 
+  ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
 
 end
 
@@ -285,10 +286,17 @@ to go
   if simulation-time = 276 [stop]
   if simulation-time = 368 [stop]
 
-  if simulation-time = 3404 [stop]
-  if simulation-time = 3496 [stop]
-  if simulation-time = 3588 [stop]
-  if simulation-time = 3680 [stop] ; 9.75 years
+  if simulation-time = 3314 [stop] ; INVIERNO: COMIENZO ESTACION
+  if simulation-time = 3405 [stop] ; INVIERNO: FINAL ESTACION
+
+  if simulation-time = 3406 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  if simulation-time = 3498 [stop] ; PRIMAVERA: FINAL ESTACION
+
+  if simulation-time = 3499 [stop] ; VERANO: COMIENZO ESTACION
+  if simulation-time = 3590 [stop] ; VERANO: FINAL ESTACION
+
+  if simulation-time = 3591 [stop] ; OTOÑO: COMIENZO ESTACION
+  if simulation-time = 3682 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
 
   if simulation-time = 18400 [stop] ; 49.75 years
 

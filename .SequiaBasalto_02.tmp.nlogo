@@ -243,6 +243,7 @@ create-cows initial-num-heifers [
     become-steer ]
 
 
+
 end
 
 
@@ -695,6 +696,7 @@ to become-cow-with-calf
   set cow-with-calf? true
   set color magenta
   ;set animal-units 1
+  set animal-units live-weight / set-1-AU
   ;set min-weight 180
   set min-weight set-MW-1-AU
   set size 1.1
