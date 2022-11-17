@@ -698,10 +698,12 @@ to become-cow-with-calf
   set steer? false
   set cow? false
   set cow-with-calf? true
-  set size 1.1
   set color magenta
-  set animal-units 1
-  set min-weight 180
+  ;set animal-units 1
+  set animal-units live-weight / set-1-AU
+  ;set min-weight 180
+  set min-weight set-MW-1-AU
+
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.3
   set category-coef 1.1
@@ -711,6 +713,9 @@ to become-cow-with-calf
   set pregnancy-time 0
   set lactating-time 0
 end
+
+
+
 
  to-report stocking-rate ; Reporter to output the relation between the stock of livestock (in terms of animal units) and the grassland area (num of patches, 1 patch = 1 ha).
   report sum [animal-units] of cows / count patches
@@ -2412,10 +2417,10 @@ gh-total * DM-cm-ha / DM-available-for-cattle
 11
 
 MONITOR
-245
-457
-373
-502
+249
+436
+377
+481
 dm-available (kg DM)
 gh-total * DM-cm-ha
 3
