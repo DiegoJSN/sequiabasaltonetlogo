@@ -575,7 +575,6 @@ to become-born-calf
   set cow? false
   set cow-with-calf? false
   set pregnant? false
-  set size 0.4
   set color sky
   set age 0
   set initial-weight 40
@@ -584,6 +583,7 @@ to become-born-calf
   set animal-units live-weight / set-1-AU
   ;set min-weight 0
   set min-weight set-MW-1-AU * 0.2
+  set size 0.4
   set natural-mortality-rate 0.000054
   set except-mort-rate 0
   set category-coef 1
@@ -601,12 +601,12 @@ to become-weaned-calf
   set steer? false
   set cow? false
   set cow-with-calf? false
-  set size 0.6
   set color orange
   ;set animal-units 0.5
   set animal-units live-weight / set-1-AU
   ;set min-weight 60
   set min-weight set-MW-1-AU * 0.5
+  set size 0.6
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -623,12 +623,12 @@ to become-heifer
   set heifer? true
   set steer? false
   set cow? false
-  set size 0.8
   set color pink
   ;set animal-units 0.7 ; Haciendo cálculos de la SR de la Figura 4 de Dieguez-Cameroni et al. 2012, me sale que 1 heifer = 0.783 cows (calculos hechos: 0.47 LU/ha* 50 ha = 23.5 LU; 23.5 LU / 30 LU = 0.783 cows)
   set animal-units live-weight / set-1-AU
   ;set min-weight 100
   set min-weight set-MW-1-AU * 0.7
+  set size 0.8
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -646,12 +646,12 @@ to become-steer
   set steer? true
   set cow? false
   set cow-with-calf? false
-  set size 0.9
   set color red
   ;set animal-units 0.7
   set animal-units live-weight / set-1-AU
   ;set min-weight 100
   set min-weight set-MW-1-AU * 0.7
+  set size 0.9
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -670,12 +670,12 @@ to become-cow
   set steer? false
   set cow? true
   set cow-with-calf? false
-  set size 1
   set color brown
   ;set animal-units 1
   set animal-units live-weight / set-1-AU
   ;set min-weight 180
   set min-weight set-MW-1-AU
+  set size 1
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.15
   set category-coef 1
@@ -693,10 +693,11 @@ to become-cow-with-calf
   set steer? false
   set cow? false
   set cow-with-calf? true
-  set size 1.1
   set color magenta
   set animal-units 1
-  set min-weight 180
+  ;set min-weight 180
+  set min-weight set-MW-1-AU
+  set size 1.1
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.3
   set category-coef 1.1
