@@ -305,19 +305,19 @@ to go
 
   grow-grass
 
+  update-grass-height
+
   gh/cow
 
   LWG
 
   DM-consumption
 
+  move
+
   grow-livestock
 
   reproduce
-
-  update-grass-height
-
-  move
 
   tick
 end
@@ -347,6 +347,33 @@ end
 
 
 
+
+
+
+to update-grass-height
+ask patches [
+  set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
+  ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
+                  ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
+    let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
+    set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
+                                        ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
+  set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
+
+
+  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+
+
+  ifelse grass-height < 2 [
+     set pcolor 37][
+     set pcolor scale-color green grass-height 23 0]
+    if grass-height < 0 [set pcolor red]
+  ]
+
+;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
+;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+
+end
 
 
 
@@ -416,6 +443,29 @@ end
 
 
 
+
+
+
+to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
+ask cows [
+  if grass-height < 5
+    [ifelse random-float 1 < perception ; perception es un slider con valores entre 0 y 1
+       [uphill grass-height] ; Moves the turtle to the neighboring patch with the highest value for patch-variable (en este caso, se llama a la patch-variable grass-height). If no neighboring patch has a higher value than the current patch, the turtle stays put. If there are multiple patches with the same highest value, the turtle picks one randomly. Non-numeric values are ignored. uphill considers the eight neighboring patches; uphill4 only considers the four neighbors.
+       [move-to one-of neighbors]]
+  ]
+end
+
+
+
+
+
+to teleport
+  ask cows [
+   let empty-patches patches with [not any? cows-here] ;creamos variable local (empty-patches) que represente a los parches que no tienen vacas
+   let target max-one-of empty-patches [grass-height] ;creamos variable local (target) que represente a los parches que no tienen vacas Y que tienen el mayor valor (max-one-of) de grass-height
+    if target != nobody and [grass-height] of target > grass-height [move-to target] ;aqui decimos que [si los parches que están vacios Y que tienen el valor maximo de grass-height] (-> if target) [tienen una vaca] (-> != nobody) [Y] (-> and) [la altura maxima del target es mayor que la altura del parche en la que se encuentra la vaca (-> [grass-height] of target > grass-height), [que se mueva al target (-> [move-to target])
+     ]
+end
 
 
 
@@ -497,56 +547,7 @@ end
 
 
 
-to update-grass-height
-ask patches [
-  set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
-  ask cows-here [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
-                  ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
-    let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
-    set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
-                                        ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
-  set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
-
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
-
-
-  ifelse grass-height < 2 [
-     set pcolor 37][
-     set pcolor scale-color green grass-height 23 0]
-    if grass-height < 0 [set pcolor red]
-  ]
-
-;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
-;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
-
-end
-
-
-
-
-
-
-to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
-ask cows [
-  if grass-height < 5
-    [ifelse random-float 1 < perception ; perception es un slider con valores entre 0 y 1
-       [uphill grass-height] ; Moves the turtle to the neighboring patch with the highest value for patch-variable (en este caso, se llama a la patch-variable grass-height). If no neighboring patch has a higher value than the current patch, the turtle stays put. If there are multiple patches with the same highest value, the turtle picks one randomly. Non-numeric values are ignored. uphill considers the eight neighboring patches; uphill4 only considers the four neighbors.
-       [move-to one-of neighbors]]
-  ]
-end
-
-
-
-
-
-to teleport
-  ask cows [
-   let empty-patches patches with [not any? cows-here] ;creamos variable local (empty-patches) que represente a los parches que no tienen vacas
-   let target max-one-of empty-patches [grass-height] ;creamos variable local (target) que represente a los parches que no tienen vacas Y que tienen el mayor valor (max-one-of) de grass-height
-    if target != nobody and [grass-height] of target > grass-height [move-to target] ;aqui decimos que [si los parches que están vacios Y que tienen el valor maximo de grass-height] (-> if target) [tienen una vaca] (-> != nobody) [Y] (-> and) [la altura maxima del target es mayor que la altura del parche en la que se encuentra la vaca (-> [grass-height] of target > grass-height), [que se mueva al target (-> [move-to target])
-     ]
-end
 
 
 
