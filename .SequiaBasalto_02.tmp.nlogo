@@ -286,14 +286,31 @@ to go
   ;if simulation-time = 276 [stop]
   ;if simulation-time = 368 [stop]
 
-  if simulation-time = 3314 [stop] ; INVIERNO: COMIENZO ESTACION
-  if simulation-time = 3405 [stop] ; INVIERNO: FINAL ESTACION
+
+  if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
+  if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
+
+  if simulation-time = 1567 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  if simulation-time = 1599 [stop] ; PRIMAVERA: 31 DÍAS. 4.25 AÑOS
+
+  if simulation-time = 1661 [stop] ; VERANO: COMIENZO ESTACION
+  if simulation-time = 169 [stop] ; VERANO: 31 DÍAS. 4.5 AÑOS
+
+  if simulation-time = 1752 [stop] ; OTOÑO: COMIENZO ESTACION
+  if simulation-time = 1784 [stop] ; OTOÑO: 31 DÍAS. 4.75 AÑOS
+
+
+
+
+
+  if simulation-time = 3314 [stop] ; INVIERNO: COMIENZO ESTACION.
+  if simulation-time = 3405 [stop] ; INVIERNO: FINAL ESTACION. 9 años
 
   if simulation-time = 3406 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  if simulation-time = 3498 [stop] ; PRIMAVERA: FINAL ESTACION
+  if simulation-time = 3498 [stop] ; PRIMAVERA: FINAL ESTACION. 9.25 años
 
   if simulation-time = 3499 [stop] ; VERANO: COMIENZO ESTACION
-  if simulation-time = 3590 [stop] ; VERANO: FINAL ESTACION
+  if simulation-time = 3590 [stop] ; VERANO: FINAL ESTACION. 9.5 años
 
   if simulation-time = 3591 [stop] ; OTOÑO: COMIENZO ESTACION
   if simulation-time = 3682 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
@@ -313,7 +330,7 @@ to go
 
   grow-grass
 
-  gh/cow
+  ;gh/cow
 
   LWG
 
@@ -323,7 +340,7 @@ to go
 
   reproduce
 
-  update-grass-height
+  update-grass-height1
 
   move
 
@@ -498,6 +515,32 @@ end
 
 
 
+
+
+to update-grass-height1
+ask patches [
+  set GH-consumed 0 ; el GH-consumed se actualiza en cada tick partiendo de 0.
+  ask cows [ ; recordemos que turtles-here o <breeds>-here (i.e., cows-here) es un reporter: reports an agentset containing all the turtles on the caller's patch (including the caller itself if it's a turtle). If the name of a breed is substituted for "turtles", then only turtles of that breed are included.
+                  ; este procedimiento es para actualizar la altura de la hierba en cada parche, por eso usamos "cows-here" (siendo "here" en el parche en el que se encuentran los cows)
+    let totDDMC sum [DDMC] of cows ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
+    set GH-consumed totDDMC / DM-cm-ha ] ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
+                                        ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
+  set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
+
+
+  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+
+
+  ifelse grass-height < 2 [
+     set pcolor 37][
+     set pcolor scale-color green grass-height 23 0]
+    if grass-height < 0 [set pcolor red]
+  ]
+
+;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
+;ask patch 0 0[print (word ">>> UPDATED grass-height "  [grass-height] of patch 0 0)] ;;;;TEMP
+
+end
 
 
 
@@ -1454,7 +1497,7 @@ perception
 perception
 0
 1
-0.5
+0.7
 0.1
 1
 NIL
@@ -2395,12 +2438,12 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
 
 MONITOR
-229
-398
-398
-443
+171
+297
+340
+342
 Average daily LWG (kg/day)
-live-weight-gain
+mean [live-weight-gain] of cows
 3
 1
 11
