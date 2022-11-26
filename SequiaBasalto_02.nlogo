@@ -281,7 +281,7 @@ to go
 
   ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  ;if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
   ;if simulation-time = 184 [stop]
   ;if simulation-time = 276 [stop]
   ;if simulation-time = 368 [stop]
@@ -2275,7 +2275,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-0.0
+30.0
 1
 1
 NIL
