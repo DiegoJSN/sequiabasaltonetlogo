@@ -262,7 +262,7 @@ create-cows initial-num-heifers [
     become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
-
+  ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
 end
 
 
@@ -314,12 +314,12 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 184 [stop]
-  if simulation-time = 276 [stop]
-  if simulation-time = 368 [stop]
+  ;if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 184 [stop]
+  ;if simulation-time = 276 [stop]
+  ;if simulation-time = 368 [stop]
 
 
   if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
@@ -2310,7 +2310,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+0.0
 1
 1
 NIL

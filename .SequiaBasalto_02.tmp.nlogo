@@ -262,7 +262,7 @@ create-cows initial-num-heifers [
     become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
-
+  ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
 end
 
 
@@ -314,12 +314,12 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 184 [stop]
-  if simulation-time = 276 [stop]
-  if simulation-time = 368 [stop]
+  ;if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 184 [stop]
+  ;if simulation-time = 276 [stop]
+  ;if simulation-time = 368 [stop]
 
 
   if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
@@ -350,7 +350,7 @@ to go
   if simulation-time = 3591 [stop] ; OTOÑO: COMIENZO ESTACION
   if simulation-time = 3682 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
 
-  if simulation-time = 18400 [stop] ; 49.75 years
+  ;if simulation-time = 18400 [stop] ; 49.75 years
 
   if simulation-time = 36800 [stop] ; 99.75 years
 
@@ -1347,8 +1347,8 @@ end
 GRAPHICS-WINDOW
 386
 61
-594
-170
+834
+530
 -1
 -1
 20.0
@@ -1362,9 +1362,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-9
+21
 0
-4
+22
 1
 1
 1
@@ -1692,7 +1692,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+5.0
 1
 1
 NIL
@@ -2310,7 +2310,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+0.0
 1
 1
 NIL
@@ -2362,7 +2362,7 @@ set-X-size
 set-X-size
 1
 100
-10.0
+22.0
 1
 1
 hm
@@ -2377,7 +2377,7 @@ set-Y-size
 set-Y-size
 1
 100
-5.0
+23.0
 1
 1
 hm
