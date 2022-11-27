@@ -78,6 +78,10 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
 grass-height ;State of the grass height, determines the carrying capacity of the system.
                ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height
 
+  grass-height-history
+  grass-height-historyXticks
+
+
 report-initial-grass-height ;;;;TEMP
 DDMC-patch00 ;;;;TEMP
 
@@ -107,6 +111,10 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
   min-weight ;parameter to define the critical weight which below the animal can die by forage crisis. Cow= 180 Kg, weaned-calf= 60 Kg, Steer= 100 Kg, Heifer= 100 Kg.
   live-weight ;variable that defines the state of the animals in terms of live weight.
   live-weight-gain ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain
+
+  live-weight-gain-history
+  live-weight-gain-historyXticks
+
   DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note: 1 cm of grass/ha/92 days = 180 Kg of dry matter (Units: Kg/animal/day).
        ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc
 
@@ -128,6 +136,9 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
 
   ]
 
+
+
+
 to setup
   ca
   resize-world 0 (set-x-size - 1)  0 (set-y-size - 1) ; resize-world min-x-cor max-x-cor min-y-cor max-y-cor; Changes the size of the patch grid. Remember min coordinate must be 0 or less than 0
@@ -135,6 +146,14 @@ to setup
   setup-grassland
   if (model-version = "open access") or (model-version = "management model") [setup-livestock]
   reset-ticks
+  ask patches [
+    set grass-height-history []
+    set grass-height-historyXticks []
+  ]
+  ask cows [
+    set live-weight-gain-history []
+    set live-weight-gain-historyXticks []
+  ]
 end
 
 
@@ -274,17 +293,33 @@ to go
 ]
 
   set simulation-time simulation-time + days-per-tick
+
+
+    ask patches [
+    set grass-height-history lput grass-height grass-height-history
+    if ticks > 0 [set grass-height-historyXticks mean (sublist grass-height-history 0 ticks)]
+    if ticks = 91 [set grass-height-history []]
+  ]
+
+    ask cows [
+    set live-weight-gain-history lput live-weight-gain live-weight-gain-history
+    if ticks > 0 [set live-weight-gain-historyXticks mean (sublist live-weight-gain-history 0 ticks)]
+    if ticks = 91 [set live-weight-gain-history []]
+  ]
+
+
+
   ;if simulation-time >= 3680 [stop]
   ;if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
   if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  ;if simulation-time = 184 [stop]
-  ;if simulation-time = 276 [stop]
-  ;if simulation-time = 368 [stop]
+  if simulation-time = 184 [stop]
+  if simulation-time = 276 [stop]
+  if simulation-time = 368 [stop]
 
 
   if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
@@ -2447,6 +2482,79 @@ mean [live-weight-gain] of cows
 3
 1
 11
+
+MONITOR
+170
+346
+393
+391
+Average LWG since the start of the season
+mean [live-weight-gain-historyXticks] of cows
+3
+1
+11
+
+MONITOR
+2992
+306
+3235
+351
+Average DM since the start of the season
+DM-cm-ha * sum [grass-height-historyXticks] of patches
+3
+1
+11
+
+BUTTON
+3034
+372
+3097
+405
+NIL
+setup
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+3104
+372
+3167
+405
+NIL
+go
+T
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+3106
+409
+3193
+442
+go (1 tick)
+go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
