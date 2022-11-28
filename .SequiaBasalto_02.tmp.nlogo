@@ -222,6 +222,21 @@ end
 
 
 
+to introduce-steers
+
+  create-cows initial-num-steers [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
+
+  ask cows [
+    set live-weight-gain-history []
+    set live-weight-gain-historyXticks []
+  ]
+
+end
+
+
+
+
+
 
 
 to setup-livestock
@@ -250,16 +265,16 @@ create-cows initial-num-heifers [
     ;setxy 0 0
     become-heifer ]
 
-  create-cows initial-num-steers [
-    set shape "cow"
-    set initial-weight initial-weight-steer
-    set live-weight initial-weight
-    set mortality-rate natural-mortality-rate
-    set DDMC 0
-    set age heifer-age-min
-    ;set age random (cow-age-max - cow-age-min) + cow-age-min
-    setxy random-pxcor random-pycor
-    become-steer ]
+;  create-cows initial-num-steers [
+;    set shape "cow"
+;    set initial-weight initial-weight-steer
+;    set live-weight initial-weight
+;    set mortality-rate natural-mortality-rate
+;    set DDMC 0
+;    set age heifer-age-min
+;    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+;    setxy random-pxcor random-pycor
+;    become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
   ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
@@ -350,7 +365,7 @@ to go
   if simulation-time = 3591 [stop] ; OTOÑO: COMIENZO ESTACION
   if simulation-time = 3682 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
 
-  ;if simulation-time = 18400 [stop] ; 49.75 years
+  if simulation-time = 18400 [stop] ; 49.75 years
 
   if simulation-time = 36800 [stop] ; 99.75 years
 
@@ -1347,8 +1362,8 @@ end
 GRAPHICS-WINDOW
 386
 61
-834
-530
+594
+170
 -1
 -1
 20.0
@@ -1362,9 +1377,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-21
+9
 0
-22
+4
 1
 1
 1
@@ -1692,7 +1707,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-5.0
+0.0
 1
 1
 NIL
@@ -2362,7 +2377,7 @@ set-X-size
 set-X-size
 1
 100
-22.0
+10.0
 1
 1
 hm
@@ -2377,7 +2392,7 @@ set-Y-size
 set-Y-size
 1
 100
-23.0
+5.0
 1
 1
 hm
@@ -2546,6 +2561,23 @@ BUTTON
 442
 go (1 tick)
 go
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+178
+244
+270
+277
+Add steers
+introduce-steers
 NIL
 1
 T
