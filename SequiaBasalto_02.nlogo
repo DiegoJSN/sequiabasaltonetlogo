@@ -224,7 +224,41 @@ end
 
 to introduce-steers
 
-  create-cows initial-num-steers [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
+  create-cows initial-num-steers [
+    set shape "cow"
+    set initial-weight 300
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    setxy random-pxcor random-pycor
+    become-steer
+  ]
+
+  ask cows [
+    set live-weight-gain-history []
+    set live-weight-gain-historyXticks []
+  ]
+
+end
+
+
+
+
+to introduce-steers/patch
+
+  ask n-of initial-num-steers patches [ sprout-cows 1 ]
+
+  ask cows [
+    set shape "cow"
+    set initial-weight 300
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    ;setxy random-pxcor random-pycor
+    become-steer
+  ]
 
   ask cows [
     set live-weight-gain-history []
@@ -775,6 +809,70 @@ ask patches [
   ]
   ]
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+to move_t1
+;; If the patch ahead has no other turtles on it, then move onto
+;; it, otherwise turn a random direction and wait until next time
+;; before trying to move again.  A subtle point here is that "fd 1"
+;; doesn't always take you to a new patch, because along the
+;; diagonal, a patch is 1.414... units big.
+ ask cows [
+     ifelse not any? other turtles-on patch-ahead 1
+      [ fd 1 ]
+      [ rt random 360 ]
+  ]
+end
+
+
+to move_t2
+;; Check neighboring patches to see if any are empty.  If any are
+;; empty, pick a random empty one and move onto its center.
+;; Note that we can't just do "fd 1", since the patch's center
+;; might be more than 1 unit away from our current position.
+  ask cows [
+    let empty-patches neighbors with [not any? turtles-here]
+    if any? empty-patches
+      [ let target one-of empty-patches
+        face target
+        move-to target ]
+  ]
+end
+
+
+to move_t3 ;; turtle procedure
+;; Keep moving forward until standing on an empty patch.  (The
+;; Segregation model in the Models Library uses a variant of
+;; this strategy.)  Note that theoretically this could end up
+;; stuck in an infinite loop if all the patches the turtle
+;; crosses are always occupied, but this is very unlikely
+;; to happen in practice.
+  ask cows [
+    fd 1
+    while [any? other turtles-here]
+      [ fd 1 ]
+  ]
+end
+
+
+
+
+
+
+
 
 
 
@@ -2633,9 +2731,9 @@ PENS
 
 MONITOR
 171
-297
+324
 340
-342
+369
 Average daily LWG (kg/day)
 mean [live-weight-gain] of cows
 3
@@ -2644,9 +2742,9 @@ mean [live-weight-gain] of cows
 
 MONITOR
 170
-346
+373
 393
-391
+418
 Average LWG since the start of the season
 mean [live-weight-gain-historyXticks] of cows
 3
@@ -2731,6 +2829,34 @@ NIL
 NIL
 NIL
 1
+
+BUTTON
+178
+282
+305
+315
+Add steers/patch
+introduce-steers/patch
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+MONITOR
+171
+428
+374
+473
+NIL
+max [count cows-here] of patches
+17
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
