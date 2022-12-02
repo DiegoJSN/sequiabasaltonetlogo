@@ -157,10 +157,47 @@ to setup
     set live-weight-gain-history []
     set live-weight-gain-historyXticks []
   ]
+  use-new-seed
+end
+
+
+to setup2
+  ca
+  resize-world 0 (set-x-size - 1)  0 (set-y-size - 1) ; resize-world min-x-cor max-x-cor min-y-cor max-y-cor; Changes the size of the patch grid. Remember min coordinate must be 0 or less than 0
+  setup-globals ; Procedure para darle valores (info) a las globals variables
+  setup-grassland
+  if (model-version = "open access") or (model-version = "management model") [setup-livestock]
+  reset-ticks
+  ask patches [
+    set grass-height-history []
+    set grass-height-historyXticks []
+  ]
+  ask cows [
+    set live-weight-gain-history []
+    set live-weight-gain-historyXticks []
+  ]
+  use-seed-from-user
 end
 
 
 
+to setup3
+  ca
+  resize-world 0 (set-x-size - 1)  0 (set-y-size - 1) ; resize-world min-x-cor max-x-cor min-y-cor max-y-cor; Changes the size of the patch grid. Remember min coordinate must be 0 or less than 0
+  setup-globals ; Procedure para darle valores (info) a las globals variables
+  setup-grassland
+  if (model-version = "open access") or (model-version = "management model") [setup-livestock]
+  reset-ticks
+  ask patches [
+    set grass-height-history []
+    set grass-height-historyXticks []
+  ]
+  ask cows [
+    set live-weight-gain-history []
+    set live-weight-gain-historyXticks []
+  ]
+  seed-498914735
+end
 
 
 
@@ -222,6 +259,41 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
 
 end
 
+
+;; THREE DIFFERENT WAYS TO SELECT A SEED ;;
+
+to use-new-seed
+  let my-seed new-seed            ;; generate a new seed
+  output-print word "Seed: " my-seed  ;; print it out
+  random-seed my-seed             ;; use the new seed
+  reset-ticks
+end
+
+
+to seed-498914735
+  let my-seed 498914735          ;; generate a new seed
+  output-print word "Seed: " my-seed  ;; print it out
+  random-seed my-seed            ;; use the new seed
+  reset-ticks
+end
+
+
+to use-seed-from-user
+  loop [
+    let my-seed user-input "Enter a random seed (an integer):"
+    carefully [ set my-seed read-from-string my-seed ] [ ]
+    ifelse is-number? my-seed and round my-seed = my-seed [
+      random-seed my-seed ;; use the new seed
+      output-print word "New seed: " my-seed  ;; print it out
+      reset-ticks
+      stop
+    ] [
+      user-message "Please enter an integer."
+    ]
+  ]
+end
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 
@@ -420,12 +492,12 @@ to go
 
   ;gh/cow
 
-  LWG1
-  ;LWG
+  ;LWG1
+  LWG
   ;LWG_HERE
 
-  DM-consumption1
-  ;DM-consumption
+  ;DM-consumption1
+  DM-consumption
   ;DM-consumption_HERE
 
   grow-livestock
@@ -434,11 +506,11 @@ to go
   reproduce
   ;reproduce_HERE
 
-  update-grass-height1
-  ;update-grass-height
+  ;update-grass-height1
+  update-grass-height
   ;update-grass-height_HERE
 
-  ;move
+  move
 
   set gh-total sum [grass-height] of patches / count patches
 
@@ -2922,6 +2994,47 @@ gh-total
 3
 1
 11
+
+OUTPUT
+651
+10
+851
+55
+12
+
+BUTTON
+690
+62
+831
+95
+use-seed-from-user
+setup2
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
+
+BUTTON
+690
+103
+831
+136
+seed-498914735
+setup3
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
