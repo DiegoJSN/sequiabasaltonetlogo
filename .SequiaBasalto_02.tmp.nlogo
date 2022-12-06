@@ -22,7 +22,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  simulation-time ; variable to keep track of the days of the simulation.
  year-cnt ; year count: variable to keep track of the years of the simulation.
 
-;Market prices & economic balance related global variables.
+;Market prices & economic balance related global variables
 
   exploitation-costs ; External data, regular costs for maintaining the plot ($/ha).
   grazing-prices ; External data, costs for renting an external plot ($/head/season sent it to the external plot).
