@@ -137,6 +137,8 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
 
   DDMC2
 
+  DM-kg-cow
+
   ]
 
 
@@ -456,6 +458,7 @@ to go
 
   grow-grass
 
+  ;kgMS/ha
   ;gh/cow
 
   LWG
@@ -470,7 +473,7 @@ to go
 
   move
 
-  set gh-total sum [grass-height] of patches / count patches
+  set gh-total sum [grass-height] of patches
 
   tick
 end
@@ -517,6 +520,19 @@ end
 
 
 
+to kgMS/ha
+  ask cows [set DM-kg-cow 0] ;le pedimos a las vacas que pongan la variable "DM-kg-cow" a 0
+
+  ask patches [
+   ask cows-here [
+      set  DM-kg-cow DM-kg-ha / count cows-here ;luego, le pedimos a las vacas que se encuentran en el parche que calculen los kg de DM que le corresponde a cada vaca que se encuentra en el parche
+    ]
+  ]
+
+  ask cows [set gh-individual ((DM-kg-cow) / DM-cm-ha )] ; los KgDM/cow los pasamos a cm/cow (cm de pasto que le corresponde a cada vaca)
+  ;NOTA, PARA QUE FUNCIONE ESTE PROCEDURE CON EL RESTO DE PROCEDURES, SUSTITUYE EL "grass-height" de "LWG" y "DM-consumption" por "gh-individual"
+  ;ask cows [set grass-height gh-individual]
+end
 
 
 
@@ -713,7 +729,14 @@ end
 
 
 
-
+to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
+ask cows [
+  if grass-height < 5
+    [ifelse random-float 1 < perception ; perception es un slider con valores entre 0 y 1
+       [uphill grass-height] ; Moves the turtle to the neighboring patch with the highest value for patch-variable (en este caso, se llama a la patch-variable grass-height). If no neighboring patch has a higher value than the current patch, the turtle stays put. If there are multiple patches with the same highest value, the turtle picks one randomly. Non-numeric values are ignored. uphill considers the eight neighboring patches; uphill4 only considers the four neighbors.
+       [move-to one-of neighbors]]
+  ]
+end
 
 
 
@@ -945,22 +968,83 @@ end
 ;in a dairy herd. Veterinary Research 46: 68.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; OLD PROCEDURES ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 to eat-grass
@@ -1448,8 +1532,8 @@ end
 GRAPHICS-WINDOW
 386
 61
-834
-530
+594
+170
 -1
 -1
 20.0
@@ -1463,9 +1547,9 @@ GRAPHICS-WINDOW
 1
 1
 0
-21
+9
 0
-22
+4
 1
 1
 1
@@ -1793,7 +1877,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-5.0
+0.0
 1
 1
 NIL
@@ -2463,7 +2547,7 @@ set-X-size
 set-X-size
 1
 100
-22.0
+10.0
 1
 1
 hm
@@ -2478,7 +2562,7 @@ set-Y-size
 set-Y-size
 1
 100
-23.0
+5.0
 1
 1
 hm
@@ -2707,7 +2791,7 @@ MONITOR
 279
 854
 324
-gh-total / patches
+gh-total
 gh-total
 3
 1
