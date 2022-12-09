@@ -53,7 +53,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
  gh-total
 
- DM-kg-ha
+
 
 ;Livestock related global variables
 
@@ -95,6 +95,7 @@ gh-individual
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
   GH-consumed ; grass-height consumed from the total consumption of dry matter.
 
+  DM-kg-ha
 
    ]
 
@@ -200,6 +201,7 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
+  ;set DM-cm-ha 180 * DM-available-for-cattle
   set DM-cm-ha (180 / 92) * DM-available-for-cattle ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-utilization-rate] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
@@ -233,6 +235,7 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     [set pcolor 37]
     [set pcolor scale-color green grass-height 23 0]
     set r 0.002
+
   ]
 
   ;ask patch 0 0 [set grass-height 500]
@@ -344,14 +347,14 @@ create-cows initial-num-heifers [
 
 ;  create-cows initial-num-steers [
 ;    set shape "cow"
-;    set initial-weight initial-weight-steer
-;    set live-weight initial-weight
-;    set mortality-rate natural-mortality-rate
-;    set DDMC 0
-;    set age heifer-age-min
-;    ;set age random (cow-age-max - cow-age-min) + cow-age-min
-;    setxy random-pxcor random-pycor
-;    become-steer ]
+    ;set initial-weight initial-weight-steer
+    ;set live-weight initial-weight
+    ;set mortality-rate natural-mortality-rate
+    ;set DDMC 0
+    ;set age heifer-age-min
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+    ;setxy random-pxcor random-pycor
+    ;become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
   ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
@@ -406,41 +409,99 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  ;if simulation-time = 31 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 32 [stop] ; INVIERNO. 31 DIAS. AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  ;if simulation-time = 92 [stop] ;REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  ;if simulation-time = 184 [stop]
-  ;if simulation-time = 276 [stop]
-  ;if simulation-time = 368 [stop]
+  ;if simulation-time = 94 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 126 [stop] ; PRIMAVERA: 31 DIAS. 0.25 AÑOS
+
+  ;if simulation-time = 188 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 220 [stop] ; VERANO: 31 DIAS. 0.5 AÑOS
+
+  ;if simulation-time = 282 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 314 [stop] ; OTOÑO: 31 DIAS. 0.75 AÑOS
+  ;if simulation-time = 376 [stop] ; OTOÑO-INVIERNO: COMIENZO AÑO 1
+
+
+
+  ;if simulation-time = 369 [stop] ; INVIERNO: COMIENZO ESTACION
+  ;if simulation-time = 401 [stop] ; INVIERNO: 31 DIAS. 1 AÑO
+
+  ;if simulation-time = 463 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  ;if simulation-time = 495 [stop] ; PRIMAVERA: 31 DÍAS. 1.25 AÑOS
+
+  ;if simulation-time = 557 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 589 [stop] ; VERANO: 31 DÍAS. 1.5 AÑOS
+
+  ;if simulation-time = 651 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 683 [stop] ; OTOÑO: 31 DÍAS. 1.75 AÑOS
+
+
+
+
+
+
+  ;if simulation-time = 737 [stop] ; INVIERNO: COMIENZO ESTACION
+  ;if simulation-time = 769 [stop] ; INVIERNO: 31 DIAS. 2 AÑO
+
+  ;if simulation-time = 831 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  ;if simulation-time = 863 [stop] ; PRIMAVERA: 31 DÍAS. 2.25 AÑOS
+
+  ;if simulation-time = 925 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 957 [stop] ; VERANO: 31 DÍAS. 2.5 AÑOS
+
+  ;if simulation-time = 1019 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 1051 [stop] ; OTOÑO: 31 DÍAS. 2.75 AÑOS
+
+
+
+
+
+  ;if simulation-time = 1105 [stop] ; INVIERNO: COMIENZO ESTACION
+  ;if simulation-time = 1137 [stop] ; INVIERNO: 31 DIAS. 2 AÑO
+
+  ;if simulation-time = 1199 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  ;if simulation-time = 1231 [stop] ; PRIMAVERA: 31 DÍAS. 2.25 AÑOS
+
+  ;if simulation-time = 1293 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 1325 [stop] ; VERANO: 31 DÍAS. 2.5 AÑOS
+
+  ;if simulation-time = 1387 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 1419 [stop] ; OTOÑO: 31 DÍAS. 2.75 AÑOS
+
+
+
+
+
 
 
   if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
   if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
 
-  if simulation-time = 1567 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  if simulation-time = 1599 [stop] ; PRIMAVERA: 31 DÍAS. 4.25 AÑOS
+  ;if simulation-time = 1567 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  ;if simulation-time = 1599 [stop] ; PRIMAVERA: 31 DÍAS. 4.25 AÑOS
 
-  if simulation-time = 1661 [stop] ; VERANO: COMIENZO ESTACION
-  if simulation-time = 1693 [stop] ; VERANO: 31 DÍAS. 4.5 AÑOS
+  ;if simulation-time = 1661 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 1693 [stop] ; VERANO: 31 DÍAS. 4.5 AÑOS
 
-  if simulation-time = 1755 [stop] ; OTOÑO: COMIENZO ESTACION
-  if simulation-time = 1787 [stop] ; OTOÑO: 31 DÍAS. 4.75 AÑOS
-
-
+  ;if simulation-time = 1755 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 1787 [stop] ; OTOÑO: 31 DÍAS. 4.75 AÑOS
 
 
 
-  ;if simulation-time = 3314 [stop] ; INVIERNO: COMIENZO ESTACION.
-  ;if simulation-time = 3405 [stop] ; INVIERNO: FINAL ESTACION. 9 años
 
-  ;if simulation-time = 3406 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  ;if simulation-time = 3498 [stop] ; PRIMAVERA: FINAL ESTACION. 9.25 años
 
-  ;if simulation-time = 3499 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 3590 [stop] ; VERANO: FINAL ESTACION. 9.5 años
+  ;if simulation-time = 3313 [stop] ; INVIERNO: COMIENZO ESTACION.
+  ;if simulation-time = 3345 [stop] ; INVIERNO: FINAL ESTACION. 9 años
 
-  ;if simulation-time = 3591 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 3682 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
+  ;if simulation-time = 3407 [stop] ; PRIMAVERA: COMIENZO ESTACION
+  ;if simulation-time = 3439 [stop] ; PRIMAVERA: FINAL ESTACION. 9.25 años
+
+  ;if simulation-time = 3501 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 3533 [stop] ; VERANO: FINAL ESTACION. 9.5 años
+
+  ;if simulation-time = 3595 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 3627 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
+
 
   ;if simulation-time = 18400 [stop] ; 49.75 years
 
@@ -452,12 +513,15 @@ to go
 
 
 
+
+
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
 
 
 
   grow-grass
 
+  ;kgMS/ha/cows
   ;kgMS/ha
   ;gh/cow
 
@@ -470,10 +534,10 @@ to go
   reproduce
 
   update-grass-height
-  update-grass-height_HERE
+  ;update-grass-height_HERE
 
-  ;move
-  move1
+  move
+  ;move1
 
   set gh-total sum [grass-height] of patches
 
@@ -510,10 +574,32 @@ set grass-height ((item current-season kmax / (1 + ((((item current-season kmax 
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
+  set DM-kg-ha DM-cm-ha * grass-height
   ]
 
 ;ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
 
+end
+
+
+
+
+
+
+
+
+to kgMS/ha/cows
+  ask cows [set DM-kg-cow 0] ;le pedimos a las vacas que pongan la variable "DM-kg-cow" a 0
+
+  ask patches [
+   ask cows-here [
+      set  DM-kg-cow DM-kg-ha / count cows-here ;luego, le pedimos a las vacas que se encuentran en el parche que calculen los kg de DM que le corresponde a cada vaca que se encuentra en el parche
+    ]
+  ]
+
+  ask cows [set gh-individual ((DM-kg-cow) / DM-cm-ha )] ; los KgDM/cow los pasamos a cm/cow (cm de pasto que le corresponde a cada vaca)
+  ;NOTA, PARA QUE FUNCIONE ESTE PROCEDURE CON EL RESTO DE PROCEDURES, SUSTITUYE EL "grass-height" de "LWG" y "DM-consumption" por "gh-individual"
+  ask cows [set grass-height gh-individual]
 end
 
 
@@ -527,14 +613,24 @@ to kgMS/ha
 
   ask patches [
    ask cows-here [
-      set  DM-kg-cow DM-kg-ha / count cows-here ;luego, le pedimos a las vacas que se encuentran en el parche que calculen los kg de DM que le corresponde a cada vaca que se encuentra en el parche
+      set  DM-kg-cow DM-kg-ha ;luego, le pedimos a las vacas que se encuentran en el parche que calculen los kg de DM que le corresponde a cada vaca que se encuentra en el parche
     ]
   ]
 
   ask cows [set gh-individual ((DM-kg-cow) / DM-cm-ha )] ; los KgDM/cow los pasamos a cm/cow (cm de pasto que le corresponde a cada vaca)
   ;NOTA, PARA QUE FUNCIONE ESTE PROCEDURE CON EL RESTO DE PROCEDURES, SUSTITUYE EL "grass-height" de "LWG" y "DM-consumption" por "gh-individual"
-  ;ask cows [set grass-height gh-individual]
+  ask cows [set grass-height gh-individual]
 end
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2843,6 +2939,17 @@ NIL
 NIL
 NIL
 1
+
+MONITOR
+741
+203
+912
+248
+NIL
+mean [DM-kg-ha] of patches
+3
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
