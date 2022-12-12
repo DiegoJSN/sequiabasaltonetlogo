@@ -475,8 +475,8 @@ to go
 
 
 
-  if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
-  if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
+  ;if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
+  ;if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
 
   ;if simulation-time = 1567 [stop] ; PRIMAVERA: COMIENZO ESTACION
   ;if simulation-time = 1599 [stop] ; PRIMAVERA: 31 DÍAS. 4.25 AÑOS
@@ -522,25 +522,25 @@ to go
 
   grow-grass
 
-  kgMS/ha/cows
+  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
-  ;gh/cow
+  gh/cow
 
-  ;LWG
-  LWG_kgMS/ha/cows
+  LWG
+  ;LWG_kgMS/ha/cows
 
-  ;DM-consumption
-  DM-consumption_kgMS/ha/cows
+  DM-consumption
+  ;DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
   reproduce
 
-  update-grass-height
-  ;update-grass-height_HERE
+  ;update-grass-height
+  update-grass-height_HERE
 
-  move
-  ;move1
+  ;move
+  move1
 
   set gh-total sum [grass-height] of patches
 
@@ -1099,8 +1099,11 @@ end
 ;end
 
 to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
- let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
- report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
+  report sum [DDMC] of cows / (DM-cm-ha * sum [grass-height] of patches) * 100
+
+
+ ;let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
+ ;report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
 
  ;; OTRA ALTERNATIVA PARA CALCULAR EL CROP-EFFICIENCY;;
   ;let totDDMC DM-cm-ha * sum [GH-consumed] of patches ; El "DM consumed" se puede calcular de otra manera: sumamos los cm de hierba que han perdido los patches como consecuencia de la alimentación de los animales. Como GH-consumed está en cm, lo multiplicamos por el DM-cm-ha para obtener la DM consumed (que se expresa en Kg/ha)
@@ -2998,9 +3001,9 @@ mean [DM-kg-ha] of patches
 11
 
 CHOOSER
-184
+126
 10
-276
+218
 55
 DM-cm-ha?
 DM-cm-ha?

@@ -475,8 +475,8 @@ to go
 
 
 
-  if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
-  if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
+  ;if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
+  ;if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
 
   ;if simulation-time = 1567 [stop] ; PRIMAVERA: COMIENZO ESTACION
   ;if simulation-time = 1599 [stop] ; PRIMAVERA: 31 DÍAS. 4.25 AÑOS
@@ -522,7 +522,7 @@ to go
 
   grow-grass
 
-  kgMS/ha/cows
+  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
   ;gh/cow
 
@@ -536,11 +536,11 @@ to go
 
   reproduce
 
-  update-grass-height
-  ;update-grass-height_HERE
+  ;update-grass-height
+  update-grass-height_HERE
 
-  move
-  ;move1
+  ;move
+  move1
 
   set gh-total sum [grass-height] of patches
 
@@ -733,7 +733,7 @@ ask cows [
     ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
        [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
-         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *   + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  gh-individual + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
          [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
@@ -1099,8 +1099,11 @@ end
 ;end
 
 to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
- let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
- report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
+  report sum [DDMC] of cows / (DM-cm-ha * sum [grass-height] of patches) * 100
+
+
+ ;let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
+ ;report (totDDMC / (DM-cm-ha * sum [grass-height] of patches)) * 100 ; (DM-cm-ha * sum [grass-height] of patches) = DM offered
 
  ;; OTRA ALTERNATIVA PARA CALCULAR EL CROP-EFFICIENCY;;
   ;let totDDMC DM-cm-ha * sum [GH-consumed] of patches ; El "DM consumed" se puede calcular de otra manera: sumamos los cm de hierba que han perdido los patches como consecuencia de la alimentación de los animales. Como GH-consumed está en cm, lo multiplicamos por el DM-cm-ha para obtener la DM consumed (que se expresa en Kg/ha)
@@ -1779,7 +1782,7 @@ initial-season
 initial-season
 0
 3
-0.0
+1.0
 1
 1
 NIL
@@ -2005,7 +2008,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+1.5
 0.1
 1
 NIL
@@ -2998,14 +3001,14 @@ mean [DM-kg-ha] of patches
 11
 
 CHOOSER
-184
+126
 10
-276
+218
 55
 DM-cm-ha?
 DM-cm-ha?
 "180" "180 / 92"
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
