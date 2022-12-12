@@ -201,7 +201,6 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
-
   ;set DM-cm-ha 180 * DM-available-for-cattle
   set DM-cm-ha (180 / 92) * DM-available-for-cattle ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-utilization-rate] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
   if (DM-cm-ha? = "180") [set DM-cm-ha 180 * DM-available-for-cattle]
@@ -523,13 +522,15 @@ to go
 
   grow-grass
 
-  ;kgMS/ha/cows
+  kgMS/ha/cows
   ;kgMS/ha
   ;gh/cow
 
-  LWG
+  ;LWG
+  LWG_kgMS/ha/cows
 
-  DM-consumption
+  ;DM-consumption
+  DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
@@ -601,7 +602,7 @@ to kgMS/ha/cows
 
   ask cows [set gh-individual ((DM-kg-cow) / DM-cm-ha )] ; los KgDM/cow los pasamos a cm/cow (cm de pasto que le corresponde a cada vaca)
   ;NOTA, PARA QUE FUNCIONE ESTE PROCEDURE CON EL RESTO DE PROCEDURES, SUSTITUYE EL "grass-height" de "LWG" y "DM-consumption" por "gh-individual"
-  ask cows [set grass-height gh-individual]
+  ;ask cows [set grass-height gh-individual]
 end
 
 
@@ -647,6 +648,7 @@ end
 
 
 
+
 to LWG
 ask cows [
   ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
@@ -669,6 +671,26 @@ end
 
 
 
+
+to LWG_kgMS/ha/cows
+ask cows [
+  ; A continuación se encuentra la fórmula del LWG (Defines the increment of weight) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+  ; Primero se le dice a las vacas de todo tipo que ganen peso (LWG) en función de si es lactante (born-calf) o de si no lo es (resto de age clases, en este caso se les pide que se alimenten de la hierba siempre y cuando la altura sea mayor o igual a 2 cm):
+   ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces...
+      [set live-weight-gain weight-gain-lactation] ; ...entonces LWG = weight-gain-lactation. Recordemos que los born-calf no dependen de las grassland: son lactantes, así que le asumimos un weight-gain-lactation de 0.61 kg/day
+      [ifelse grass-height >= 2 ;...PERO si el agente (la vaca) NO es un "born-calf" Y SI el grass-height en un patch es >= 2 (if this is TRUE), there are grass to eat and cows will gain weight using the LWG equation (i.e., LWG = fórmula que se escribe a continuación)...
+         [set live-weight-gain ( item current-season maxLWG - ( xi * e ^ ( - ni * gh-individual ) ) ) / ( 92 * item current-season season-coef )] ;
+         [set live-weight-gain live-weight * -0.005]] ;... PERO If the grass-height in a patch is < 2 cm (if >=2 is FALSE), the cows lose 0.5% of their live weight (LW) daily (i.e., 0.005)
+
+  ; Segundo, se les pide que actualicen su "live-weight" en función de lo que han comido
+set live-weight live-weight + live-weight-gain
+
+set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
+  ]
+
+; ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+
+end
 
 
 
@@ -696,6 +718,28 @@ ask cows [
 end
 
 
+
+
+
+
+
+to DM-consumption_kgMS/ha/cows
+ask cows [
+  set metabolic-body-size live-weight ^ (3 / 4)
+   ;print (word ">>> UPDATED live-weight-gain      " live-weight-gain)
+
+  ; Tercero, se calcula la cantidad de materia seca (Dry Matter = DM) que van a consumir las vacas. Este valor se tendrá en cuenta en el próximo procedure para que los patches puedan actualizar la altura de la hierba.
+; A continuación se encuentra la fórmula del DDMC (Daily Dry Matter Consumption. Defines grass consumption) LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER
+    ifelse born-calf? = true  ; SI el agente (la vaca) se encuentra en el age class "born-calf", entonces DDMC = 0
+       [set DDMC 0] ; ; recordemos que los born-calf no dependen de las grassland: son lactantes, así que no se alimentan de hierba
+       [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
+         [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *   + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
+         [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+     ;print (word ">>> UPDATED DDMC                  " DDMC)
+  ]
+
+end
 
 
 
@@ -2954,10 +2998,10 @@ mean [DM-kg-ha] of patches
 11
 
 CHOOSER
-429
-207
-567
-252
+184
+10
+276
+55
 DM-cm-ha?
 DM-cm-ha?
 "180" "180 / 92"
