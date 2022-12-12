@@ -522,15 +522,15 @@ to go
 
   grow-grass
 
-  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
+  kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
-  gh/cow
+  ;gh/cow
 
-  LWG
-  ;LWG_kgMS/ha/cows
+  ;LWG
+  LWG_kgMS/ha/cows
 
-  DM-consumption
-  ;DM-consumption_kgMS/ha/cows
+  ;DM-consumption
+  DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
@@ -3008,7 +3008,7 @@ CHOOSER
 DM-cm-ha?
 DM-cm-ha?
 "180" "180 / 92"
-1
+0
 
 @#$#@#$#@
 ## WHAT IS IT?

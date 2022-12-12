@@ -526,11 +526,11 @@ to go
   ;kgMS/ha
   ;gh/cow
 
-  ;LWG
-  LWG_kgMS/ha/cows
+  LWG
+  ;LWG_kgMS/ha/cows
 
-  ;DM-consumption
-  DM-consumption_kgMS/ha/cows
+  DM-consumption
+  ;DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
@@ -1782,7 +1782,7 @@ initial-season
 initial-season
 0
 3
-1.0
+0.0
 1
 1
 NIL
@@ -2008,7 +2008,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.5
+0.5
 0.1
 1
 NIL
@@ -2663,7 +2663,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+60.0
 1
 1
 NIL
