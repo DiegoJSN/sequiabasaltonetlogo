@@ -180,7 +180,7 @@ to setup3
     set live-weight-gain-history []
     set live-weight-gain-historyXticks []
   ]
-  seed-498914735
+  seed-1070152876
 end
 
 
@@ -257,8 +257,8 @@ to use-new-seed
 end
 
 
-to seed-498914735
-  let my-seed 498914735          ;; generate a new seed
+to seed-1070152876
+  let my-seed 1070152876          ;; generate a new seed
   output-print word "Seed: " my-seed  ;; print it out
   random-seed my-seed            ;; use the new seed
   reset-ticks
@@ -346,16 +346,16 @@ create-cows initial-num-heifers [
     ;setxy 0 0
     become-heifer ]
 
-;  create-cows initial-num-steers [
-;    set shape "cow"
-;    set initial-weight initial-weight-steer
-;    set live-weight initial-weight
-;    set mortality-rate natural-mortality-rate
-;    set DDMC 0
-;    set age heifer-age-min
-;    set age random (cow-age-max - cow-age-min) + cow-age-min
-;    ;setxy random-pxcor random-pycor
-;    become-steer ]
+  create-cows initial-num-steers [
+    set shape "cow"
+    set initial-weight initial-weight-steer
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+    setxy random-pxcor random-pycor
+    become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
   ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
@@ -522,15 +522,15 @@ to go
 
   grow-grass
 
-  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
+  kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
   ;gh/cow
 
-  LWG
-  ;LWG_kgMS/ha/cows
+  ;LWG
+  LWG_kgMS/ha/cows
 
-  DM-consumption
-  ;DM-consumption_kgMS/ha/cows
+  ;DM-consumption
+  DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
@@ -2008,7 +2008,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.5
+1.0
 0.1
 1
 NIL
@@ -2663,7 +2663,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-60.0
+30.0
 1
 1
 NIL
@@ -2977,7 +2977,7 @@ BUTTON
 114
 382
 147
-seed-498914735
+seed-1070152876 
 setup3
 NIL
 1

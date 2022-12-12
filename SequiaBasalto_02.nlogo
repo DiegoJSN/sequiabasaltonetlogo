@@ -100,7 +100,7 @@ gh-individual
    ]
 
 cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and patches-own keywords, can only be used at the beginning of a program, before any function definitions. It defines the variables belonging to each turtle. If you specify a breed instead of "turtles", only turtles of that breed have the listed variables. (More than one turtle breed may list the same variable.)
-  age ;Variable that define the age of each animal (in days).
+  age ;Variable that define the age of each animal (in days)
   born-calf?
   weaned-calf?
   heifer?
@@ -180,7 +180,7 @@ to setup3
     set live-weight-gain-history []
     set live-weight-gain-historyXticks []
   ]
-  seed-498914735
+  seed-1070152876
 end
 
 
@@ -257,8 +257,8 @@ to use-new-seed
 end
 
 
-to seed-498914735
-  let my-seed 498914735          ;; generate a new seed
+to seed-1070152876
+  let my-seed 1070152876          ;; generate a new seed
   output-print word "Seed: " my-seed  ;; print it out
   random-seed my-seed            ;; use the new seed
   reset-ticks
@@ -346,16 +346,16 @@ create-cows initial-num-heifers [
     ;setxy 0 0
     become-heifer ]
 
-;  create-cows initial-num-steers [
-;    set shape "cow"
-;    set initial-weight initial-weight-steer
-;    set live-weight initial-weight
-;    set mortality-rate natural-mortality-rate
-;    set DDMC 0
-;    set age heifer-age-min
-;    set age random (cow-age-max - cow-age-min) + cow-age-min
-;    ;setxy random-pxcor random-pycor
-;    become-steer ]
+  create-cows initial-num-steers [
+    set shape "cow"
+    set initial-weight initial-weight-steer
+    set live-weight initial-weight
+    set mortality-rate natural-mortality-rate
+    set DDMC 0
+    set age heifer-age-min
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min
+    setxy random-pxcor random-pycor
+    become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
   ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
@@ -2977,7 +2977,7 @@ BUTTON
 114
 382
 147
-seed-498914735
+seed-1070152876 
 setup3
 NIL
 1
