@@ -20,7 +20,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  days-per-tick ; variable to simulate time.
  number-of-season ; to keep track of the number of seasons in 10 years of simulation (10 years = 3680 days = 40 seasons).
  simulation-time ; variable to keep track of the days of the simulation.
- year-cnt ; year count: variable to keep track of the years of the simulation.
+ year-cnt ; year count: variable to keep track of the years of the simulation
 
 ;Market prices & economic balance related global variables
 
@@ -100,7 +100,7 @@ gh-individual
    ]
 
 cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and patches-own keywords, can only be used at the beginning of a program, before any function definitions. It defines the variables belonging to each turtle. If you specify a breed instead of "turtles", only turtles of that breed have the listed variables. (More than one turtle breed may list the same variable.)
-  age ;Variable that define the age of each animal (in days).
+  age ;Variable that define the age of each animal (in days)
   born-calf?
   weaned-calf?
   heifer?

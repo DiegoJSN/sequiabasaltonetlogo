@@ -20,7 +20,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  days-per-tick ; variable to simulate time.
  number-of-season ; to keep track of the number of seasons in 10 years of simulation (10 years = 3680 days = 40 seasons).
  simulation-time ; variable to keep track of the days of the simulation.
- year-cnt ; year count: variable to keep track of the years of the simulation.
+ year-cnt ; year count: variable to keep track of the years of the simulation
 
 ;Market prices & economic balance related global variables
 
