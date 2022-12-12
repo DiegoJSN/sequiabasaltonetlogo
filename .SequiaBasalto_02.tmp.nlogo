@@ -201,8 +201,10 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set ni 0.24
   set xi 132
   set grass-energy 1.8
+
   ;set DM-cm-ha 180 * DM-available-for-cattle
   set DM-cm-ha (180 / 92) * DM-available-for-cattle ; parameter that defines that each centimeter per hectare contains 180 Kg of dry matter (acummulated in 92 days). Here we divide 180 / 92 days to obtain the accumulation of DM in one day, and multiply it by [DM-utilization-rate] (by default is 0.4) because se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%  (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+  if (DM-cm-ha? = "180") [set DM-cm-ha 180 * DM-available-for-cattle]
   set season-coef [1 1.15 1.05 1] ; al usar corchetes se crea una lista de n valores (en este caso, 4). En este caso, la lógica de crear una lista con valores distintos para la misma variable es que, como veremos más adelante, haremos que esta variable tenga un valor u otro en función del valor de otra variable (utilizando el el comando de NetLogo "item"), de manera que la variable adoptará uno de estos valores en función del valor de otra variable (en este caso, current-season, que puede adoptar 4 valores posibles: 0, 1, 2 ,3). Es decir, cuando current-season tiene valor 0 (i.e., winter) , se llama al primer valor de la lista de season-coef, que es 1 (es decir, season-coef tiene un valor de 1 en winter)
   set kmax [7.4 22.2 15.6 11.1] ; 4 valores: misma lógica que antes
   set maxLWG [40 60 40 40] ; 4 valores: misma lógica que antes
@@ -347,14 +349,14 @@ create-cows initial-num-heifers [
 
 ;  create-cows initial-num-steers [
 ;    set shape "cow"
-    ;set initial-weight initial-weight-steer
-    ;set live-weight initial-weight
-    ;set mortality-rate natural-mortality-rate
-    ;set DDMC 0
-    ;set age heifer-age-min
-    ;set age random (cow-age-max - cow-age-min) + cow-age-min
-    ;setxy random-pxcor random-pycor
-    ;become-steer ]
+;    set initial-weight initial-weight-steer
+;    set live-weight initial-weight
+;    set mortality-rate natural-mortality-rate
+;    set DDMC 0
+;    set age heifer-age-min
+;    set age random (cow-age-max - cow-age-min) + cow-age-min
+;    ;setxy random-pxcor random-pycor
+;    become-steer ]
 
   ;create-cows 30 [set shape "cow" set initial-weight 300 set live-weight initial-weight set mortality-rate natural-mortality-rate set DDMC 0 set age heifer-age-min setxy random-pxcor random-pycor become-steer]
   ;ask cows [ set live-weight-gain-history [] set live-weight-gain-historyXticks [] ]
@@ -409,17 +411,17 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  ;if simulation-time = 32 [stop] ; INVIERNO. 31 DIAS. AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 32 [stop] ; INVIERNO. 31 DIAS. AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  ;if simulation-time = 94 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  ;if simulation-time = 126 [stop] ; PRIMAVERA: 31 DIAS. 0.25 AÑOS
+  if simulation-time = 94 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 126 [stop] ; PRIMAVERA: 31 DIAS. 0.25 AÑOS
 
-  ;if simulation-time = 188 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 220 [stop] ; VERANO: 31 DIAS. 0.5 AÑOS
+  if simulation-time = 188 [stop] ; VERANO: COMIENZO ESTACION
+  if simulation-time = 220 [stop] ; VERANO: 31 DIAS. 0.5 AÑOS
 
-  ;if simulation-time = 282 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 314 [stop] ; OTOÑO: 31 DIAS. 0.75 AÑOS
-  ;if simulation-time = 376 [stop] ; OTOÑO-INVIERNO: COMIENZO AÑO 1
+  if simulation-time = 282 [stop] ; OTOÑO: COMIENZO ESTACION
+  if simulation-time = 314 [stop] ; OTOÑO: 31 DIAS. 0.75 AÑOS
+  if simulation-time = 376 [stop] ; OTOÑO-INVIERNO: COMIENZO AÑO 1
 
 
 
@@ -2950,6 +2952,16 @@ mean [DM-kg-ha] of patches
 3
 1
 11
+
+CHOOSER
+429
+207
+567
+252
+DM-cm-ha?
+DM-cm-ha?
+"180" "180 / 92"
+1
 
 @#$#@#$#@
 ## WHAT IS IT?
