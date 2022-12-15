@@ -462,7 +462,7 @@ to go
   if simulation-time = 552 [stop] ; PRIMAVERA: 1.5 AÑOS
 
   ;if simulation-time = 584 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 644 [stop] ; VERANO:  1.75 AÑOS
+  if simulation-time = 644 [stop] ; VERANO:  1.75 AÑOS
 
   ;if simulation-time = 676 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
   if simulation-time = 736 [stop] ; OTOÑO:  2 AÑOS
@@ -471,13 +471,13 @@ to go
 
 
   ;if simulation-time = 768 [stop] ; INVIERNO: 32 DIAS. COMIENZO ESTACION
-  ;if simulation-time = 828 [stop] ; INVIERNO:  2.25 AÑO
+  if simulation-time = 828 [stop] ; INVIERNO:  2.25 AÑO
 
   ;if simulation-time = 860 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 920 [stop] ; PRIMAVERA:  2.5 AÑOS
+  if simulation-time = 920 [stop] ; PRIMAVERA:  2.5 AÑOS
 
   ;if simulation-time = 952 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1012 [stop] ; VERANO:  2.75 AÑOS
+  if simulation-time = 1012 [stop] ; VERANO:  2.75 AÑOS
 
   ;if simulation-time = 1044 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
   if simulation-time = 1104 [stop] ; OTOÑO:  3 AÑO
@@ -485,13 +485,13 @@ to go
 
 
   ;if simulation-time = 1136 [stop] ; INVIERNO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1196 [stop] ; INVIERNO:  3.25 AÑOS
+  if simulation-time = 1196 [stop] ; INVIERNO:  3.25 AÑOS
 
   ;if simulation-time = 1228 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1288 [stop] ; PRIMAVERA:  3.5 AÑOS
+  if simulation-time = 1288 [stop] ; PRIMAVERA:  3.5 AÑOS
 
   ;if simulation-time = 1320 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1380 [stop] ; VERANO:  3.75 AÑOS
+  if simulation-time = 1380 [stop] ; VERANO:  3.75 AÑOS
 
   ;if simulation-time = 1412 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
   if simulation-time = 1472 [stop] ; OTOÑO:  4 AÑOS
@@ -1764,7 +1764,7 @@ initial-season
 initial-season
 0
 3
-3.0
+0.0
 1
 1
 NIL
@@ -3452,6 +3452,134 @@ NetLogo 6.2.2
     <metric>mean [grass-height] of patches</metric>
     <metric>mean [live-weight] of cows</metric>
     <steppedValueSet variable="perception" first="0" step="0.1" last="1"/>
+  </experiment>
+  <experiment name="Fig5_YEAR" repetitions="10" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="92"/>
+    <metric>count cows</metric>
+    <metric>stocking-rate</metric>
+    <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
+    <metric>mean [live-weight-gain-historyXticks-year] of cows; Average LWG since start YEAR</metric>
+    <enumeratedValueSet variable="DM-cm-ha?">
+      <value value="&quot;180&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-heifers">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-Y-size">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-X-size">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-1-AU">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-cows">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-MW-1-AU">
+      <value value="220"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="DM-available-for-cattle">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="perception">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="model-version">
+      <value value="&quot;open access&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-steer">
+      <value value="300"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-heifer">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-grass-height">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="management-strategy">
+      <value value="&quot;reactive&quot;"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="initial-num-steers" first="0" step="10" last="190"/>
+    <enumeratedValueSet variable="initial-season">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-cows">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-seasons?">
+      <value value="&quot;yes&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-climaCoef">
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Fig5_SEASON" repetitions="10" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="32"/>
+    <metric>count cows</metric>
+    <metric>stocking-rate</metric>
+    <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
+    <metric>mean [live-weight-gain-historyXticks-year] of cows; Average LWG since start YEAR</metric>
+    <enumeratedValueSet variable="DM-cm-ha?">
+      <value value="&quot;180&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-heifers">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-Y-size">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-X-size">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-1-AU">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-cows">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-MW-1-AU">
+      <value value="220"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="DM-available-for-cattle">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="perception">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="model-version">
+      <value value="&quot;open access&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-steer">
+      <value value="300"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-heifer">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-grass-height">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="management-strategy">
+      <value value="&quot;reactive&quot;"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="initial-num-steers" first="0" step="10" last="190"/>
+    <enumeratedValueSet variable="initial-season">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-cows">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-seasons?">
+      <value value="&quot;yes&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-climaCoef">
+      <value value="1"/>
+    </enumeratedValueSet>
   </experiment>
 </experiments>
 @#$#@#$#@
