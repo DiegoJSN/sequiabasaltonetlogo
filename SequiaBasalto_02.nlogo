@@ -20,7 +20,8 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
  days-per-tick ; variable to simulate time.
  number-of-season ; to keep track of the number of seasons in 10 years of simulation (10 years = 3680 days = 40 seasons).
  simulation-time ; variable to keep track of the days of the simulation.
- year-cnt ; year count: variable to keep track of the years of the simulation
+ season-days ; variable to keep track of the years that has passed since the start of the station (values from 1 to 92)
+ year-days ; variable to keep track of the days that has passed since the start of a year (values from 1 to 368)
 
 ;Market prices & economic balance related global variables
 
@@ -81,8 +82,9 @@ patches-own [ ; This keyword, like the globals, breed, <breed>-own, and turtles-
 grass-height ;State of the grass height, determines the carrying capacity of the system.
                ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height
 
-  grass-height-history
-  grass-height-historyXticks
+  grass-height-history-season
+  grass-height-historyXticks-season
+
 
 
 report-initial-grass-height ;;;;TEMP
@@ -116,8 +118,12 @@ cows-own [ ; The turtles-own keyword, like the globals, breed, <breeds>-own, and
   live-weight ;variable that defines the state of the animals in terms of live weight.
   live-weight-gain ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: live-weight-gain
 
-  live-weight-gain-history
-  live-weight-gain-historyXticks
+  live-weight-gain-history-season
+  live-weight-gain-historyXticks-season
+
+  live-weight-gain-history-year
+  live-weight-gain-historyXticks-year
+
 
   DDMC ;Daily dry matter consumption, variable that defines the individual grass consumption (depends on LWG). *Note: 1 cm of grass/ha/92 days = 180 Kg of dry matter (Units: Kg/animal/day).
        ;;;;;;;;;;;;; AGENTS AFFECTED: turtles (cows); PROPERTY OF THE AGENT AFFECTED: ddmc
@@ -153,12 +159,14 @@ to setup
   if (model-version = "open access") or (model-version = "management model") [setup-livestock]
   reset-ticks
   ask patches [
-    set grass-height-history []
-    set grass-height-historyXticks []
+    set grass-height-history-season []
+    set grass-height-historyXticks-season []
   ]
   ask cows [
-    set live-weight-gain-history []
-    set live-weight-gain-historyXticks []
+    set live-weight-gain-history-season []
+    set live-weight-gain-historyXticks-season []
+    set live-weight-gain-history-year []
+    set live-weight-gain-historyXticks-year []
   ]
   use-new-seed
 end
@@ -173,12 +181,14 @@ to setup3
   if (model-version = "open access") or (model-version = "management model") [setup-livestock]
   reset-ticks
   ask patches [
-    set grass-height-history []
-    set grass-height-historyXticks []
+    set grass-height-history-season []
+    set grass-height-historyXticks-season []
   ]
   ask cows [
-    set live-weight-gain-history []
-    set live-weight-gain-historyXticks []
+    set live-weight-gain-history-season []
+    set live-weight-gain-historyXticks-season []
+    set live-weight-gain-history-year []
+    set live-weight-gain-historyXticks-year []
   ]
   seed-1070152876
 end
@@ -190,7 +200,6 @@ to setup-globals ; Procedure para darle valores (datos) a las globals variables
   set number-of-season 0
   set current-season-name ["winter" "spring" "summer" "fall"] ;this variable just converts the numbers "0, 1, 2, 3" of the seasons to text "winter, spring, summer, fall", and this variable ONLY is used in the reporter/procedure "to-report season-report"
   set simulation-time 0
-  set year-cnt 0 ; variable to keep track of the years of the simulation.
   set weaned-calf-age-min 246
   set heifer-age-min 369
   set cow-age-min 737
@@ -283,8 +292,10 @@ to introduce-steers
   ]
 
   ask cows [
-    set live-weight-gain-history []
-    set live-weight-gain-historyXticks []
+    set live-weight-gain-history-season []
+    set live-weight-gain-historyXticks-season []
+    set live-weight-gain-history-year []
+    set live-weight-gain-historyXticks-year []
   ]
 
 end
@@ -308,8 +319,10 @@ to introduce-steers/patch
   ]
 
   ask cows [
-    set live-weight-gain-history []
-    set live-weight-gain-historyXticks []
+    set live-weight-gain-history-season []
+    set live-weight-gain-historyXticks-season []
+    set live-weight-gain-history-year []
+    set live-weight-gain-historyXticks-year []
   ]
 
 end
@@ -367,9 +380,8 @@ end
 
 
 to go
-
   if (changing-seasons? = "yes") [
-    if ticks >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
+    if season-days >= 92 [ ; en esta primera parte se escribe el código relacionado con el cambio de estaciones.
     set number-of-season number-of-season + 1 ; to count the number of seasons in the simulation period (useful for external data of weather and market prices).
     ifelse current-season = 0 [
       set current-season 1
@@ -383,24 +395,42 @@ to go
           [set current-season 0]
         ]
     ]
-    set year-cnt year-cnt + 1 / 4
-    reset-ticks
+;    reset-ticks
   ]
 ]
 
   set simulation-time simulation-time + days-per-tick
 
+  set season-days season-days + days-per-tick
+  if season-days >= 93 [set season-days 1]
+
+  set year-days year-days + days-per-tick
+  if year-days >= 369 [set year-days 1]
+
 
     ask patches [
-    set grass-height-history lput grass-height grass-height-history
-    if ticks > 0 [set grass-height-historyXticks mean (sublist grass-height-history 0 ticks)]
-    if ticks = 91 [set grass-height-history []]
+    set grass-height-history-season lput grass-height grass-height-history-season
+    if season-days > 0 [set grass-height-historyXticks-season mean (sublist grass-height-history-season 0 season-days)]
+    if season-days = 92 [set grass-height-history-season []]
   ]
 
-    ask cows [
-    set live-weight-gain-history lput live-weight-gain live-weight-gain-history
-    if ticks > 0 [set live-weight-gain-historyXticks mean (sublist live-weight-gain-history 0 ticks)]
-    if ticks = 91 [set live-weight-gain-history []]
+;    ask cows [
+;    set live-weight-gain-history-season lput live-weight-gain live-weight-gain-history-season
+;    if ticks > 0 [set live-weight-gain-historyXticks-season mean (sublist live-weight-gain-history-season 0 ticks)]
+;    if ticks = 91 [set live-weight-gain-history-season []]
+;  ]
+
+
+      ask cows [
+    set live-weight-gain-history-season fput live-weight-gain live-weight-gain-history-season
+    if season-days > 0 [set live-weight-gain-historyXticks-season mean (sublist live-weight-gain-history-season 0 season-days)]
+    if season-days = 92 [set live-weight-gain-history-season []]
+  ]
+
+      ask cows [
+    set live-weight-gain-history-year fput live-weight-gain live-weight-gain-history-year
+    if year-days > 0 [set live-weight-gain-historyXticks-year mean (sublist live-weight-gain-history-year 0 year-days)]
+    if year-days = 368 [set live-weight-gain-history-year []]
   ]
 
 
@@ -410,109 +440,61 @@ to go
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
-  if simulation-time = 32 [stop] ; INVIERNO. 31 DIAS. AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  if simulation-time = 94 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 126 [stop] ; PRIMAVERA: 31 DIAS. 0.25 AÑOS
+  if simulation-time = 92 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. 0.25 AÑOS
 
-  if simulation-time = 188 [stop] ; VERANO: COMIENZO ESTACION
-  if simulation-time = 220 [stop] ; VERANO: 31 DIAS. 0.5 AÑOS
+  if simulation-time = 184 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. 0.5 AÑOS
 
-  if simulation-time = 282 [stop] ; OTOÑO: COMIENZO ESTACION
-  if simulation-time = 314 [stop] ; OTOÑO: 31 DIAS. 0.75 AÑOS
-  if simulation-time = 376 [stop] ; OTOÑO-INVIERNO: COMIENZO AÑO 1
-
-
-
-  ;if simulation-time = 369 [stop] ; INVIERNO: COMIENZO ESTACION
-  ;if simulation-time = 401 [stop] ; INVIERNO: 31 DIAS. 1 AÑO
-
-  ;if simulation-time = 463 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  ;if simulation-time = 495 [stop] ; PRIMAVERA: 31 DÍAS. 1.25 AÑOS
-
-  ;if simulation-time = 557 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 589 [stop] ; VERANO: 31 DÍAS. 1.5 AÑOS
-
-  ;if simulation-time = 651 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 683 [stop] ; OTOÑO: 31 DÍAS. 1.75 AÑOS
+  if simulation-time = 276 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. 0.75 AÑOS
+  if simulation-time = 368 [stop] ; OTOÑO-INVIERNO: FIN AÑO 0
 
 
 
 
+  ;if simulation-time = 400 [stop] ; INVIERNO. 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 460 [stop] ; INVIERNO: 1.25 AÑO
 
+  ;if simulation-time = 492 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 552 [stop] ; PRIMAVERA: 1.5 AÑOS
 
-  ;if simulation-time = 737 [stop] ; INVIERNO: COMIENZO ESTACION
-  ;if simulation-time = 769 [stop] ; INVIERNO: 31 DIAS. 2 AÑO
+  ;if simulation-time = 584 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 644 [stop] ; VERANO:  1.75 AÑOS
 
-  ;if simulation-time = 831 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  ;if simulation-time = 863 [stop] ; PRIMAVERA: 31 DÍAS. 2.25 AÑOS
-
-  ;if simulation-time = 925 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 957 [stop] ; VERANO: 31 DÍAS. 2.5 AÑOS
-
-  ;if simulation-time = 1019 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 1051 [stop] ; OTOÑO: 31 DÍAS. 2.75 AÑOS
-
+  ;if simulation-time = 676 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 736 [stop] ; OTOÑO:  2 AÑOS
 
 
 
 
-  ;if simulation-time = 1105 [stop] ; INVIERNO: COMIENZO ESTACION
-  ;if simulation-time = 1137 [stop] ; INVIERNO: 31 DIAS. 2 AÑO
+  ;if simulation-time = 768 [stop] ; INVIERNO: 32 DIAS. COMIENZO ESTACION
+  if simulation-time = 828 [stop] ; INVIERNO:  2.25 AÑO
 
-  ;if simulation-time = 1199 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  ;if simulation-time = 1231 [stop] ; PRIMAVERA: 31 DÍAS. 2.25 AÑOS
+  ;if simulation-time = 860 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 920 [stop] ; PRIMAVERA:  2.5 AÑOS
 
-  ;if simulation-time = 1293 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 1325 [stop] ; VERANO: 31 DÍAS. 2.5 AÑOS
+  ;if simulation-time = 952 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 1012 [stop] ; VERANO:  2.75 AÑOS
 
-  ;if simulation-time = 1387 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 1419 [stop] ; OTOÑO: 31 DÍAS. 2.75 AÑOS
-
-
+  ;if simulation-time = 1044 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 1104 [stop] ; OTOÑO:  3 AÑO
 
 
 
+  ;if simulation-time = 1136 [stop] ; INVIERNO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 1196 [stop] ; INVIERNO:  3.25 AÑOS
 
+  ;if simulation-time = 1228 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 1288 [stop] ; PRIMAVERA:  3.5 AÑOS
 
-  ;if simulation-time = 1473 [stop] ; INVIERNO: COMIENZO ESTACION
-  ;if simulation-time = 1505 [stop] ; INVIERNO: 31 DÍAS. 4 AÑOS
+  ;if simulation-time = 1320 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 1380 [stop] ; VERANO:  3.75 AÑOS
 
-  ;if simulation-time = 1567 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  ;if simulation-time = 1599 [stop] ; PRIMAVERA: 31 DÍAS. 4.25 AÑOS
-
-  ;if simulation-time = 1661 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 1693 [stop] ; VERANO: 31 DÍAS. 4.5 AÑOS
-
-  ;if simulation-time = 1755 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 1787 [stop] ; OTOÑO: 31 DÍAS. 4.75 AÑOS
-
-
-
-
-
-  ;if simulation-time = 3313 [stop] ; INVIERNO: COMIENZO ESTACION.
-  ;if simulation-time = 3345 [stop] ; INVIERNO: FINAL ESTACION. 9 años
-
-  ;if simulation-time = 3407 [stop] ; PRIMAVERA: COMIENZO ESTACION
-  ;if simulation-time = 3439 [stop] ; PRIMAVERA: FINAL ESTACION. 9.25 años
-
-  ;if simulation-time = 3501 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 3533 [stop] ; VERANO: FINAL ESTACION. 9.5 años
-
-  ;if simulation-time = 3595 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 3627 [stop] ; OTOÑO: FINAL ESTACION. 9.75 years
-
-
-  ;if simulation-time = 18400 [stop] ; 49.75 years
-
-  ;if simulation-time = 36800 [stop] ; 99.75 years
-
-  ;if simulation-time = 55200 [stop] ; 149.75 years
-
-  ;if simulation-time = 73600 [stop] ; 199.75 years
-
-
+  ;if simulation-time = 1412 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
+  if simulation-time = 1472 [stop] ; OTOÑO:  4 AÑOS
 
 
 
@@ -1721,7 +1703,7 @@ GRAPHICS-WINDOW
 1
 1
 1
-days
+ticks
 30.0
 
 BUTTON
@@ -1782,7 +1764,7 @@ initial-season
 initial-season
 0
 3
-0.0
+3.0
 1
 1
 NIL
@@ -2031,8 +2013,8 @@ MONITOR
 561
 56
 Time (years)
-year-cnt
-2
+simulation-time / 368
+3
 1
 11
 
@@ -2832,18 +2814,18 @@ MONITOR
 369
 Average daily LWG (kg/day)
 mean [live-weight-gain] of cows
-3
+13
 1
 11
 
 MONITOR
-170
-373
-393
-418
+171
+376
+394
+421
 Average LWG since the start of the season
-mean [live-weight-gain-historyXticks] of cows
-3
+mean [live-weight-gain-historyXticks-season] of cows
+9
 1
 11
 
@@ -2853,7 +2835,7 @@ MONITOR
 3235
 351
 Average DM since the start of the season
-DM-cm-ha * sum [grass-height-historyXticks] of patches
+DM-cm-ha * sum [grass-height-historyXticks-season] of patches
 3
 1
 11
@@ -2944,10 +2926,10 @@ NIL
 1
 
 MONITOR
-171
-428
-374
-473
+161
+515
+364
+560
 NIL
 max [count cows-here] of patches
 17
@@ -3009,6 +2991,50 @@ DM-cm-ha?
 DM-cm-ha?
 "180" "180 / 92"
 0
+
+MONITOR
+411
+322
+499
+367
+WGH (kg/ha)
+;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches\n(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
+3
+1
+11
+
+MONITOR
+612
+127
+682
+172
+NIL
+year-days
+17
+1
+11
+
+MONITOR
+608
+75
+691
+120
+NIL
+season-days
+17
+1
+11
+
+MONITOR
+170
+425
+408
+470
+Average LWG since the start of the year
+mean [live-weight-gain-historyXticks-year] of cows
+9
+1
+11
 
 @#$#@#$#@
 ## WHAT IS IT?
