@@ -3524,7 +3524,7 @@ NetLogo 6.2.2
     <metric>count cows</metric>
     <metric>stocking-rate</metric>
     <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
-    <metric>mean [live-weight-gain-historyXticks-year] of cows; Average LWG since start YEAR</metric>
+    <metric>mean [live-weight-gain-historyXticks-season] of cows; Average LWG since start SEASON</metric>
     <enumeratedValueSet variable="DM-cm-ha?">
       <value value="&quot;180&quot;"/>
     </enumeratedValueSet>
@@ -3570,6 +3570,9 @@ NetLogo 6.2.2
     <steppedValueSet variable="initial-num-steers" first="0" step="10" last="190"/>
     <enumeratedValueSet variable="initial-season">
       <value value="0"/>
+      <value value="1"/>
+      <value value="2"/>
+      <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="initial-weight-cows">
       <value value="380"/>

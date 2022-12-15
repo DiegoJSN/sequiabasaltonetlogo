@@ -2645,7 +2645,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+190.0
 1
 1
 NIL
@@ -3456,7 +3456,7 @@ NetLogo 6.2.2
   <experiment name="Fig5_YEAR" repetitions="10" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
-    <timeLimit steps="92"/>
+    <timeLimit steps="368"/>
     <metric>count cows</metric>
     <metric>stocking-rate</metric>
     <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
@@ -3520,7 +3520,7 @@ NetLogo 6.2.2
   <experiment name="Fig5_SEASON" repetitions="10" runMetricsEveryStep="true">
     <setup>setup</setup>
     <go>go</go>
-    <timeLimit steps="32"/>
+    <timeLimit steps="92"/>
     <metric>count cows</metric>
     <metric>stocking-rate</metric>
     <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
