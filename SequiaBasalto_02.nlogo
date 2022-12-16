@@ -441,16 +441,16 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
+  ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
+  ;if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
 
   ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
+  ;if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
 
   ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
+  ;if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
 
 
 
@@ -2616,7 +2616,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-2.0
+30.0
 1
 1
 NIL
@@ -2774,7 +2774,7 @@ MONITOR
 421
 Average LWG since the start of the SEASON
 mean [live-weight-gain-historyXticks-season] of cows
-9
+13
 1
 11
 
@@ -2959,7 +2959,7 @@ MONITOR
 470
 Average LWG since the start of the YEAR
 mean [live-weight-gain-historyXticks-year] of cows
-9
+13
 1
 11
 

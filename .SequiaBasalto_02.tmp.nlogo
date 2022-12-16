@@ -441,16 +441,16 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
+  ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
+  ;if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
 
   ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
+  ;if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
 
   ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
+  ;if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
 
 
 
@@ -464,36 +464,36 @@ to go
   ;if simulation-time = 644 [stop] ; VERANO: FIN ESTACION. 1.75 AÑOS
 
   ;if simulation-time = 676 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 736 [stop] ; OTOÑO: FIN AÑO 1. COMIENZO AÑO 2
+  if simulation-time = 736 [stop] ; OTOÑO: FIN AÑO 1. COMIENZO AÑO 2
 
 
 
 
   ;if simulation-time = 768 [stop] ; INVIERNO: 32 DIAS. COMIENZO ESTACION
-  ;if simulation-time = 828 [stop] ; INVIERNO. FIN ESTACION. 2.25 AÑOS
+  if simulation-time = 828 [stop] ; INVIERNO. FIN ESTACION. 2.25 AÑOS
 
   ;if simulation-time = 860 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 920 [stop] ; PRIMAVERA. FIN ESTACION. 2.5 AÑOS
+  if simulation-time = 920 [stop] ; PRIMAVERA. FIN ESTACION. 2.5 AÑOS
 
   ;if simulation-time = 952 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1012 [stop] ; VERANO: FIN ESTACION. 2.75 AÑOS
+  if simulation-time = 1012 [stop] ; VERANO: FIN ESTACION. 2.75 AÑOS
 
   ;if simulation-time = 1044 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1104 [stop] ; OTOÑO: FIN AÑO 2. COMIENZO AÑO 3
+  if simulation-time = 1104 [stop] ; OTOÑO: FIN AÑO 2. COMIENZO AÑO 3
 
 
 
   ;if simulation-time = 1136 [stop] ; INVIERNO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1196 [stop] ; INVIERNO. FIN ESTACION. 3.25 AÑOS
+  if simulation-time = 1196 [stop] ; INVIERNO. FIN ESTACION. 3.25 AÑOS
 
   ;if simulation-time = 1228 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1288 [stop] ; PRIMAVERA. FIN ESTACION. 3.5 AÑOS
+  if simulation-time = 1288 [stop] ; PRIMAVERA. FIN ESTACION. 3.5 AÑOS
 
   ;if simulation-time = 1320 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1380 [stop] ; VERANO: FIN ESTACION. 3.75 AÑOS
+  if simulation-time = 1380 [stop] ; VERANO: FIN ESTACION. 3.75 AÑOS
 
   ;if simulation-time = 1412 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1472 [stop] ; OTOÑO: FIN AÑO 3. COMIENZO AÑO 4
+  if simulation-time = 1472 [stop] ; OTOÑO: FIN AÑO 3. COMIENZO AÑO 4
 
 
 
@@ -2061,9 +2061,9 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1342
+1382
 596
-1757
+1797
 819
 Daily live-weight-gain (LWG)
 Days
@@ -2616,7 +2616,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-2.0
+30.0
 1
 1
 NIL
@@ -2774,7 +2774,7 @@ MONITOR
 421
 Average LWG since the start of the SEASON
 mean [live-weight-gain-historyXticks-season] of cows
-9
+13
 1
 11
 
@@ -2959,7 +2959,7 @@ MONITOR
 470
 Average LWG since the start of the YEAR
 mean [live-weight-gain-historyXticks-year] of cows
-9
+13
 1
 11
 
