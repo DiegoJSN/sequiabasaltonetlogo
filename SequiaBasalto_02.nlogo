@@ -441,60 +441,59 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
-  ;if simulation-time = 92 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. 0.25 AÑOS
+  ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
+  if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
 
-  ;if simulation-time = 184 [stop] ; VERANO: COMIENZO ESTACION
-  ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. 0.5 AÑOS
+  ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. COMIENZO ESTACIÓN
+  if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
 
-  ;if simulation-time = 276 [stop] ; OTOÑO: COMIENZO ESTACION
-  ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. 0.75 AÑOS
-  ;if simulation-time = 368 [stop] ; OTOÑO-INVIERNO: FIN AÑO 0
-
+  ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. COMIENZO ESTACIÓN
+  if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
 
 
 
   ;if simulation-time = 400 [stop] ; INVIERNO. 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 460 [stop] ; INVIERNO: 1.25 AÑO
+  ;if simulation-time = 460 [stop] ; INVIERNO. FIN ESTACION. 1.25 AÑOS
 
   ;if simulation-time = 492 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 552 [stop] ; PRIMAVERA: 1.5 AÑOS
+  ;if simulation-time = 552 [stop] ; PRIMAVERA. FIN ESTACION. 1.5 AÑOS
 
   ;if simulation-time = 584 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 644 [stop] ; VERANO:  1.75 AÑOS
+  ;if simulation-time = 644 [stop] ; VERANO: FIN ESTACION. 1.75 AÑOS
 
   ;if simulation-time = 676 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 736 [stop] ; OTOÑO:  2 AÑOS
+  ;if simulation-time = 736 [stop] ; OTOÑO: FIN AÑO 1. COMIENZO AÑO 2
 
 
 
 
   ;if simulation-time = 768 [stop] ; INVIERNO: 32 DIAS. COMIENZO ESTACION
-  ;if simulation-time = 828 [stop] ; INVIERNO:  2.25 AÑO
+  ;if simulation-time = 828 [stop] ; INVIERNO. FIN ESTACION. 2.25 AÑOS
 
   ;if simulation-time = 860 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 920 [stop] ; PRIMAVERA:  2.5 AÑOS
+  ;if simulation-time = 920 [stop] ; PRIMAVERA. FIN ESTACION. 2.5 AÑOS
 
   ;if simulation-time = 952 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1012 [stop] ; VERANO:  2.75 AÑOS
+  ;if simulation-time = 1012 [stop] ; VERANO: FIN ESTACION. 2.75 AÑOS
 
   ;if simulation-time = 1044 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1104 [stop] ; OTOÑO:  3 AÑO
+  ;if simulation-time = 1104 [stop] ; OTOÑO: FIN AÑO 2. COMIENZO AÑO 3
 
 
 
   ;if simulation-time = 1136 [stop] ; INVIERNO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1196 [stop] ; INVIERNO:  3.25 AÑOS
+  ;if simulation-time = 1196 [stop] ; INVIERNO. FIN ESTACION. 3.25 AÑOS
 
   ;if simulation-time = 1228 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1288 [stop] ; PRIMAVERA:  3.5 AÑOS
+  ;if simulation-time = 1288 [stop] ; PRIMAVERA. FIN ESTACION. 3.5 AÑOS
 
   ;if simulation-time = 1320 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1380 [stop] ; VERANO:  3.75 AÑOS
+  ;if simulation-time = 1380 [stop] ; VERANO: FIN ESTACION. 3.75 AÑOS
 
   ;if simulation-time = 1412 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  ;if simulation-time = 1472 [stop] ; OTOÑO:  4 AÑOS
+  ;if simulation-time = 1472 [stop] ; OTOÑO: FIN AÑO 3. COMIENZO AÑO 4
 
 
 
@@ -524,7 +523,6 @@ to go
   ;move
   move1
 
-  set gh-total sum [grass-height] of patches
 
   tick
 end
@@ -1098,6 +1096,9 @@ to-report bcs ; Reporter to output the Body Condition Score: The body condition 
   ;report (mean [live-weight] of cows - mean [min-weight] of cows) / 40
   report (mean [live-weight] of cows with [cow?] - mean [min-weight] of cows with [cow?]) / 40
 end
+
+
+
 
 ;OTRA INFO DE INTERES
 ; Para exportar los resultados de un plot, escribir en el "Command center" de la pestaña "Interfaz" lo siguiente:
@@ -1789,10 +1790,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot grass-height-report"
 
 PLOT
-855
-580
-1183
-800
+856
+597
+1184
+817
 Live-weight (LW)
 Days
 kg
@@ -1824,10 +1825,10 @@ simulation-time
 11
 
 MONITOR
-386
-532
-499
-577
+387
+549
+500
+594
 Stoking rate (AU/ha)
 stocking-rate
 4
@@ -1835,10 +1836,10 @@ stocking-rate
 11
 
 PLOT
-503
-580
-851
-801
+504
+597
+852
+818
 Cattle age classes population sizes
 Days
 Heads
@@ -1874,10 +1875,10 @@ NIL
 HORIZONTAL
 
 MONITOR
-572
-532
-701
-577
+573
+549
+702
+594
 Total number of cattle
 count cows
 7
@@ -1885,11 +1886,11 @@ count cows
 11
 
 MONITOR
-1184
-580
-1340
-625
-Average LW (kg)
+1185
+597
+1341
+642
+Average LW (kg/animal)
 mean [live-weight] of cows
 3
 1
@@ -1972,10 +1973,10 @@ TEXTBOX
 
 MONITOR
 1181
-279
-1289
-324
-Average GH (cm)
+278
+1307
+323
+Average GH (cm/ha)
 grass-height-report
 3
 1
@@ -2060,10 +2061,10 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1341
-579
-1756
-802
+1382
+596
+1797
+819
 Daily live-weight-gain (LWG)
 Days
 kg
@@ -2117,7 +2118,7 @@ MONITOR
 163
 1308
 208
-Total DDMC (kg/day)
+Total DDMC (kg)
 sum [DDMC] of cows
 3
 1
@@ -2128,38 +2129,8 @@ MONITOR
 119
 1308
 164
-Available DM (kg/day)
+Available DM (kg)
 dmgr
-3
-1
-11
-
-PLOT
-1481
-10
-1881
-208
-Seasonal Accumulation DM per ha
-Days
-kg/ha/season
-0.0
-92.0
-0.0
-10.0
-true
-true
-"" ""
-PENS
-"Total DM" 1.0 0 -16777216 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle"
-"Available DM" 1.0 0 -13345367 true "" "plot DM-cm-ha * mean [grass-height] of patches * 92"
-
-MONITOR
-1799
-122
-1948
-167
-Available DM (kg/ha/season)
-DM-cm-ha * mean [grass-height] of patches * 92
 3
 1
 11
@@ -2169,7 +2140,7 @@ MONITOR
 163
 1481
 208
-Average DDMC (kg/animal/day)
+Average DDMC (kg/animal)
 mean [DDMC] of cows
 3
 1
@@ -2542,7 +2513,7 @@ MONITOR
 119
 1481
 164
-Available DM G. Rate (kg/ha/day)
+Available DM per ha (kg/ha)
 DM-cm-ha * mean [grass-height] of patches
 3
 1
@@ -2553,18 +2524,18 @@ MONITOR
 75
 1308
 120
-Total DM (kg/day)
+Total DM (kg)
 dmgr / DM-available-for-cattle
 3
 1
 11
 
 MONITOR
-1184
-624
-1353
-669
-Average daily LWG (kg/day)
+1185
+641
+1371
+686
+Average LWG (kg/animal/day)
 mean [live-weight-gain] of cows
 3
 1
@@ -2615,22 +2586,22 @@ BCS of born-calf (points)
 11
 
 MONITOR
-1182
-678
-1340
-723
-Average LW of cows (kg)
+1183
+695
+1375
+740
+Average LW of cows (kg/animal)
 mean [live-weight] of cows with [cow?]
 3
 1
 11
 
 MONITOR
-1183
-723
-1371
-768
-Average daily LWG of cows (kg/day)
+1184
+740
+1381
+785
+Average LWG of cows (kg/animal/day)
 mean [live-weight-gain] of cows with [cow?]
 3
 1
@@ -2645,7 +2616,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+2.0
 1
 1
 NIL
@@ -2665,28 +2636,6 @@ initial-weight-steer
 1
 kg
 HORIZONTAL
-
-MONITOR
-1799
-78
-1948
-123
-Total DM (kg/ha/season)
-DM-cm-ha * mean [grass-height] of patches * 92 / DM-available-for-cattle
-3
-1
-11
-
-MONITOR
-1307
-75
-1481
-120
-Total DM G. Rate (kg/ha/day)
-DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
-3
-1
-11
 
 SLIDER
 6
@@ -2729,10 +2678,10 @@ GRAZING AREA
 1
 
 MONITOR
-503
-531
-569
-576
+504
+548
+570
+593
 Area (ha)
 count patches
 17
@@ -2790,10 +2739,10 @@ PARAMETROS QUE ESTARAN EN LA VERSION ADAPTADA PARA EL MODELO SOSLIVESTOCK
 1
 
 PLOT
-298
-580
-499
-801
+299
+597
+500
+818
 Stocking rate
 Days
 AU/ha
@@ -2810,9 +2759,9 @@ PENS
 MONITOR
 171
 324
-340
+379
 369
-Average daily LWG (kg/day)
+Average LWG (kg/animal/day)
 mean [live-weight-gain] of cows
 13
 1
@@ -2821,9 +2770,9 @@ mean [live-weight-gain] of cows
 MONITOR
 171
 376
-394
+429
 421
-Average LWG since the start of the season
+Average LWG since the start of the SEASON
 mean [live-weight-gain-historyXticks-season] of cows
 9
 1
@@ -2926,24 +2875,13 @@ NIL
 1
 
 MONITOR
-161
-515
-364
-560
+170
+491
+373
+536
 NIL
 max [count cows-here] of patches
 17
-1
-11
-
-MONITOR
-742
-279
-854
-324
-gh-total
-gh-total
-3
 1
 11
 
@@ -2971,17 +2909,6 @@ NIL
 NIL
 1
 
-MONITOR
-741
-203
-912
-248
-NIL
-mean [DM-kg-ha] of patches
-3
-1
-11
-
 CHOOSER
 126
 10
@@ -2993,21 +2920,21 @@ DM-cm-ha?
 0
 
 MONITOR
-411
-322
-499
-367
-WGH (kg/ha)
+1143
+816
+1395
+861
+Average Weight Gain per Hectare (WGH, kg/ha)
 ;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches\n(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
 3
 1
 11
 
 MONITOR
-612
-127
+598
+110
 682
-172
+155
 NIL
 year-days
 17
@@ -3015,10 +2942,10 @@ year-days
 11
 
 MONITOR
-608
-75
-691
-120
+599
+61
+682
+106
 NIL
 season-days
 17
@@ -3028,11 +2955,44 @@ season-days
 MONITOR
 170
 425
-408
+429
 470
-Average LWG since the start of the year
+Average LWG since the start of the YEAR
 mean [live-weight-gain-historyXticks-year] of cows
 9
+1
+11
+
+MONITOR
+1307
+75
+1481
+120
+Total DM per ha (kg/ha)
+DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
+3
+1
+11
+
+MONITOR
+1480
+75
+1657
+120
+Total DM G. Rate (kg/ha/day)
+(DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle) / 92
+3
+1
+11
+
+MONITOR
+1480
+118
+1657
+163
+Available DM G. Rate (kg/ha/day)
+(DM-cm-ha * mean [grass-height] of patches) / 92
+3
 1
 11
 
