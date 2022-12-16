@@ -2061,10 +2061,10 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1382
-596
-1797
-819
+1430
+594
+1888
+821
 Daily live-weight-gain (LWG)
 Days
 kg
@@ -2183,7 +2183,7 @@ PLOT
 228
 1754
 370
-Body Condition Score (BCS)
+Body condition ccore (BCS)
 Days
 points
 0.0
@@ -2240,7 +2240,7 @@ PLOT
 417
 1757
 558
-Pregnancy Rate (PR)
+Pregnancy rate (PR)
 Days
 %
 0.0
@@ -2586,10 +2586,10 @@ BCS of born-calf (points)
 11
 
 MONITOR
-1183
-695
-1375
-740
+1184
+728
+1376
+773
 Average LW of cows (kg/animal)
 mean [live-weight] of cows with [cow?]
 3
@@ -2597,10 +2597,10 @@ mean [live-weight] of cows with [cow?]
 11
 
 MONITOR
-1184
-740
-1381
-785
+1185
+773
+1382
+818
 Average LWG of cows (kg/animal/day)
 mean [live-weight-gain] of cows with [cow?]
 3
@@ -2920,11 +2920,11 @@ DM-cm-ha?
 0
 
 MONITOR
-1143
-816
-1395
-861
-Average Weight Gain per Hectare (WGH, kg/ha)
+1184
+685
+1430
+730
+Average weight gain per hectare (WGH, kg/ha)
 ;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches\n(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
 3
 1
@@ -2992,6 +2992,17 @@ MONITOR
 163
 Available DM G. Rate (kg/ha/day)
 (DM-cm-ha * mean [grass-height] of patches) / 92
+3
+1
+11
+
+MONITOR
+432
+322
+517
+367
+WGH (kg/ha)
+(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
 3
 1
 11

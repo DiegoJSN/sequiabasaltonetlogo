@@ -464,36 +464,36 @@ to go
   ;if simulation-time = 644 [stop] ; VERANO: FIN ESTACION. 1.75 AÑOS
 
   ;if simulation-time = 676 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 736 [stop] ; OTOÑO: FIN AÑO 1. COMIENZO AÑO 2
+  ;if simulation-time = 736 [stop] ; OTOÑO: FIN AÑO 1. COMIENZO AÑO 2
 
 
 
 
   ;if simulation-time = 768 [stop] ; INVIERNO: 32 DIAS. COMIENZO ESTACION
-  if simulation-time = 828 [stop] ; INVIERNO. FIN ESTACION. 2.25 AÑOS
+  ;if simulation-time = 828 [stop] ; INVIERNO. FIN ESTACION. 2.25 AÑOS
 
   ;if simulation-time = 860 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 920 [stop] ; PRIMAVERA. FIN ESTACION. 2.5 AÑOS
+  ;if simulation-time = 920 [stop] ; PRIMAVERA. FIN ESTACION. 2.5 AÑOS
 
   ;if simulation-time = 952 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1012 [stop] ; VERANO: FIN ESTACION. 2.75 AÑOS
+  ;if simulation-time = 1012 [stop] ; VERANO: FIN ESTACION. 2.75 AÑOS
 
   ;if simulation-time = 1044 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1104 [stop] ; OTOÑO: FIN AÑO 2. COMIENZO AÑO 3
+  ;if simulation-time = 1104 [stop] ; OTOÑO: FIN AÑO 2. COMIENZO AÑO 3
 
 
 
   ;if simulation-time = 1136 [stop] ; INVIERNO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1196 [stop] ; INVIERNO. FIN ESTACION. 3.25 AÑOS
+  ;if simulation-time = 1196 [stop] ; INVIERNO. FIN ESTACION. 3.25 AÑOS
 
   ;if simulation-time = 1228 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1288 [stop] ; PRIMAVERA. FIN ESTACION. 3.5 AÑOS
+  ;if simulation-time = 1288 [stop] ; PRIMAVERA. FIN ESTACION. 3.5 AÑOS
 
   ;if simulation-time = 1320 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1380 [stop] ; VERANO: FIN ESTACION. 3.75 AÑOS
+  ;if simulation-time = 1380 [stop] ; VERANO: FIN ESTACION. 3.75 AÑOS
 
   ;if simulation-time = 1412 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1472 [stop] ; OTOÑO: FIN AÑO 3. COMIENZO AÑO 4
+  ;if simulation-time = 1472 [stop] ; OTOÑO: FIN AÑO 3. COMIENZO AÑO 4
 
 
 
@@ -1707,6 +1707,17 @@ GRAPHICS-WINDOW
 ticks
 30.0
 
+MONITOR
+0
+0
+0
+0
+NIL
+NIL
+17
+1
+11
+
 BUTTON
 6
 115
@@ -2061,10 +2072,10 @@ count patches ;grassland-area, 1 patch = 1 ha\n; Other option:\n; sum [animal-un
 11
 
 PLOT
-1382
-596
-1797
-819
+1430
+594
+1888
+821
 Daily live-weight-gain (LWG)
 Days
 kg
@@ -2183,7 +2194,7 @@ PLOT
 228
 1754
 370
-Body Condition Score (BCS)
+Body condition ccore (BCS)
 Days
 points
 0.0
@@ -2240,7 +2251,7 @@ PLOT
 417
 1757
 558
-Pregnancy Rate (PR)
+Pregnancy rate (PR)
 Days
 %
 0.0
@@ -2586,10 +2597,10 @@ BCS of born-calf (points)
 11
 
 MONITOR
-1183
-695
-1375
-740
+1184
+728
+1376
+773
 Average LW of cows (kg/animal)
 mean [live-weight] of cows with [cow?]
 3
@@ -2597,10 +2608,10 @@ mean [live-weight] of cows with [cow?]
 11
 
 MONITOR
-1184
-740
-1381
-785
+1185
+773
+1382
+818
 Average LWG of cows (kg/animal/day)
 mean [live-weight-gain] of cows with [cow?]
 3
@@ -2920,11 +2931,11 @@ DM-cm-ha?
 0
 
 MONITOR
-1143
-816
-1395
-861
-Average Weight Gain per Hectare (WGH, kg/ha)
+1184
+685
+1458
+730
+Average weight gain per hectare (WGH, kg/ha)
 ;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches\n(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
 3
 1
