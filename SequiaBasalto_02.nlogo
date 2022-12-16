@@ -442,59 +442,59 @@ to go
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
 
-  if simulation-time = 92 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
+  ;if simulation-time = 92 [stop] ; PRIMAVERA. COMIENZO ESTACION. REPLICA: esta linea de codigo es para replicar los resultados de "Dinamica pastura" de la fig 2 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. 0.25 AÑOS
 
-  if simulation-time = 184 [stop] ; VERANO: COMIENZO ESTACION
+  ;if simulation-time = 184 [stop] ; VERANO: COMIENZO ESTACION
   ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. 0.5 AÑOS
 
-  if simulation-time = 276 [stop] ; OTOÑO: COMIENZO ESTACION
+  ;if simulation-time = 276 [stop] ; OTOÑO: COMIENZO ESTACION
   ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. 0.75 AÑOS
-  if simulation-time = 368 [stop] ; OTOÑO-INVIERNO: FIN AÑO 0
+  ;if simulation-time = 368 [stop] ; OTOÑO-INVIERNO: FIN AÑO 0
 
 
 
 
   ;if simulation-time = 400 [stop] ; INVIERNO. 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 460 [stop] ; INVIERNO: 1.25 AÑO
+  ;if simulation-time = 460 [stop] ; INVIERNO: 1.25 AÑO
 
   ;if simulation-time = 492 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 552 [stop] ; PRIMAVERA: 1.5 AÑOS
+  ;if simulation-time = 552 [stop] ; PRIMAVERA: 1.5 AÑOS
 
   ;if simulation-time = 584 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 644 [stop] ; VERANO:  1.75 AÑOS
+  ;if simulation-time = 644 [stop] ; VERANO:  1.75 AÑOS
 
   ;if simulation-time = 676 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 736 [stop] ; OTOÑO:  2 AÑOS
+  ;if simulation-time = 736 [stop] ; OTOÑO:  2 AÑOS
 
 
 
 
   ;if simulation-time = 768 [stop] ; INVIERNO: 32 DIAS. COMIENZO ESTACION
-  if simulation-time = 828 [stop] ; INVIERNO:  2.25 AÑO
+  ;if simulation-time = 828 [stop] ; INVIERNO:  2.25 AÑO
 
   ;if simulation-time = 860 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 920 [stop] ; PRIMAVERA:  2.5 AÑOS
+  ;if simulation-time = 920 [stop] ; PRIMAVERA:  2.5 AÑOS
 
   ;if simulation-time = 952 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1012 [stop] ; VERANO:  2.75 AÑOS
+  ;if simulation-time = 1012 [stop] ; VERANO:  2.75 AÑOS
 
   ;if simulation-time = 1044 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1104 [stop] ; OTOÑO:  3 AÑO
+  ;if simulation-time = 1104 [stop] ; OTOÑO:  3 AÑO
 
 
 
   ;if simulation-time = 1136 [stop] ; INVIERNO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1196 [stop] ; INVIERNO:  3.25 AÑOS
+  ;if simulation-time = 1196 [stop] ; INVIERNO:  3.25 AÑOS
 
   ;if simulation-time = 1228 [stop] ; PRIMAVERA: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1288 [stop] ; PRIMAVERA:  3.5 AÑOS
+  ;if simulation-time = 1288 [stop] ; PRIMAVERA:  3.5 AÑOS
 
   ;if simulation-time = 1320 [stop] ; VERANO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1380 [stop] ; VERANO:  3.75 AÑOS
+  ;if simulation-time = 1380 [stop] ; VERANO:  3.75 AÑOS
 
   ;if simulation-time = 1412 [stop] ; OTOÑO: 32 DÍAS. COMIENZO ESTACION
-  if simulation-time = 1472 [stop] ; OTOÑO:  4 AÑOS
+  ;if simulation-time = 1472 [stop] ; OTOÑO:  4 AÑOS
 
 
 
@@ -2645,7 +2645,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-190.0
+30.0
 1
 1
 NIL
@@ -3517,7 +3517,7 @@ NetLogo 6.2.2
       <value value="1"/>
     </enumeratedValueSet>
   </experiment>
-  <experiment name="Fig5_SEASON" repetitions="10" runMetricsEveryStep="true">
+  <experiment name="Fig5_SEASON" repetitions="10" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="92"/>
