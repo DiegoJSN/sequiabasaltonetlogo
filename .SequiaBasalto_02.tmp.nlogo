@@ -513,7 +513,7 @@ to go
   ;DM-consumption
   DM-consumption_kgMS/ha/cows
 
-  grow-livestock
+  ;grow-livestock
 
   reproduce
 
@@ -2006,7 +2006,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+0.75
 0.1
 1
 NIL
@@ -2631,7 +2631,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+0.0
 1
 1
 NIL
@@ -3439,7 +3439,7 @@ NetLogo 6.2.2
     <metric>mean [live-weight] of cows</metric>
     <steppedValueSet variable="perception" first="0" step="0.1" last="1"/>
   </experiment>
-  <experiment name="Fig5_YEAR" repetitions="10" runMetricsEveryStep="false">
+  <experiment name="Fig5" repetitions="10" runMetricsEveryStep="false">
     <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="368"/>
@@ -3489,7 +3489,7 @@ NetLogo 6.2.2
     <enumeratedValueSet variable="management-strategy">
       <value value="&quot;reactive&quot;"/>
     </enumeratedValueSet>
-    <steppedValueSet variable="initial-num-steers" first="0" step="10" last="190"/>
+    <steppedValueSet variable="initial-num-steers" first="0" step="2" last="100"/>
     <enumeratedValueSet variable="initial-season">
       <value value="0"/>
     </enumeratedValueSet>
