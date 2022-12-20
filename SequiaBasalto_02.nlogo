@@ -3445,8 +3445,8 @@ NetLogo 6.2.2
     <timeLimit steps="368"/>
     <metric>count cows</metric>
     <metric>stocking-rate</metric>
-    <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
-    <metric>mean [live-weight-gain-historyXticks-year] of cows; Average LWG since start YEAR</metric>
+    <metric>ALWG</metric>
+    <metric>ILWG_YEAR</metric>
     <enumeratedValueSet variable="DM-cm-ha?">
       <value value="&quot;180&quot;"/>
     </enumeratedValueSet>
@@ -3501,73 +3501,6 @@ NetLogo 6.2.2
     </enumeratedValueSet>
     <steppedValueSet variable="set-climaCoef" first="0.5" step="0.25" last="1.5"/>
   </experiment>
-  <experiment name="Fig5_SEASON" repetitions="10" runMetricsEveryStep="false">
-    <setup>setup</setup>
-    <go>go</go>
-    <timeLimit steps="92"/>
-    <metric>count cows</metric>
-    <metric>stocking-rate</metric>
-    <metric>(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches ; WGH</metric>
-    <metric>mean [live-weight-gain-historyXticks-season] of cows; Average LWG since start SEASON</metric>
-    <enumeratedValueSet variable="DM-cm-ha?">
-      <value value="&quot;180&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-num-heifers">
-      <value value="0"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="set-Y-size">
-      <value value="5"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="set-X-size">
-      <value value="10"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="set-1-AU">
-      <value value="380"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-num-cows">
-      <value value="0"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="set-MW-1-AU">
-      <value value="220"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="DM-available-for-cattle">
-      <value value="0.4"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="perception">
-      <value value="1"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="model-version">
-      <value value="&quot;open access&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-weight-steer">
-      <value value="300"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-weight-heifer">
-      <value value="200"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-grass-height">
-      <value value="7"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="management-strategy">
-      <value value="&quot;reactive&quot;"/>
-    </enumeratedValueSet>
-    <steppedValueSet variable="initial-num-steers" first="0" step="10" last="190"/>
-    <enumeratedValueSet variable="initial-season">
-      <value value="0"/>
-      <value value="1"/>
-      <value value="2"/>
-      <value value="3"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="initial-weight-cows">
-      <value value="380"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="changing-seasons?">
-      <value value="&quot;yes&quot;"/>
-    </enumeratedValueSet>
-    <enumeratedValueSet variable="set-climaCoef">
-      <value value="1"/>
-    </enumeratedValueSet>
-  </experiment>
   <experiment name="Fig4" repetitions="1" runMetricsEveryStep="false">
     <setup>setup3</setup>
     <go>go</go>
@@ -3576,7 +3509,7 @@ NetLogo 6.2.2
     <metric>season-report</metric>
     <metric>count cows</metric>
     <metric>stocking-rate</metric>
-    <metric>mean [live-weight-gain-historyXticks-season] of cows; Average LWG SEASON</metric>
+    <metric>ILWG_SEASON</metric>
     <enumeratedValueSet variable="DM-cm-ha?">
       <value value="&quot;180&quot;"/>
     </enumeratedValueSet>
