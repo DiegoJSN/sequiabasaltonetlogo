@@ -513,7 +513,7 @@ to go
   ;DM-consumption
   DM-consumption_kgMS/ha/cows
 
-  ;grow-livestock
+  grow-livestock
 
   reproduce
 
@@ -2006,7 +2006,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-0.75
+1.0
 0.1
 1
 NIL
@@ -2631,7 +2631,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-0.0
+30.0
 1
 1
 NIL

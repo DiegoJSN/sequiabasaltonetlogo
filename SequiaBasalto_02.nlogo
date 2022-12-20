@@ -513,7 +513,7 @@ to go
   ;DM-consumption
   DM-consumption_kgMS/ha/cows
 
-  ;grow-livestock
+  grow-livestock
 
   reproduce
 
