@@ -1069,17 +1069,32 @@ end
   report DM-cm-ha * sum [grass-height] of patches
 end
 
- to-report dm-cows ; Reporter to output the accumulation of DM AVAILABLE for the cows
-  report DM-cm-ha * mean [grass-height] of patches * 0.4 ; Se considera un factor de uso o tasa de desaparición del forraje/pastura (TDF)  por parte del animal del 40%
-                                                         ; (es decir, que si la acumulación de materia seca (DM) en invierno (por poner un ejemplo) en un prado en el que no hay vacas pastando es de 1331,54 kg DM/ha, las vacas solo podrán aprovechar algo menos de la mitad, es decir, 532,62 kg DM/ha. Es decir, del 100% de MS disponible en el pasto, asumimos que el 60% restante es consumido por otros animales en pastoreo, por otros herbívoros y las pérdidas de forraje por senescencia, pisoteo y descomposición)
+
+
+
+to-report ALWG ; ALWG (Annual Live Weight Gain, kg/year/ha), o WGH (Weight Gain per Hectare, kg/ha)
+  report (sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
 end
 
-; to-report grassland-area ;
-;  report sum [animal-units] of cows / stocking-rate
-;end
+
+
+to-report ILWG ; ILWG (Inidividual Live Weight Gain, kg/animal/day)
+  report mean [live-weight-gain] of cows
+end
+
+to-report ILWG_SEASON
+  report mean [live-weight-gain-historyXticks-season] of cows; Average LWG SEASON
+end
+
+to-report ILWG_YEAR
+  report mean [live-weight-gain-historyXticks-year] of cows; Average LWG YEAR
+end
+
+
 
 to-report crop-efficiency ; Reporter to output the crop eficiency (DM consumed / DM offered)
-  report sum [DDMC] of cows / (DM-cm-ha * sum [grass-height] of patches) * 100
+  ;report sum [DDMC] of cows / (DM-cm-ha * sum [grass-height] of patches) * 100
+  report sum [DDMC] of cows / ((DM-cm-ha * DM-available-for-cattle ) * sum [grass-height] of patches)
 
 
  ;let totDDMC sum [DDMC] of cows ; totDDMC = DM consumed
@@ -2065,7 +2080,7 @@ PLOT
 594
 1888
 821
-Daily live-weight-gain (LWG)
+Daily individual-live-weight-gain (ILWG)
 Days
 kg
 0.0
@@ -2514,7 +2529,7 @@ MONITOR
 1481
 164
 Available DM per ha (kg/ha)
-DM-cm-ha * mean [grass-height] of patches
+;DM-cm-ha * mean [grass-height] of patches\ndmgr / count patches
 3
 1
 11
@@ -2535,8 +2550,8 @@ MONITOR
 641
 1371
 686
-Average LWG (kg/animal/day)
-mean [live-weight-gain] of cows
+Average ILWG (kg/animal/day)
+;mean [live-weight-gain] of cows\nILWG
 3
 1
 11
@@ -2599,9 +2614,9 @@ mean [live-weight] of cows with [cow?]
 MONITOR
 1185
 773
-1382
+1414
 818
-Average LWG of cows (kg/animal/day)
+Average ILWG of cows (kg/animal/day)
 mean [live-weight-gain] of cows with [cow?]
 3
 1
@@ -2616,7 +2631,7 @@ initial-num-steers
 initial-num-steers
 0
 1000
-30.0
+63.0
 1
 1
 NIL
@@ -2761,8 +2776,8 @@ MONITOR
 324
 379
 369
-Average LWG (kg/animal/day)
-mean [live-weight-gain] of cows
+Average ILWG (kg/animal/day)
+;mean [live-weight-gain] of cows\nILWG
 13
 1
 11
@@ -2773,7 +2788,7 @@ MONITOR
 429
 421
 Average LWG since the start of the SEASON
-mean [live-weight-gain-historyXticks-season] of cows; Average LWG SEASON
+;mean [live-weight-gain-historyXticks-season] of cows; Average LWG SEASON\nILWG_SEASON
 13
 1
 11
@@ -2924,8 +2939,8 @@ MONITOR
 685
 1430
 730
-Average weight gain per hectare (WGH, kg/ha)
-;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches\n(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches
+Average annual live weight gain per hectare (ALWG, kg/ha)
+;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches; para calcular el WGH de los steers\n;(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches\nALWG
 3
 1
 11
@@ -2958,7 +2973,7 @@ MONITOR
 429
 470
 Average LWG since the start of the YEAR
-mean [live-weight-gain-historyXticks-year] of cows; Average LWG YEAR
+;mean [live-weight-gain-historyXticks-year] of cows; Average LWG YEAR\nILWG_YEAR
 13
 1
 11
@@ -2969,7 +2984,7 @@ MONITOR
 1481
 120
 Total DM per ha (kg/ha)
-DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle
+;(DM-cm-ha * mean [grass-height] of patches) / DM-available-for-cattle\n(dmgr / DM-available-for-cattle) / count patches
 3
 1
 11
@@ -2980,7 +2995,7 @@ MONITOR
 1657
 120
 Total DM G. Rate (kg/ha/day)
-(DM-cm-ha * mean [grass-height] of patches / DM-available-for-cattle) / 92
+;((DM-cm-ha * mean [grass-height] of patches) / DM-available-for-cattle) / 92\n((dmgr / DM-available-for-cattle) / count patches) / 92
 3
 1
 11
@@ -2991,18 +3006,18 @@ MONITOR
 1657
 163
 Available DM G. Rate (kg/ha/day)
-(DM-cm-ha * mean [grass-height] of patches) / 92
+;(DM-cm-ha * mean [grass-height] of patches) / 92\n(dmgr / count patches) / 92
 3
 1
 11
 
 MONITOR
-432
+436
 322
-517
+526
 367
-WGH (kg/ha)
-(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches; WGH
+ALWG (kg/ha)
+;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches; para calcular el WGH de los steers\n;(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches\nALWG
 3
 1
 11
@@ -3484,9 +3499,7 @@ NetLogo 6.2.2
     <enumeratedValueSet variable="changing-seasons?">
       <value value="&quot;yes&quot;"/>
     </enumeratedValueSet>
-    <enumeratedValueSet variable="set-climaCoef">
-      <value value="1"/>
-    </enumeratedValueSet>
+    <steppedValueSet variable="set-climaCoef" first="0.5" step="0.25" last="1.5"/>
   </experiment>
   <experiment name="Fig5_SEASON" repetitions="10" runMetricsEveryStep="false">
     <setup>setup</setup>
