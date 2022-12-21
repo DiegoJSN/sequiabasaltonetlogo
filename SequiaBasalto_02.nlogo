@@ -500,6 +500,11 @@ to go
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
 
 
+  ;update-grass-height
+  update-grass-height_HERE
+
+  ;move
+  move1
 
   grow-grass
 
@@ -516,12 +521,6 @@ to go
   grow-livestock
 
   reproduce
-
-  ;update-grass-height
-  update-grass-height_HERE
-
-  ;move
-  move1
 
 
   tick
@@ -812,7 +811,8 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -839,8 +839,8 @@ ask patches [
       set grass-height grass-height - GH-consumed ];... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
-
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
 
   ifelse grass-height < 2 [
      set pcolor 37][
@@ -2507,7 +2507,7 @@ DM-available-for-cattle
 DM-available-for-cattle
 0
 1
-1.0
+0.4
 0.1
 1
 NIL

@@ -517,11 +517,7 @@ to go
 
   reproduce
 
-  ;update-grass-height
-  update-grass-height_HERE
 
-  ;move
-  move1
 
 
   tick
@@ -812,7 +808,8 @@ ask patches [
   set grass-height grass-height - GH-consumed ;... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
 
 
   ifelse grass-height < 2 [
@@ -839,8 +836,8 @@ ask patches [
       set grass-height grass-height - GH-consumed ];... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
-
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
 
   ifelse grass-height < 2 [
      set pcolor 37][
@@ -1765,7 +1762,7 @@ initial-num-cows
 initial-num-cows
 0
 1000
-0.0
+50.0
 1
 1
 cows
@@ -1780,7 +1777,7 @@ initial-season
 initial-season
 0
 3
-3.0
+0.0
 1
 1
 NIL
@@ -2043,7 +2040,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-2.0
+0.0
 1
 1
 NIL
@@ -2266,10 +2263,10 @@ true
 true
 "" ""
 PENS
-"Heifer" 1.0 0 -2064490 true "" "plot mean [pregnancy-rate] of cows with [heifer?] * 368 * 100"
-"Cow" 1.0 0 -6459832 true "" "plot mean [pregnancy-rate] of cows with [cow?] * 368 * 100"
-"Cow-with-calf" 1.0 0 -5825686 true "" "plot mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100"
-"Average PR" 1.0 0 -16777216 true "" "plot mean [pregnancy-rate] of cows * 368 * 100"
+"Heifer" 1.0 0 -2064490 true "" "plot mean [pregnancy-rate] of cows with [heifer?] * 100"
+"Cow" 1.0 0 -6459832 true "" "plot mean [pregnancy-rate] of cows with [cow?] * 100"
+"Cow-with-calf" 1.0 0 -5825686 true "" "plot mean [pregnancy-rate] of cows with [cow-with-calf?] * 100"
+"Average PR" 1.0 0 -16777216 true "" "plot mean [pregnancy-rate] of cows * 100"
 
 MONITOR
 1757
@@ -2277,7 +2274,7 @@ MONITOR
 1888
 596
 Average PR (%)
-mean [pregnancy-rate] of cows * 368 * 100
+mean [pregnancy-rate] of cows * 100
 2
 1
 11
@@ -2288,7 +2285,7 @@ MONITOR
 1889
 507
 PR of cows (%)
-mean [pregnancy-rate] of cows with [cow?] * 368 * 100
+mean [pregnancy-rate] of cows with [cow?] * 100
 2
 1
 11
@@ -2310,7 +2307,7 @@ MONITOR
 1890
 551
 PR of heifers (%)
-mean [pregnancy-rate] of cows with [heifer?] * 368 * 100
+mean [pregnancy-rate] of cows with [heifer?] * 100
 2
 1
 11
@@ -2507,7 +2504,7 @@ DM-available-for-cattle
 DM-available-for-cattle
 0
 1
-1.0
+0.4
 0.1
 1
 NIL
