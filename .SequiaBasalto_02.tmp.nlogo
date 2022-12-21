@@ -3575,6 +3575,69 @@ NetLogo 6.2.2
       <value value="1.5"/>
     </enumeratedValueSet>
   </experiment>
+  <experiment name="Fig6" repetitions="10" runMetricsEveryStep="false">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="368"/>
+    <metric>count cows</metric>
+    <metric>stocking-rate</metric>
+    <metric>crop-efficiency</metric>
+    <enumeratedValueSet variable="DM-cm-ha?">
+      <value value="&quot;180&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-heifers">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-Y-size">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-X-size">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-1-AU">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-cows">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-MW-1-AU">
+      <value value="220"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="DM-available-for-cattle">
+      <value value="0.4"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="perception">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="model-version">
+      <value value="&quot;open access&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-steer">
+      <value value="300"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-heifer">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-grass-height">
+      <value value="7"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="management-strategy">
+      <value value="&quot;reactive&quot;"/>
+    </enumeratedValueSet>
+    <steppedValueSet variable="initial-num-steers" first="0" step="2" last="100"/>
+    <enumeratedValueSet variable="initial-season">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-cows">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-seasons?">
+      <value value="&quot;yes&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-climaCoef">
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
 </experiments>
 @#$#@#$#@
 @#$#@#$#@
