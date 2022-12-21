@@ -777,7 +777,7 @@ end
 
 to reproduce ; A continuación aquí se encuentran la fórmula del Pregnancy rate y las reglas para convertirse en age class "Pregnant".  LA REDACCIÓN DE LA FÓRMULA SI COINCIDE CON LA FÓRMULA DEL PAPER PERO...
   ask cows [
-  if (heifer? = true) or (cow? = true) or (cow-with-calf? = true) [set pregnancy-rate (1 / (1 + coefA * e ^ (- coefB * live-weight))) / 368] ; ...¿¿¿¿¿¿¿¿DUDA????? LO DIVIDE ENTRE 368, POR QUÉ?
+  if (heifer? = true) or (cow? = true) or (cow-with-calf? = true) [set pregnancy-rate (1 / (1 + coefA * e ^ (- coefB * live-weight)))] ; ...¿¿¿¿¿¿¿¿DUDA????? LO DIVIDE ENTRE 368, POR QUÉ?
                                                                                                                                              ; POSIBLE RESPUESTA: 368 parece que hace alusión a un año (aunque un año real tiene 365 días, en esta simulacion 1 año son 368 días, ya que 1 año = 4 estaciones, y 1 estacion = 92 días. Por tanto, 92 días * 4 estaciones = 368 días), ya que se dice que la simulación dura 10 años, y en el código original de Alicia pone que 10 años = 3680 days...
                                                                                                                                              ; ...así que en definitiva, al divir la fórmula entre los días que tiene un año, se calcula el pregnancy rate diario, es decir, la probabilidad de que una vaca del age class "heifer", "cow" o "cow-with-calf" se quede preñada en un día.
   if random-float 1 < pregnancy-rate [set pregnant? true] ; Por lo tanto, si esta probabilidad diaria es mayor que un número generado al azar entre 0 y 0.99, el agente se convertirá en un agente del age class "pregnant" (i.e., el agente quedará preñado)
@@ -1765,7 +1765,7 @@ initial-num-cows
 initial-num-cows
 0
 1000
-50.0
+0.0
 1
 1
 cows
@@ -1780,7 +1780,7 @@ initial-season
 initial-season
 0
 3
-0.0
+3.0
 1
 1
 NIL
@@ -2043,7 +2043,7 @@ initial-num-heifers
 initial-num-heifers
 0
 1000
-0.0
+2.0
 1
 1
 NIL
@@ -2299,7 +2299,7 @@ MONITOR
 1900
 463
 PR of cows-with-calf (%)
-mean [pregnancy-rate] of cows with [cow-with-calf?] * 368 * 100
+mean [pregnancy-rate] of cows with [cow-with-calf?] * 100
 2
 1
 11
@@ -2507,7 +2507,7 @@ DM-available-for-cattle
 DM-available-for-cattle
 0
 1
-0.4
+1.0
 0.1
 1
 NIL
@@ -3038,8 +3038,8 @@ MONITOR
 246
 704
 291
-Average PR (%)
-mean [pregnancy-rate] of cows with [cow?] * 368 * 100
+PR of cows (%)
+;mean [pregnancy-rate] of cows with [cow?] * 368 * 100\nmean [pregnancy-rate] of cows with [cow?] * 100
 2
 1
 11
