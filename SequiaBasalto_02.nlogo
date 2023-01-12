@@ -500,13 +500,14 @@ to go
   ;; Orden original de los procedimientos: grow-grass  update-grass-height  eat-grass  move  grow-livestock  reproduce
 
 
-  ;update-grass-height
-  update-grass-height_HERE
+
+
+
+
+  grow-grass
 
   ;move
   move1
-
-  grow-grass
 
   kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
@@ -522,6 +523,8 @@ to go
 
   reproduce
 
+  ;update-grass-height
+  update-grass-height_HERE
 
   tick
 end
@@ -552,11 +555,36 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
 
   ask patches [
 
-set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+
+    ;;;OPCION 1: NO TIENE UNA VARIABLE ESPECIFICA PARA EL TIEMPO
+    ;set grass-height (grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * set-climacoef) - GH-consumed
+
+    ;,OPCION 2: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "initial-grass-height"
+    ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed
+
+
+    ;;OPCION 3: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "grass-height"
+    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
                                                                                                                                                                                          ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
-  set DM-kg-ha DM-cm-ha * grass-height
+
+
+
+
+
+  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
+  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
+  ;if grass-height < 0 [set grass-height 0 ]
+
+  ifelse grass-height < 2 [
+     set pcolor 37][
+     set pcolor scale-color green grass-height 23 0]
+    if grass-height < 0 [set pcolor red]
+
+
+
+    set DM-kg-ha DM-cm-ha * grass-height
   ]
 
 ;ask patch 0 0 [print (word ">>> INITIAL grass-height AFTER grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
@@ -691,6 +719,8 @@ ask cows [
          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
          [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
+
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
 
@@ -714,6 +744,8 @@ ask cows [
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  gh-individual + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
          [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
@@ -836,16 +868,9 @@ ask patches [
     let totDDMC sum [DDMC] of cows-here ; creamos variable local, llamada totDDMC: Using a local variable “totDDMC” we calculate the total (total = la suma ("sum") de toda la DM consumida ("DDMC") por todas las vacas que se encuentran en ese parche) daily dry matter consumption (DDMC) in each patch.
     set GH-consumed totDDMC / DM-cm-ha  ; Actualizamos el GH-consumed: with the parameter “DM-cm-ha”, which defines that each centimeter per hectare contains 180 Kg of dry matter, we calculate the grass height consumed in each patch. Therefore, we update the grass height subtracting the grass height consumed from the current grass height.
                                         ; Una vez actualizado el GH-consumed de ese tick con la cantidad de DM que han consumido las vacas...
-      set grass-height grass-height - GH-consumed ];... lo utilizamos para actualizar la grass-height de ese tick
+];... lo utilizamos para actualizar la grass-height de ese tick
 
 
-  ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
-  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
-
-  ifelse grass-height < 2 [
-     set pcolor 37][
-     set pcolor scale-color green grass-height 23 0]
-    if grass-height < 0 [set pcolor red]
   ]
 
 ;ask cows [print (word ">>> GH-consumed "  GH-consumed)] ;;;;TEMP
