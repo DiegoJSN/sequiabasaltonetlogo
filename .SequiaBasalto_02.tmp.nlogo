@@ -441,7 +441,7 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
+  ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
   if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
@@ -506,18 +506,18 @@ to go
 
   grow-grass
 
-  ;move
-  move1
+  move
+  ;move1
 
-  kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
+  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
   ;gh/cow
 
-  ;LWG
-  LWG_kgMS/ha/cows
+  LWG
+  ;LWG_kgMS/ha/cows
 
-  ;DM-consumption
-  DM-consumption_kgMS/ha/cows
+  DM-consumption
+  ;DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
@@ -557,25 +557,22 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
 
 
     ;;;OPCION 1: NO TIENE UNA VARIABLE ESPECIFICA PARA EL TIEMPO
-    ;set grass-height (grass-height + r * grass-height * (1 - grass-height / item current-season kmax) * set-climacoef) - GH-consumed
+    set grass-height (grass-height + r * grass-height * (1 - grass-height / (item current-season kmax * set-climacoef))) - GH-consumed
 
     ;,OPCION 2: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "initial-grass-height"
     ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed
 
 
     ;;OPCION 3: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "grass-height"
-    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+    ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
-                                                                                                                                                                                         ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)
-                                                                                                                                                                                         ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
-
-
+                                                                                                                                                                                         ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)                                                                                                                                                                                    ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
 
 
 
   ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
-  if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
-  ;if grass-height < 0 [set grass-height 0 ]
+  ;if grass-height <= 0 [set grass-height 1 ^ -80 ] ; to avoid negative values.
+  if grass-height < 0 [set grass-height 0 ]
 
   ifelse grass-height < 2 [
      set pcolor 37][
@@ -670,6 +667,8 @@ ask cows [
 set live-weight live-weight + live-weight-gain
 
 set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
+
+set size animal-units
   ]
 
 ; ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
@@ -693,6 +692,8 @@ ask cows [
 set live-weight live-weight + live-weight-gain
 
 set animal-units live-weight / set-1-AU ; Le pedimos a los animales que actualicen su AU
+
+set size animal-units
   ]
 
 ; ask patch 0 0 [print (word ">>> AFTER LWG grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
@@ -719,7 +720,7 @@ ask cows [
          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  grass-height + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
          [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
 
-    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos)
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
@@ -744,6 +745,8 @@ ask cows [
        [ifelse grass-height >= 2  ;...PERO si el agente (la vaca) NO es un "born-calf" Y si el LWG de la vaca es > 0 (if this is TRUE), DDMC = fórmula que se escribe a continuación...
          [set DDMC ((0.107 * metabolic-body-size * (- 0.0132 *  gh-individual + 1.1513) + (0.141 * metabolic-body-size * live-weight-gain) ) / grass-energy) * category-coef]
          [set DDMC 0]] ;... PERO si live-weight-gain es < 0 (if > 0 is FALSE), establece DDMC = 0 (para evitar DDMC con valores negativos)
+
+    if DDMC < 0 [set DDMC 0] ; para evitar DDMC con valores negativos
 
      ;print (word ">>> UPDATED DDMC                  " DDMC)
   ]
@@ -883,11 +886,6 @@ end
 
 
 
-
-
-
-
-
 to move ; Esto ha sido "inventado" por Alicia. El modelo original no es espacialmente explícito, pero Alicia ha querido representar a las vacas moviéndose por la parcela, así que para que se muevan, ha añadido este procedure y lo ha asociado al parámetro "perception"
 ask cows [
   if grass-height < 5
@@ -948,7 +946,8 @@ to become-born-calf
   set animal-units live-weight / set-1-AU
   ;set min-weight 0
   set min-weight set-MW-1-AU * 0.2
-  set size 0.4
+  ;set size 0.4
+  set size animal-units
   set natural-mortality-rate 0.000054
   set except-mort-rate 0
   set category-coef 1
@@ -971,7 +970,8 @@ to become-weaned-calf
   set animal-units live-weight / set-1-AU
   ;set min-weight 60
   set min-weight set-MW-1-AU * 0.5
-  set size 0.6
+  ;set size 0.6
+  set size animal-units
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -993,7 +993,8 @@ to become-heifer
   set animal-units live-weight / set-1-AU
   ;set min-weight 100
   set min-weight set-MW-1-AU * 0.7
-  set size 0.8
+  ;set size 0.8
+  set size animal-units
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -1016,7 +1017,8 @@ to become-steer
   set animal-units live-weight / set-1-AU
   ;set min-weight 100
   set min-weight set-MW-1-AU * 0.7
-  set size 0.9
+  ;set size 0.9
+  set size animal-units
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.23
   set category-coef 1
@@ -1040,7 +1042,8 @@ to become-cow
   set animal-units live-weight / set-1-AU
   ;set min-weight 180
   set min-weight set-MW-1-AU
-  set size 1
+  ;set size 1
+  set size animal-units
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.15
   set category-coef 1
@@ -1063,7 +1066,8 @@ to become-cow-with-calf
   set animal-units live-weight / set-1-AU
   ;set min-weight 180
   set min-weight set-MW-1-AU
-  set size 1.1
+  ;set size 1.1
+  set size animal-units
   set natural-mortality-rate 0.000054
   set except-mort-rate 0.3
   set category-coef 1.1
@@ -1906,7 +1910,7 @@ perception
 perception
 0
 1
-1.0
+0.7
 0.1
 1
 NIL
@@ -2029,7 +2033,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.0
+1.5
 0.1
 1
 NIL
@@ -2147,7 +2151,7 @@ MONITOR
 462
 CE (%)
 crop-efficiency
-0
+2
 1
 11
 
