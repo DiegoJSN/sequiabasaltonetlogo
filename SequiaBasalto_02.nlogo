@@ -1792,7 +1792,7 @@ initial-num-cows
 initial-num-cows
 0
 1000
-50.0
+0.0
 1
 1
 cows
@@ -1961,7 +1961,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-0
+1
 
 TEXTBOX
 12
@@ -2214,7 +2214,7 @@ initial-weight-cows
 initial-weight-cows
 100
 1500
-340.0
+380.0
 1
 1
 kg
@@ -3518,7 +3518,7 @@ NetLogo 6.2.2
       <value value="220"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="DM-available-for-cattle">
-      <value value="0.4"/>
+      <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="perception">
       <value value="1"/>
@@ -3550,8 +3550,8 @@ NetLogo 6.2.2
     </enumeratedValueSet>
     <steppedValueSet variable="set-climaCoef" first="0.5" step="0.25" last="1.5"/>
   </experiment>
-  <experiment name="Fig4" repetitions="1" runMetricsEveryStep="false">
-    <setup>setup3</setup>
+  <experiment name="Fig4" repetitions="10" runMetricsEveryStep="false">
+    <setup>setup</setup>
     <go>go</go>
     <timeLimit steps="92"/>
     <metric>set-climaCoef</metric>
@@ -3581,7 +3581,7 @@ NetLogo 6.2.2
       <value value="220"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="DM-available-for-cattle">
-      <value value="0.4"/>
+      <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="perception">
       <value value="1"/>
@@ -3607,10 +3607,10 @@ NetLogo 6.2.2
       <value value="60"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="initial-season">
+      <value value="3"/>
       <value value="0"/>
       <value value="1"/>
       <value value="2"/>
-      <value value="3"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="initial-weight-cows">
       <value value="380"/>
@@ -3653,7 +3653,7 @@ NetLogo 6.2.2
       <value value="220"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="DM-available-for-cattle">
-      <value value="0.4"/>
+      <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="perception">
       <value value="1"/>
