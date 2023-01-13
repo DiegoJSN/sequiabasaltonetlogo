@@ -1961,7 +1961,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-1
+0
 
 TEXTBOX
 12
@@ -3679,6 +3679,74 @@ NetLogo 6.2.2
     </enumeratedValueSet>
     <enumeratedValueSet variable="initial-weight-cows">
       <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="changing-seasons?">
+      <value value="&quot;yes&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-climaCoef">
+      <value value="1"/>
+    </enumeratedValueSet>
+  </experiment>
+  <experiment name="Fig2" repetitions="1" runMetricsEveryStep="true">
+    <setup>setup</setup>
+    <go>go</go>
+    <timeLimit steps="92"/>
+    <metric>simulation-time</metric>
+    <metric>season-report</metric>
+    <metric>dmgr / count patches ;DM/ha</metric>
+    <enumeratedValueSet variable="DM-cm-ha?">
+      <value value="&quot;180&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-heifers">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-Y-size">
+      <value value="5"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-X-size">
+      <value value="10"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-1-AU">
+      <value value="380"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-cows">
+      <value value="50"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="set-MW-1-AU">
+      <value value="220"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="DM-available-for-cattle">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="perception">
+      <value value="1"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="model-version">
+      <value value="&quot;grass model&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-steer">
+      <value value="300"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-heifer">
+      <value value="200"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-grass-height">
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="management-strategy">
+      <value value="&quot;reactive&quot;"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-num-steers">
+      <value value="0"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-season">
+      <value value="0"/>
+      <value value="1"/>
+      <value value="2"/>
+      <value value="3"/>
+    </enumeratedValueSet>
+    <enumeratedValueSet variable="initial-weight-cows">
+      <value value="340"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="changing-seasons?">
       <value value="&quot;yes&quot;"/>
