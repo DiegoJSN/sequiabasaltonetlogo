@@ -551,7 +551,7 @@ end
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;TEMP
 
   ask patches [
 
@@ -2033,7 +2033,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.5
+1.0
 0.1
 1
 NIL

@@ -444,13 +444,13 @@ to go
   ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
+  ;if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
 
   ;if simulation-time = 216 [stop] ; VERANO: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
+  ;if simulation-time = 276 [stop] ; VERANO: FIN ESTACION. 0.75 AÑOS
 
   ;if simulation-time = 308 [stop] ; OTOÑO: 32 DIAS. COMIENZO ESTACIÓN
-  if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
+  ;if simulation-time = 368 [stop] ; OTOÑO: FIN AÑO 0. COMIENZO AÑO 1
 
 
 
@@ -506,8 +506,8 @@ to go
 
   grow-grass
 
-  move
-  ;move1
+  ;move
+  move1
 
   ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
@@ -551,7 +551,7 @@ end
 
 to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centimeters)
 
-;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;;TEMP
+;ask patch 0 0 [print (word ">>> INITIAL grass-height BEFORE grass-height " [grass-height] of patch 0 0)] ;;;TEMP
 
   ask patches [
 
@@ -1910,7 +1910,7 @@ perception
 perception
 0
 1
-0.7
+1.0
 0.1
 1
 NIL
@@ -2033,7 +2033,7 @@ set-climaCoef
 set-climaCoef
 0.1
 1.5
-1.5
+1.0
 0.1
 1
 NIL
