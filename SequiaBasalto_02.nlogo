@@ -509,15 +509,15 @@ to go
   ;move
   move1
 
-  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
+  kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
   ;gh/cow
 
-  LWG
-  ;LWG_kgMS/ha/cows
+  ;LWG
+  LWG_kgMS/ha/cows
 
-  DM-consumption
-  ;DM-consumption_kgMS/ha/cows
+  ;DM-consumption
+  DM-consumption_kgMS/ha/cows
 
   grow-livestock
 

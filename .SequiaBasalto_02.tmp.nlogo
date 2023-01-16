@@ -509,7 +509,7 @@ to go
   ;move
   move1
 
-  ;kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
+  kgMS/ha/cows ;; ACUERDATE DE CUANDO ACTIVES ESTE PROCEDURE, ACTIVAR LA VERSION CORRESPONDIENTE DE "LWG" Y "DM-consumption"
   ;kgMS/ha
   ;gh/cow
 
@@ -2534,7 +2534,7 @@ DM-available-for-cattle
 DM-available-for-cattle
 0
 1
-0.4
+1.0
 0.1
 1
 NIL
@@ -3653,7 +3653,7 @@ NetLogo 6.2.2
       <value value="220"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="DM-available-for-cattle">
-      <value value="0.4"/>
+      <value value="1"/>
     </enumeratedValueSet>
     <enumeratedValueSet variable="perception">
       <value value="1"/>
