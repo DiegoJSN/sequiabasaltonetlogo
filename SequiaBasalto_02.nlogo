@@ -442,7 +442,7 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
+  ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
   ;if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS

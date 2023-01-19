@@ -442,7 +442,7 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
+  ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
   ;if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
@@ -574,7 +574,7 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
 
 
     ;;OPCION 4: r = 0.0004334. CON ESTE VALOR DE r CONSIGO REPLICAR LA FIGURA 2 Y CUADRO 3 DE Dieguez-Cameroni et al. 2012. ESTOY "FORZANDO" LA FORMULA PARA QUE DEN LOS NUMEROS QUE QUIERO, POR ESO LLAMO A ESTA VERSION "GH FORZADO"
-    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (-  * simulation-time))))) * set-climacoef) - GH-consumed
+    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- 0.0004334 * simulation-time))))) * set-climacoef) - GH-consumed
 
 
   ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
@@ -1954,7 +1954,7 @@ initial-grass-height
 initial-grass-height
 1
 22.2
-3.0
+7.0
 0.1
 1
 cm
