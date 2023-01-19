@@ -513,11 +513,11 @@ to go
   ;kgMS/ha
   ;gh/cow
 
-  LWG
-  ;LWG_kgMS/ha/cows
+  ;LWG
+  LWG_kgMS/ha/cows
 
-  DM-consumption
-  ;DM-consumption_kgMS/ha/cows
+  ;DM-consumption
+  DM-consumption_kgMS/ha/cows
 
   grow-livestock
 
@@ -558,6 +558,7 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
 
     ;;;OPCION 1: NO TIENE UNA VARIABLE ESPECIFICA PARA EL TIEMPO
     set grass-height (grass-height + r * grass-height * (1 - grass-height / (item current-season kmax * set-climacoef))) - GH-consumed
+
 
     ;,OPCION 2: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "initial-grass-height"
     ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed
