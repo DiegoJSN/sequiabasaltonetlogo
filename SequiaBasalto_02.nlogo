@@ -8,7 +8,7 @@ globals [ ;  It defines new global variables. Global variables are "global" beca
 
 ;Climate related global variables
 
- climacoef ; External data, It relates the primary production in a season with the average for that season due to climate variations.
+ climacoef ; External data, It relates the primary production in a season with the average for that season due to climate variations
            ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (climaCoef variable)
  current-season ; Initial-season (slider) ;Variable to define the season in which the simulation begins, it should take the values: 0 = winter, 1 = spring, 2 = summer, 3 = fall.
  current-season-name ; this variable just converts the numbers "0, 1, 2, 3" of the seasons to text "winter, spring, summer, fall", and this variable ONLY is used in the reporter/procedure "to-report season-report"
