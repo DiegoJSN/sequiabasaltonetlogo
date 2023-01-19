@@ -245,6 +245,7 @@ to setup-grassland ; Procedure para darle valores (info) a los "patches-own" var
     [set pcolor 37]
     [set pcolor scale-color green grass-height 23 0]
     set r 0.002
+    ;set r 0.0004334 ; con este valor de r conseguimos replicar la figura 2 y cuadro 3 de Dieguez-Cameroni et al. 2012
 
   ]
 
@@ -441,7 +442,7 @@ to go
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
-  ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
+  if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
 
   ;if simulation-time = 124 [stop] ; PRIMAVERA: 32 DIAS. COMIENZO ESTACIÓN
   ;if simulation-time = 184 [stop] ; PRIMAVERA. FIN ESTACION. 0.5 AÑOS
@@ -557,8 +558,10 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
 
 
     ;;;OPCION 1: NO TIENE UNA VARIABLE ESPECIFICA PARA EL TIEMPO
-    set grass-height (grass-height + r * grass-height * (1 - grass-height / (item current-season kmax * set-climacoef))) - GH-consumed
+    ;set grass-height (grass-height + r * grass-height * (1 - grass-height / (item current-season kmax * set-climacoef))) - GH-consumed
 
+    ;;;OPCION 1.1: NO TIENE UNA VARIABLE ESPECIFICA PARA EL TIEMPO. ES UNA FORMULA INVENTADA POR MI... POR ESO LE LLAMO "GH INVENT"
+    ;set grass-height (grass-height + r * simulation-time * (1 - grass-height / (item current-season kmax * set-climacoef))) - GH-consumed
 
     ;,OPCION 2: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "initial-grass-height"
     ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (initial-grass-height)) / (initial-grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed
@@ -569,6 +572,9 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)                                                                                                                                                                                    ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
 
+
+    ;;OPCION 4: r = 0.0004334. CON ESTE VALOR DE r CONSIGO REPLICAR LA FIGURA 2 Y CUADRO 3 DE Dieguez-Cameroni et al. 2012. ESTOY "FORZANDO" LA FORMULA PARA QUE DEN LOS NUMEROS QUE QUIERO, POR ESO LLAMO A ESTA VERSION "GH FORZADO"
+    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (-  * simulation-time))))) * set-climacoef) - GH-consumed
 
 
   ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
@@ -1948,7 +1954,7 @@ initial-grass-height
 initial-grass-height
 1
 22.2
-7.0
+3.0
 0.1
 1
 cm
@@ -1962,7 +1968,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-1
+0
 
 TEXTBOX
 12
