@@ -95,7 +95,7 @@ gh-individual
 
   r ;Parameter: growth rate for the grass = 0.002 1/day
     ;;;;;;;;;;;;; AGENTS AFFECTED: patches; PROPERTY OF THE AGENT AFFECTED: grass-height (r variable)
-  GH-consumed ; grass-height consumed from the total consumption of dry matter.
+  GH-consumed ; grass-height consumed from the total consumption of dry matter
 
   DM-kg-ha
 
