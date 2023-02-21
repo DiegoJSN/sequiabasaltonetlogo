@@ -342,8 +342,8 @@ create-cows initial-num-cows [ ; initial-num-cows is the slider in Interface (fr
     set live-weight initial-weight-cows ; se establece que en el tiempo 0 de la simulación (cuando se pulsa setup), la variable live-weight sea igual a initial-weight
     set mortality-rate natural-mortality-rate; la variable "natural-mortality-rate" se encuentra definida en los procedures de "to-become-XXXX (cow/heifer/steer/etc)", así que ya tiene el valor dado: 0.000054 (i.e., 0.005 % diario = 2% anual)
     set DDMC 0; establecemos que el Daily dry matter consumption (DDMC) = 0 en el momento de empezar la simulación (i.e., tick 0 o tiempo 0)
-    ;set age cow-age-min ; esta línea de código desactivada llama a la global variable "cow-age-min" que tiene un valor de 737.
-    set age random (cow-age-max - cow-age-min) + cow-age-min ; this is an alternative option: to define randomly the age of the animals between the minimum and the maximum.
+    set age cow-age-min ; esta línea de código desactivada llama a la global variable "cow-age-min" que tiene un valor de 737.
+    ;set age random (cow-age-max - cow-age-min) + cow-age-min ; this is an alternative option: to define randomly the age of the animals between the minimum and the maximum.
     setxy random-pxcor random-pycor
     become-cow ] ; become-cow es un procedure que define la age class "cow" del ciclo de vida del cattle: le estamos diciendo que todas las vacas que se crean en el tiempo 0 de la simulación sean del age class tipo "cow"
 
@@ -408,6 +408,7 @@ to go
   set year-days year-days + days-per-tick
   if year-days >= 369 [set year-days 1]
 
+  ;set duration-time simulation-time
 
     ask patches [
     set grass-height-history-season lput grass-height grass-height-history-season
@@ -440,6 +441,8 @@ to go
   ;if (model-version = "open access") or (model-version = "management model") [if not any? cows [stop]]
   ;if any? patches with [pcolor = red] [stop]
    ;;; AÑADIDO POR DIEGO: el código que está escrito a partir de esta línea (hasta el ;;;) son incorporaciones nuevas hechas por Diego
+
+  if simulation-time = STOP-SIMULATION-AT[stop]
 
   ;if simulation-time = 32 [stop] ; INVIERNO. 32 DIAS. COMIENZO AÑO 0. REPLICA: esta linea de codigo es para replicar los resultados de "Oferta de MS estacional" de la fig 3 y los resultados de "Ganancia media diaria" de la fig 4 de Dieguez-Cameroni et al 2012. Borrar cuando este todo en orden
   ;if simulation-time = 92 [stop] ; INVIERNO. FIN ESTACION. 0.25 AÑOS
@@ -568,13 +571,13 @@ to grow-grass ; Fórmula de GH (Primary production (biomass) expressed in centim
 
 
     ;;OPCION 3: VARIABLE ESPECIFICA PARA EL TIEMPO USANDO "grass-height"
-    ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
+    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- r * simulation-time))))) * set-climacoef) - GH-consumed ; Interesante: con item, lo que hacemos es llamar a uno de los valores de una lista. La sintaxis es "item index list" i.e., "item número nombre-lista" (lee el ejemplo del diccionario de NetLogo para entenderlo mejor)
                                                                                                                                                                                          ; Por ejemplo, con "item current-season kmax", hay que tener en cuenta que kmax son una lista de 4 items [7.4 22.2 15.6 11.1]. Cuando current season es 0, se está llamando al item 0 de kmax, que es 7.4; cuando es 1, se llama a 22.2, y así sucesivamente.
                                                                                                                                                                                          ; La misma lógica se aplica con "item number-of-season climacoef". climacoef es una lista con 40 items. Number-of-season puede adquirir hasta 40 valores (por lo de 10 años de simulación * 4 estaciones en un año = 40 estaciones)                                                                                                                                                                                    ; COMENTARIO IMPORTANTE SOBRE ESTA FORMULA: se ha añadido lo siguiente: ahora, la variable "K" del denominador ahora TAMBIÉN multiplica a "climacoef". Ahora que lo pienso, así tiene más sentido... ya que la capacidad de carga (K) se verá afectada dependiendo de la variabilidad climática (antes solo se tenía en cuenta en el numerador). Ahora que recuerdo, en Dieguez-Cameroni et al. 2012, se menciona lo siguiente sobre la variable K "es una constante estacional que determina la altura máxima de la pastura, multiplicada por el coeficiente climático (coefClima) explicado anteriormente", así que parece que la modificacion nueva que he hecho tiene sentido.
 
 
     ;;OPCION 4: r = 0.0004334. CON ESTE VALOR DE r CONSIGO REPLICAR LA FIGURA 2 Y CUADRO 3 DE Dieguez-Cameroni et al. 2012. ESTOY "FORZANDO" LA FORMULA PARA QUE DEN LOS NUMEROS QUE QUIERO, POR ESO LLAMO A ESTA VERSION "GH FORZADO"
-    set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- 0.0004334 * simulation-time))))) * set-climacoef) - GH-consumed
+    ;set grass-height ((item current-season kmax / (1 + ((((item current-season kmax * set-climacoef) - (grass-height)) / (grass-height)) * (e ^ (- 0.0004334 * simulation-time))))) * set-climacoef) - GH-consumed
 
 
   ;if grass-height <= 0 [set grass-height 0.001] ; to avoid negative values.
@@ -797,7 +800,6 @@ ask cows [
   if lactating-time = lactation-period [become-cow] ; la regla para cow: cuando el lactating-time = lactation-period, el agente del age class "cow-with-calf" se convierte en el age class "cow"
   ]
 end
-
 
 
 
@@ -1758,10 +1760,10 @@ ticks
 30.0
 
 BUTTON
-6
-115
-70
-148
+188
+113
+252
+146
 Setup
 Setup
 NIL
@@ -1775,10 +1777,10 @@ NIL
 1
 
 BUTTON
-163
-116
-226
-149
+325
+113
+380
+146
 Go
 Go
 T
@@ -1792,25 +1794,25 @@ NIL
 1
 
 SLIDER
-9
-408
-160
-441
+8
+409
+159
+442
 initial-num-cows
 initial-num-cows
 0
 1000
-0.0
+5.0
 1
 1
 cows
 HORIZONTAL
 
 SLIDER
-264
-192
-381
-225
+263
+193
+380
+226
 initial-season
 initial-season
 0
@@ -1947,10 +1949,10 @@ mean [live-weight] of cows
 11
 
 SLIDER
-6
-191
-147
-224
+5
+192
+146
+225
 initial-grass-height
 initial-grass-height
 1
@@ -1969,7 +1971,7 @@ CHOOSER
 model-version
 model-version
 "grass model" "open access" "management model"
-0
+1
 
 TEXTBOX
 12
@@ -2012,10 +2014,10 @@ PENS
 "Total DDMC" 1.0 0 -2674135 true "" "plot sum [DDMC] of cows"
 
 TEXTBOX
-307
-231
-371
-287
+317
+227
+381
+283
 0 = winter\n1 = spring\n2 = summer\n3 = fall
 11
 0.0
@@ -2033,10 +2035,10 @@ grass-height-report
 11
 
 SLIDER
-153
-192
-260
-225
+152
+193
+259
+226
 set-climaCoef
 set-climaCoef
 0.1
@@ -2070,10 +2072,10 @@ simulation-time / 368
 11
 
 SLIDER
-8
-323
-159
-356
+7
+324
+158
+357
 initial-num-heifers
 initial-num-heifers
 0
@@ -2085,10 +2087,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-8
-357
-159
-390
+7
+358
+158
+391
 initial-weight-heifer
 initial-weight-heifer
 100
@@ -2197,10 +2199,10 @@ mean [DDMC] of cows
 11
 
 BUTTON
-72
-115
-138
-148
+256
+113
+322
+146
 Go (1 day)
 go
 NIL
@@ -2214,10 +2216,10 @@ NIL
 1
 
 SLIDER
-9
-441
-160
-474
+8
+442
+159
+475
 initial-weight-cows
 initial-weight-cows
 100
@@ -2534,10 +2536,10 @@ OUTPUTS QUE HE USADO PARA RESOLVER EL PROBLEMA DE QUE LAS VACAS COMIAN MÁS DE 2
 0
 
 SLIDER
-6
-152
-155
-185
+5
+153
+154
+186
 DM-available-for-cattle
 DM-available-for-cattle
 0
@@ -2658,10 +2660,10 @@ mean [live-weight-gain] of cows with [cow?]
 11
 
 SLIDER
-8
-245
-159
-278
+7
+246
+158
+279
 initial-num-steers
 initial-num-steers
 0
@@ -2673,10 +2675,10 @@ NIL
 HORIZONTAL
 
 SLIDER
-8
-276
-159
-309
+7
+277
+158
+310
 initial-weight-steer
 initial-weight-steer
 100
@@ -2749,10 +2751,10 @@ X
 1
 
 SLIDER
-159
-153
-257
-186
+158
+154
+256
+187
 set-1-AU
 set-1-AU
 1
@@ -2764,10 +2766,10 @@ kg
 HORIZONTAL
 
 SLIDER
-260
-153
-381
-186
+259
+154
+380
+187
 set-MW-1-AU
 set-MW-1-AU
 1
@@ -2807,10 +2809,10 @@ PENS
 "default" 1.0 0 -16777216 true "" "plot stocking-rate"
 
 MONITOR
-171
-324
-379
-369
+170
+325
+378
+370
 Average ILWG (kg/animal/day)
 ;mean [live-weight-gain] of cows\nILWG
 13
@@ -2818,10 +2820,10 @@ Average ILWG (kg/animal/day)
 11
 
 MONITOR
-171
-376
-429
-421
+170
+377
+428
+422
 Average LWG since the start of the SEASON
 ;mean [live-weight-gain-historyXticks-season] of cows; Average LWG SEASON\nILWG_SEASON
 13
@@ -2891,10 +2893,10 @@ NIL
 1
 
 BUTTON
-178
-244
-270
-277
+177
+245
+269
+278
 Add steers
 introduce-steers
 NIL
@@ -2908,10 +2910,10 @@ NIL
 1
 
 BUTTON
-178
-282
-305
-315
+177
+283
+304
+316
 Add steers/patch
 introduce-steers/patch
 NIL
@@ -2925,10 +2927,10 @@ NIL
 1
 
 MONITOR
-170
-491
-373
-536
+169
+492
+372
+537
 NIL
 max [count cows-here] of patches
 17
@@ -2943,10 +2945,10 @@ OUTPUT
 12
 
 BUTTON
-241
-114
-382
-147
+692
+65
+833
+98
 seed-1070152876 
 setup3
 NIL
@@ -3003,10 +3005,10 @@ season-days
 11
 
 MONITOR
-170
-425
-429
-470
+169
+426
+428
+471
 Average LWG since the start of the YEAR
 ;mean [live-weight-gain-historyXticks-year] of cows; Average LWG YEAR\nILWG_YEAR
 13
@@ -3047,10 +3049,10 @@ Available DM G. Rate (kg/ha/day)
 11
 
 MONITOR
-436
-322
-526
-367
+432
+288
+522
+333
 ALWG (kg/ha)
 ;(sum [live-weight] of cows with [steer?] - sum [initial-weight] of cows with [steer?]) / count patches; para calcular el WGH de los steers\n;(sum [live-weight] of cows - sum [initial-weight] of cows) / count patches\nALWG
 3
@@ -3078,6 +3080,21 @@ PR of cows (%)
 2
 1
 11
+
+SLIDER
+5
+112
+184
+145
+STOP-SIMULATION-AT
+STOP-SIMULATION-AT
+0
+7360
+0.0
+1
+1
+days
+HORIZONTAL
 
 @#$#@#$#@
 ## WHAT IS IT?
